@@ -9,7 +9,8 @@ const pingRouter = require("./routes/ping");
 
 const { json, urlencoded } = express;
 
-var app = express();
+const app = express();
+require("./database");
 
 app.use(logger("dev"));
 app.use(json());
