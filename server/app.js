@@ -7,13 +7,10 @@ const logger = require("morgan");
 const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
 
-const mongoose = require("mongoose");
-const uri = "mongodb://localhost/kanban";
-
 const { json, urlencoded } = express;
 
 const app = express();
-const port = 3000;
+require("./database");
 
 app.use(logger("dev"));
 app.use(json());
@@ -38,21 +35,6 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.json({ error: err });
-});
-
-//database set-up
-mongoose
-  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log("Database connection successful");
-  })
-  .catch(err => {
-    console.error("Database connection error:", err);
-  });
-
-//listen to server
-app.listen(port, () => {
-  console.log(`Express server running on port ${port}`);
 });
 
 module.exports = app;
