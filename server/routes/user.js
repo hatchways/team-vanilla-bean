@@ -62,17 +62,19 @@ router.post(
 //@route /user/signup
 //@desc signup route
 //@route public
-router.post("/signin", function(req, res, next) {
-  console.log(req.body);
-  res.send("user signup");
-  //   const teamName = req.body.teamName;
-
-  //   if (teamName && process.env.TEAM_MEMBERS && process.env.TEAM_MEMBERS.indexOf(teamName) >= 0)
-  //     res.status(200).send({ response: `${teamName} is part of the team!` });
-  //   else
-  //     res.status(400).send({
-  //       response: `${teamName} is not part of the team. Modify your .env`
-  //     });
+router.get("/signin", async (req, res) => {
+  try {
+    //check if id exists, and return email
+    let user = await User.findOne({ _id: "5e420da01b798b19e6694ef6" }).select(
+      "-password -_id -date -__v"
+    );
+    if (!user) {
+      res.status(500).json({ msg: "There is no profile for this user" });
+    }
+    res.json(user);
+  } catch (err) {
+    res.status(500).send("server error");
+  }
 });
 
 module.exports = router;
