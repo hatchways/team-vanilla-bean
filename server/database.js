@@ -12,4 +12,16 @@ mongoose
     console.error("Database connection error:", err);
   });
 
-module.exports = mongoose.connection;
+  let colsSchema = new mongoose.Schema({
+    "colTitle" : String,
+    "cards": Array
+})
+
+
+  let usersSchema = new mongoose.Schema({
+    "username": String,
+    "cols": [colsSchema]
+})
+
+module.exports = mongoose.model( "test", usersSchema)
+//module.exports = mongoose.connect;
