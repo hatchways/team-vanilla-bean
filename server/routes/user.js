@@ -4,8 +4,13 @@ const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+//Models
 const User = require("../models/User");
-//@route /user/signin
+
+//MiddleWare
+const auth = require("../middleWare/auth");
+
+//@route /user/signup
 //@desc signin route
 //@route public
 router.post(
@@ -59,17 +64,16 @@ router.post(
   }
 );
 
-//@route /user/signup
+//@route /user/signin
 //@desc signup route
 //@route public
-router.get("/signin", async (req, res) => {
+router.get("/signin", auth, async (req, res) => {
   try {
     //check if id exists, and return email
-    let user = await User.findOne({ _id: "5e420da01b798b19e6694ef6" }).select(
-      "-password -_id -date -__v"
-    );
+    let id = req.user.id;
+    let user = await User.findOne({ _id: id }).select("email -_id");
     if (!user) {
-      res.status(500).json({ msg: "There is no profile for this user" });
+      res.status(500).json({ msg: "There is no user" });
     }
     res.json(user);
   } catch (err) {
