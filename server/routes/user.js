@@ -75,7 +75,8 @@ router.get("/signin", auth, async (req, res) => {
     if (!user) {
       res.status(500).json({ msg: "There is no user" });
     }
-    res.json(user);
+
+    res.json({ email: user.email, token: req.token });
   } catch (err) {
     res.status(500).send("server error");
   }
