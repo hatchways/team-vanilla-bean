@@ -10,7 +10,8 @@ const pingRouter = require("./routes/ping");
 const { json, urlencoded } = express;
 
 const app = express();
-let testModel = require("./database");
+let simpleModel = require("./database");
+//const simpleModel = require("../models/boardSchema")
 
 app.use(logger("dev"));
 app.use(json());
@@ -22,76 +23,119 @@ app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 
 
-// Example model
-
-// { username: "Bob",
-//  new_user: "False",
-//  columns: [
-//             {col_title: "philo",
-//                 cards: ["card1", "card2"]
-//         }
-//       ]
-//     }
-
-
 //delete table on startup for testing
-testModel.deleteMany({}, function(err,removed) {
+// simpleModel.deleteMany({}, function(err,removed) {
 
+// });
+
+app.get("/allBoards", async (req,res) =>{
+  // authenticate user
+  try {
+    var lookupUsername = req.query.username
+    const boards = await simpleModel.find({username : lookupUsername});
+    res.json(boards)
+  } catch (err){
+    res.json({message: err})
+  }
 });
 
 
-//hardcoded for testing
-let msg = new testModel({
-  "username": "kulraj",
-  "cols": [{"colTitle" : "math", "cards" : ["study"]}]
-})
- 
-msg.save()
-   .then(doc => {
-     console.log(doc)
-   })
-   .catch(err => {
-     console.error(err)
-   })
 
-testModel
-.find({})
-.then(doc => {
-  console.log(doc)
-})
-.catch(err => {
-  console.error(err)
-})
+app.post("/createBoard", (req,res) =>{
+  simpleModel.findOneAndUpdate({username: req.body.username},
+
+    {$push: {boards: {title: req.body.newBoardName, cards: []}}},
+    function(err, doc) {
+        if(err){
+        console.log(err);
+        }else{
+        //do stuff
+        res.json({ "temp": "temp"})
+        }
+    }
+  );
+});
 
 
-app.post("/newUserBoard", (req,res) =>{
+app.delete("/deleteBoard", (req,res) =>{
+
+  db.temp.update(
+    { username: req.body.username },
+    {$pull : {"boards" : {"name": req.body.boardName}}},
+    function(err, doc) {
+        if(err){
+        console.log(err);
+        }else{
+        //do stuff
+        res.json({ "temp": "temp"})
+        }
+    }
+  );
+});
+
+
+
+
+
+app.post("/createCard", (req,res) =>{
+  simpleModel.update(
+    { username: req.body.username, "boards.title": req.body.boardName},
+    { "$push": 
+        {"boards.$.cards": 
+            {
+                "name": req.body.newCardName
+            }
+        }
+    },     
+    function(err, doc) {
+      if(err){
+      console.log(err);
+      }else{
+      //do stuff
+      res.json({ "temp": "temp"})
+      }
+  }
+)
+});
+
+
+app.delete("/deleteCard", (req,res) =>{
+  simpleModel.update(
+    { username: req.body.username, "boards.title": req.body.boardName},
+    { "$pull": 
+        {"boards.$.cards": 
+            {
+                "name": req.body.newCardName
+            }
+        }
+    },     
+    function(err, doc) {
+      if(err){
+      console.log(err);
+      }else{
+      //do stuff
+      res.json({ "temp": "temp"})
+      }
+  }
+)
+});
+
+
+
+app.post("/initialUserBoard", async (req,res) =>{
   // authenticate user
-  const username =  req.body.username;
-  let userModel = new testModel({
-    "username": username,
-    "cols": [{"colTitle" : "in progress", "cards" : []},
-            {"colTitle" : "completed", "cards" : []} ]
+
+  //ADD try catch for unique handler
+  const newBoard = new simpleModel({
+        username: req.body.username,
+        boards: [{title: "in progress", cards: []},
+              {title: "completed", cards: []}]
   })
+  newBoard.save()
   res.json({ "temp": "temp"})
-
-})
-
-
-//TODO
-app.post("/newColumn", (req,res) =>{
-  // authenticate user
-  //is username already known at this point?
-  const username =  req.body.username;
+});
 
 
-  let userModel = new testModel({
-    "username": username,
-    "cols": [{"colTitle" : "in progress", "cards" : []},
-            {"colTitle" : "completed", "cards" : []} ]
-  })
-  res.json({ "temp": "temp"})
-
-})
 
 
 // catch 404 and forward to error handler
