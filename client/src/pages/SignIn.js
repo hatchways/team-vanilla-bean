@@ -6,7 +6,7 @@ import {
   Grid,
   Typography
 } from "@material-ui/core";
-import useStyles from "./SignInStyles";
+import useStyles from "./AuthStyles";
 import { Link } from "react-router-dom";
 
 function SignIn() {
@@ -16,7 +16,7 @@ function SignIn() {
 
   return (
     <Grid container className={classes.root}>
-      <Grid item xs={0} md={6} className={classes.image}></Grid>
+      <Grid item md={6} className={classes.image}></Grid>
       <Grid item xs={12} md={6}>
         <Container className={classes.paper}>
           <div>
@@ -26,65 +26,60 @@ function SignIn() {
 
             <form>
               <TextField
+                type="email"
+                label="Enter Email"
+                name="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 variant="outlined"
                 margin="normal"
-                size="large"
                 fullWidth
+                inputProps={{
+                  required: true
+                }}
                 InputLabelProps={{
                   classes: {
                     root: classes.inputLabel
                   }
                 }}
-                inputProps={{
-                  required: true
-                }}
-                type="email"
-                id="email"
-                label="Enter Email"
-                name="email"
-                value={email}
                 InputProps={{
                   classes: {
                     notchedOutline: classes.notchedOutline
                   }
                 }}
-                onChange={e => setEmail(e.target.value)}
               />
 
               <TextField
+                type="password"
+                label="Password"
+                name="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
                 variant="outlined"
-                InputLabelProps={{
-                  classes: {
-                    root: classes.inputLabel
-                  }
-                }}
+                margin="normal"
+                fullWidth
                 inputProps={{
                   required: true,
                   pattern: ".{6,}",
                   title: "Password must be 6 characters or longer "
                 }}
+                InputLabelProps={{
+                  classes: {
+                    root: classes.inputLabel
+                  }
+                }}
                 InputProps={{
                   classes: {
                     notchedOutline: classes.notchedOutline
                   }
                 }}
-                margin="normal"
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
               />
-
               <Button
                 className={classes.button}
                 type="submit"
                 variant="contained"
                 color="primary"
                 size="large"
-                onClick={console.log(email, password)}
               >
                 Login
               </Button>
