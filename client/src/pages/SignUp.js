@@ -8,11 +8,26 @@ import {
 } from "@material-ui/core";
 import useStyles from "./AuthStyles";
 import { Link } from "react-router-dom";
+import AuthService from "../AuthService";
 
-function SignUp() {
+function SignUp(props) {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const Auth = new AuthService();
+
+  const handleSignUp = e => {
+    e.preventDefault();
+    Auth.login("signup", email, password)
+      .then(() => {
+        //redirect to home
+        props.history.push("/");
+      })
+      .catch(err => {
+        //TODO: retrieve and display error message
+      });
+  };
 
   return (
     <Grid container className={classes.root}>
@@ -24,7 +39,7 @@ function SignUp() {
               Sign up to Kanban
             </Typography>
 
-            <form>
+            <form onSubmit={handleSignUp}>
               <TextField
                 type="email"
                 label="Enter Email"
@@ -87,6 +102,7 @@ function SignUp() {
             </form>
           </div>
         </Container>
+
         <Container className={classes.footer}>
           <Typography paragraph variant="h2">
             Already have an account?

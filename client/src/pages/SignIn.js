@@ -8,11 +8,26 @@ import {
 } from "@material-ui/core";
 import useStyles from "./AuthStyles";
 import { Link } from "react-router-dom";
+import AuthService from "../AuthService";
 
-function SignIn() {
+function SignIn(props) {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const Auth = new AuthService();
+
+  const handleSignIn = e => {
+    e.preventDefault();
+    Auth.login("signin", email, password)
+      .then(() => {
+        //redirect to home
+        props.history.push("/");
+      })
+      .catch(err => {
+        //TODO: retrieve and display error message
+      });
+  };
 
   return (
     <Grid container className={classes.root}>
@@ -24,7 +39,7 @@ function SignIn() {
               Welcome back!
             </Typography>
 
-            <form>
+            <form onSubmit={handleSignIn}>
               <TextField
                 type="email"
                 label="Enter Email"
@@ -86,6 +101,7 @@ function SignIn() {
             </form>
           </div>
         </Container>
+
         <Container className={classes.footer}>
           <Typography paragraph variant="h2">
             Don't have an account?
