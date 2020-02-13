@@ -22,7 +22,7 @@ function SignUp(props) {
     Auth.login("signup", email, password)
       .then(() => {
         //redirect to home
-        props.history.push("/");
+        Auth.loggedIn() && props.history.push("/");
       })
       .catch(err => {
         //TODO: retrieve and display error message
