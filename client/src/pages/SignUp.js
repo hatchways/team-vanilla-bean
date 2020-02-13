@@ -9,7 +9,7 @@ import {
 import useStyles from "./SignInStyles";
 import { Link } from "react-router-dom";
 
-function SignIn() {
+function SignUp() {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +21,7 @@ function SignIn() {
         <Container className={classes.paper}>
           <div>
             <Typography variant="h1" className={classes.title}>
-              Welcome back!
+              Sign up to Kanban
             </Typography>
 
             <form>
@@ -71,7 +71,7 @@ function SignIn() {
                 margin="normal"
                 fullWidth
                 name="password"
-                label="Password"
+                label="Create password"
                 type="password"
                 id="password"
                 value={password}
@@ -86,18 +86,18 @@ function SignIn() {
                 size="large"
                 onClick={console.log(email, password)}
               >
-                Login
+                Sign up
               </Button>
             </form>
           </div>
         </Container>
         <Container className={classes.footer}>
           <Typography paragraph variant="h2">
-            Don't have an account?
+            Already have an account?
           </Typography>
 
           <Typography variant="h2">
-            <Link to="/user/signup">Create</Link>
+            <Link to="/user/signin">Login</Link>
           </Typography>
         </Container>
       </Grid>
@@ -105,4 +105,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default SignUp;
