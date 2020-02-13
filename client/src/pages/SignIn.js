@@ -34,9 +34,6 @@ function SignIn() {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                inputProps={{
-                  required: true
-                }}
                 InputLabelProps={{
                   classes: {
                     root: classes.inputLabel
@@ -45,6 +42,9 @@ function SignIn() {
                 InputProps={{
                   classes: {
                     notchedOutline: classes.notchedOutline
+                  },
+                  inputProps: {
+                    required: true
                   }
                 }}
               />
@@ -58,11 +58,6 @@ function SignIn() {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                inputProps={{
-                  required: true,
-                  pattern: ".{6,}",
-                  title: "Password must be 6 characters or longer "
-                }}
                 InputLabelProps={{
                   classes: {
                     root: classes.inputLabel
@@ -71,6 +66,11 @@ function SignIn() {
                 InputProps={{
                   classes: {
                     notchedOutline: classes.notchedOutline
+                  },
+                  inputProps: {
+                    required: true,
+                    pattern: ".{6,}",
+                    title: "Password must be 6 characters or longer "
                   }
                 }}
               />
