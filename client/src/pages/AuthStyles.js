@@ -32,6 +32,10 @@ const useStyles = makeStyles(theme => ({
     color: "black",
     width: "90%"
   },
+  shrink: {
+    width: "auto",
+    color: "#759CFC"
+  },
   footer: {
     marginTop: theme.spacing(22),
     padding: "5%",

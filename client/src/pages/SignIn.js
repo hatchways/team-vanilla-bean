@@ -51,7 +51,8 @@ function SignIn(props) {
                 fullWidth
                 InputLabelProps={{
                   classes: {
-                    root: classes.inputLabel
+                    root: classes.inputLabel,
+                    shrink: classes.shrink
                   }
                 }}
                 InputProps={{
@@ -75,7 +76,8 @@ function SignIn(props) {
                 fullWidth
                 InputLabelProps={{
                   classes: {
-                    root: classes.inputLabel
+                    root: classes.inputLabel,
+                    shrink: classes.shrink
                   }
                 }}
                 InputProps={{
