@@ -1,16 +1,20 @@
 const express = require('express');
 const router = express.Router();
-let simpleModel = require("../database");
+const dbConnect = require('../database');
+
+let userBoard = require("../models/board");
+let cardModel = require("../models/card")
+
 
 //delete table on startup for testing
-// simpleModel.deleteMany({}, function(err,removed) {
-// });
+userBoard.deleteMany({}, function(err,removed) {
+});
 
+//make function to switch collection
 
 router.get("/allBoards", async (req,res) =>{
     try {
-      var lookupUsername = req.query.username
-      const boards = await simpleModel.find({username : lookupUsername});
+      const boards = await userBoard.find();
       res.json(boards)
     } catch (err){
       res.json({message: err})
@@ -18,96 +22,121 @@ router.get("/allBoards", async (req,res) =>{
   });
 
 router.post("/createBoard", (req,res) =>{
-simpleModel.findOneAndUpdate({username: req.body.username},
-
-    {$push: {boards: {title: req.body.newBoardName, cards: []}, $position: req.body.boardPos}},
-    function(err, doc) {
-        if(err){
-        console.log(err);
-        }else{
-        //do stuff
-        res.json({ "temp": "temp"})
-        }
-    }
- );
+    new userBoard({title: req.body.newBoardName}).save()
+    res.json({"temp": "temp"})
 });
 
 
-router.delete("/deleteBoard", (req,res) =>{
-
-simpleModel.update(
-    { username: req.body.username },
-    {$pull : {"boards" : {"title": req.body.boardName}}},
-    function(err, doc) {
-        if(err){
-        console.log(err);
-        }else{
-        //do stuff
-        res.json({ "temp": "temp"})
-        }
-    }
-);
+router.delete("/deleteBoard", async (req,res) =>{
+    userBoard.deleteMany({title: req.body.boardName}, function(err,removed) {
+    res.json({"temp": "temp"})
+    })
 });
+
+router.post("/modifyBoardTitle", async (req,res) =>{
+    userBoard.findOneAndUpdate({title: req.body.boardName}, {title: req.body.newBoardName}, function(err,removed) {
+    res.json({"temp": "temp"})
+    })
+});
+
 
 
 router.post("/createCard", (req,res) =>{
-simpleModel.update(
-    { username: req.body.username, "boards.title": req.body.boardName},
-    { "$push": 
-        {"boards.$.cards": 
-            {
-            "title": req.body.newCardName,
-            "desc": "descripTest",
-            "deadline": "dateTest",
-            "comment": "commentTest"
+
+    let tempCard = new cardModel({
+        title: req.body.newCardName,
+        description: req.body.newCardDesc,
+        date: req.body.newCardDeadline,
+        comment: req.body.newCardComment,
+        colour: req.body.newCardColour
+        })
+
+    userBoard.findOneAndUpdate({title: req.body.boardName},
+
+        {$push: {cards: tempCard, $position: req.body.boardName}},
+        function(err, doc) {
+            if(err){
+            console.log(err);
+            }else{
+            //do stuff
+            res.json({ "temp": "temp"})
             }
         }
-    },     
-    function(err, doc) {
-    if(err){
-    console.log(err);
-    }else{
-    //do stuff
-    res.json({ "temp": "temp"})
-    }
-}
-)
+     );
 });
-
-
 
 router.delete("/deleteCard", (req,res) =>{
-simpleModel.update(
-    { username: req.body.username, "boards.title": req.body.boardName},
-    { "$pull": 
-        {"boards.$.cards": 
-            {
-                "name": req.body.CardName
+    userBoard.findOneAndUpdate(
+        { title: req.body.boardName},
+        { $pull: {cards: 
+                {
+                    "title": req.body.cardName
+                }
             }
+        },     
+        function(err, doc) {
+        if(err){
+        console.log(err);
+        }else{
+        //do stuff
+        res.json({ "temp": "temp"})
         }
-    },     
-    function(err, doc) {
-    if(err){
-    console.log(err);
-    }else{
-    //do stuff
+    })
+});
+
+
+router.post("/modifyCardTitle", async (req,res) =>{
+    // userBoard.findOneAndUpdate(
+    //     { title: req.body.boardName, cards: { "title": "please" }}, {"title" : "u2"}, 
+                 
+    //     function(err, doc) {
+    //     if(err){
+    //     console.log(err);
+    //     }else{
+    //     //do stuff
+    //     res.json({ "temp": "temp"})
+    //     }
+    // })
+
+    // userBoard.update(
+    //     { title: req.body.boardName }, 
+    //     { "$set": { "cards.$.title": "it works" } }
+    // )
+
+    // userBoard.findOneAndUpdate(
+    //     { title: req.body.boardName, "cards.title" : "please" },
+    //     { "cards.title" : "it worked"
+    //     },     
+    //     function(err, doc) {
+    //     if(err){
+    //     console.log(err);
+    //     }else{
+    //     //do stuff
+    //     res.json({ "temp": "temp"})
+    //     }
+    // })
+
+    //userBoard.update({"cards.title":"please"},{$set:{"cards.title":"YES"}})
+
+    
+
+
     res.json({ "temp": "temp"})
-    }
-}
-)
 });
 
-router.post("/initialUserBoard", async (req,res) =>{
-// authenticate user
-const newBoard = new simpleModel({
-        username: req.body.username,
-        boards: [{title: "in progress", cards: []},
-            {title: "completed", cards: []}]
-})
-newBoard.save()
-res.json({ "temp": "temp"})
-});
 
-  
+
+
+
+router.post("/initialUserBoard", (req,res) =>{
+
+    new userBoard({title: "completed"}).save();
+    new userBoard({title: "in progress"}).save();
+    res.json({"temp": "temp"})
+
+
+});
+    
+
 
 module.exports = router;

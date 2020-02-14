@@ -12,18 +12,4 @@ mongoose
     console.error("Database connection error:", err);
   });
 
-  let boardSchema = mongoose.Schema({
-    "username": {
-        type: String,
-        required: true,
-        unique: true
-    },
-    "boards" : {
-      type: Array,
-      required: true,
-      unique: true
-  }
-})
-
-
-module.exports = mongoose.model( "boardSchema", boardSchema)
+  module.exports = mongoose.connection;

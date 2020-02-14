@@ -1,25 +1,44 @@
 const mongoose = require("mongoose");
 
-
-
-
-// mongoose
-//   .connect(process.env.MONGO_URI, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true
-//   })
-
-
-let boardSchema = mongoose.Schema({
-    "username": {
+let cardSchema = mongoose.Schema({
+    "title": {
         type: String,
-        required: true
+        required: false,
+        unique: true
     },
-    "cols" : {
-        type: Array,
-        required: true
+    "description" : {
+      type: String,
+      required: false,
+      unique: false
+    },
+    "date" : {
+      type: String,
+      required: false,
+      unique: false
+    },
+  
+    "comment" : {
+      type: String,
+      required: false,
+      unique: true
+    },
+  
+    "colour" : {
+      type: String,
+      required: false,
+      unique: false
     }
+  
+  })
+
+let userBoardSchema = mongoose.Schema({
+    "title": {
+        type: String,
+        required: false,
+        unique: false
+    },
+    "cards" : [cardSchema]
 })
 
 
-module.exports = mongoose.model( "boardSchema", boardSchema)
+module.exports =  mongoose.model( "boardSchema", userBoardSchema)

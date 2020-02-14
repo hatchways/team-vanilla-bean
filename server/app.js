@@ -23,9 +23,7 @@ app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/backendAPIs", APIRoute);
 
-//delete table on startup for testing
-// simpleModel.deleteMany({}, function(err,removed) {
-// });
+
 
 
 
