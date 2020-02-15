@@ -31,7 +31,7 @@ let cardSchema = mongoose.Schema({
   
   })
 
-let userBoardSchema = mongoose.Schema({
+let userColSchema = mongoose.Schema({
     "title": {
         type: String,
         required: false,
@@ -42,4 +42,4 @@ let userBoardSchema = mongoose.Schema({
 })
 
 
-module.exports =  mongoose.model( "boardSchema", userBoardSchema)
+module.exports =  mongoose.model( "colSchema", userColSchema)
