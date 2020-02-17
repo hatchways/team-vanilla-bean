@@ -1,45 +1,18 @@
 const mongoose = require("mongoose");
+const colSchema = require("./col")
 
-let cardSchema = mongoose.Schema({
-    "title": {
-        type: String,
-        required: false,
-        unique: false
-    },
-    "description" : {
-      type: String,
-      required: false,
-      unique: false
-    },
-    "date" : {
-      type: String,
-      required: false,
-      unique: false
-    },
-  
-    "comment" : {
-      type: String,
-      required: false,
-      unique: false
-    },
-  
-    "colour" : {
-      type: String,
-      required: false,
-      unique: false
-    }
-  
-  })
 
-let userBoardSchema = mongoose.Schema({
-    "title": {
-        type: String,
-        required: false,
-        unique: false
-    },
-    "cards" : [cardSchema],
-              unique: false
+let boardsSchema = mongoose.Schema({
+  "title": {
+      type: String,
+      required: true,
+      unique: false
+  },
+  "cols" : 
+    [colSchema.schema],
+    unique: false
 })
 
 
-module.exports =  mongoose.model( "boardSchema", userBoardSchema)
+
+module.exports =  mongoose.model( "boardSchema", boardsSchema)

@@ -1,35 +1,5 @@
 const mongoose = require("mongoose");
-
-let cardSchema = mongoose.Schema({
-    "title": {
-        type: String,
-        required: false,
-        unique: false
-    },
-    "description" : {
-      type: String,
-      required: false,
-      unique: false
-    },
-    "date" : {
-      type: String,
-      required: false,
-      unique: false
-    },
-  
-    "comment" : {
-      type: String,
-      required: false,
-      unique: false
-    },
-  
-    "colour" : {
-      type: String,
-      required: false,
-      unique: false
-    }
-  
-  })
+const cardSchema = require("./card")
 
 let userColSchema = mongoose.Schema({
     "title": {
@@ -37,7 +7,7 @@ let userColSchema = mongoose.Schema({
         required: false,
         unique: false
     },
-    "cards" : [cardSchema],
+    "cards" : [cardSchema.schema],
               unique: false
 })
 
