@@ -46,7 +46,7 @@ const useStyles = makeStyles({
   root: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "start",
     alignContent: "center",
     width: "100%"
   }

@@ -6,17 +6,14 @@ import update from "immutability-helper";
 import Card from "../card/Card";
 import { fakeData } from "../../dragAndDrop/fakeData";
 
+//materialUi
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+
 const Column = props => {
   const classes = useStyles(props);
   const ref = useRef(null);
   const { index, id, text, moveColumn } = props;
-
-  const [, drag] = useDrag({
-    item: { index, id, text, type: ItemTypes.COLUMN },
-    collect: monitor => ({
-      isDragging: monitor.isDragging()
-    })
-  });
 
   const [, drop] = useDrop({
     accept: ItemTypes.COLUMN,
@@ -60,7 +57,6 @@ const Column = props => {
       item.index = hoverIndex;
     }
   });
-  drag(drop(ref));
 
   //   const isActive = canDrop && isOver;
   const [data, setData] = useState(fakeData);
@@ -80,12 +76,25 @@ const Column = props => {
     [data]
   );
 
+  const [{ isDragging }, drag] = useDrag({
+    item: { index, id, text, type: ItemTypes.COLUMN },
+    collect: monitor => ({
+      isDragging: monitor.isDragging()
+    })
+  });
+  drag(drop(ref));
+
+  const opacity = isDragging ? 0 : 1;
   const renderCard = (card, index) => {
     return <Card key={card.id} index={index} id={card.id} text={card.text} moveCard={moveCard} />;
   };
   return (
-    <div ref={ref} className={id === 11 ? classes.root : classes.test1}>
-      {data.map((card, index) => renderCard(card, index))}
+    <div ref={ref} className={classes.root} style={{ opacity }}>
+      <Typography variant='h3'>{text}</Typography>
+      <div className={classes.card}>{data.map((card, index) => renderCard(card, index))}</div>
+      <Button className={classes.btn} variant='contained' color='secondary'>
+        Add a Card
+      </Button>
     </div>
   );
 };
@@ -93,28 +102,13 @@ const Column = props => {
 //Styling part
 const useStyles = makeStyles({
   root: {
-    backgroundColor: "blue",
-    height: 200,
+    backgroundColor: "#F4F6FF",
+    height: "100%",
     width: "12rem",
-    marginRight: "1.5rem",
-    marginBottom: "1.5rem",
-    color: "red",
+    margin: "0 2rem",
+    color: "black",
     padding: "1rem",
-    textAlign: "center",
-    fontSize: "1rem",
-    lineHeight: "normal",
-    float: "left"
-  },
-  test1: {
-    backgroundColor: "yellow",
-    height: 200,
-    width: "12rem",
-    marginRight: "1.5rem",
-    marginBottom: "1.5rem",
-    color: "red",
-    padding: "1rem",
-    textAlign: "center",
-    fontSize: "1rem",
+    textAlign: "left",
     lineHeight: "normal",
     float: "left"
   }

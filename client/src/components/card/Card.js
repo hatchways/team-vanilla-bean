@@ -59,7 +59,7 @@ const Card = ({ text, index, moveCard, selectTag, id, props }) => {
   drag(drop(ref));
 
   return (
-    <div ref={ref} className={isDragging ? classes.root : classes.notRoot} style={{ opacity }}>
+    <div ref={ref} className={classes.root} style={{ opacity }}>
       {text}
     </div>
   );
@@ -72,16 +72,7 @@ const useStyles = makeStyles({
     padding: "0.5rem 1rem",
     marginBottom: ".5rem",
     backgroundColor: "white",
-    cursor: "move",
-    opacity: 0
-  },
-  notRoot: {
-    border: "1px dashed gray",
-    padding: "0.5rem 1rem",
-    marginBottom: ".5rem",
-    backgroundColor: "white",
-    cursor: "move",
-    opacity: 0
+    cursor: "move"
   }
 });
 
