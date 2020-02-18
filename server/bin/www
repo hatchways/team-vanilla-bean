@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 /* Sets up the environment variables from your .env file*/
-require("dotenv").config({ path: process.cwd() + "/.env" });
-console.log(process.cwd());
+require("dotenv").config({ path: ".env" });
 
 /**
  * Module dependencies.
