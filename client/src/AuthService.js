@@ -57,4 +57,4 @@ const _checkStatus = response => {
   }
 };
 
-module.exports = { login, loggedIn, logout };
+export { login, loggedIn, logout };
