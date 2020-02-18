@@ -8,21 +8,19 @@ import {
 } from "@material-ui/core";
 import useStyles from "./AuthStyles";
 import { Link } from "react-router-dom";
-import AuthService from "../AuthService";
+import { login, loggedIn } from "../AuthService";
 
 function SignIn(props) {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const Auth = new AuthService();
-
   const handleSignIn = e => {
     e.preventDefault();
-    Auth.login("signin", email, password)
+    login("signin", email, password)
       .then(() => {
         //redirect to home
-        Auth.loggedIn() && props.history.push("/");
+        loggedIn() && props.history.push("/");
       })
       .catch(err => {
         //TODO: retrieve and display error message
