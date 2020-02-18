@@ -112,7 +112,7 @@ function SignUp(props) {
           </Typography>
 
           <Typography variant="h2">
-            <Link to="/user/signin">Login</Link>
+            <Link to="/signin">Login</Link>
           </Typography>
         </Container>
       </Grid>
