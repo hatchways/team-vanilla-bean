@@ -25,7 +25,6 @@ app.use("/user", userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  console.log("triggered");
   next(createError(404));
 });
 
