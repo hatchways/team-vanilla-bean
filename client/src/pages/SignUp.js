@@ -20,7 +20,7 @@ function SignUp(props) {
     login("signup", email, password)
       .then(() => {
         //redirect to home
-        loggedIn() && props.history.push("/");
+        loggedIn() && props.history.push("/dashboard");
       })
       .catch(err => {
         //TODO: retrieve and display error message
