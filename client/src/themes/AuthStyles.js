@@ -32,9 +32,16 @@ const useStyles = makeStyles(theme => ({
     color: "black",
     width: "90%"
   },
+  input: {
+    height: "3.9em",
+    fontWeight: 500
+  },
   shrink: {
     width: "auto",
     color: "#759CFC"
+  },
+  password: {
+    fontSize: 18
   },
   footer: {
     marginTop: theme.spacing(22),

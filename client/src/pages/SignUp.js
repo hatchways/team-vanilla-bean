@@ -55,6 +55,7 @@ function SignUp(props) {
                 }}
                 InputProps={{
                   classes: {
+                    root: classes.input,
                     notchedOutline: classes.notchedOutline
                   },
                   inputProps: {
@@ -80,6 +81,8 @@ function SignUp(props) {
                 }}
                 InputProps={{
                   classes: {
+                    root: classes.input,
+                    input: classes.password,
                     notchedOutline: classes.notchedOutline
                   },
                   inputProps: {
