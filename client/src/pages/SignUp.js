@@ -6,7 +6,7 @@ import {
   Grid,
   Typography
 } from "@material-ui/core";
-import useStyles from "./AuthStyles";
+import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
 import { login, loggedIn } from "../AuthService";
 
