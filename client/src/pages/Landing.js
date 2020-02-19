@@ -45,24 +45,18 @@ class LandingPage extends Component {
         <Typography>{this.state.welcomeMessage}</Typography>
         {this.state.step >= 1 && (
           <React.Fragment>
-            <Link to="/ping">Step 2: Click here </Link>
+            <Link to='/ping'>Step 2: Click here </Link>
             <Route
-              path="/ping"
+              path='/ping'
               render={props => {
                 return (
-                  <Ping
-                    {...props}
-                    incrementStep={this.incrementStep}
-                    step={this.state.step}
-                  />
+                  <Ping {...props} incrementStep={this.incrementStep} step={this.state.step} />
                 );
               }}
             />
           </React.Fragment>
         )}
-        {this.state.step >= 3 && (
-          <Typography>All done! Now go make a pull request!</Typography>
-        )}
+        {this.state.step >= 3 && <Typography>All done! Now go make a pull request!</Typography>}
       </div>
     );
   }

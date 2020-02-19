@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDrag, useDrop } from "react-dnd";
-import ItemTypes from "../../dragAndDrop/ItemTypes";
+import ItemTypes from "../../../dragAndDrop/ItemTypes";
 
 const Card = ({ text, index, moveCard, selectTag, id, props }) => {
   const classes = useStyles(props);

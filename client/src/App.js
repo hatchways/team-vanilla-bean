@@ -8,8 +8,8 @@ import DashBoard from "./pages/DashBoard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 
-
 import "./App.css";
+import { UserContext } from "./userContext/userContext";
 
 function App() {
   return (
@@ -17,9 +17,8 @@ function App() {
       <BrowserRouter>
         <Route path='/' component={LandingPage} />
         <Route exact path='/dashboard' component={DashBoard} />
-        <Route path="/user/signin" component={SignIn} />
-        <Route path="/user/signup" component={SignUp} />
-
+        <Route path='/user/signin' component={SignIn} />
+        <Route path='/user/signup' component={SignUp} />
       </BrowserRouter>
     </MuiThemeProvider>
   );

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import Column from "../column/Column";
-import { fakeDataColumn } from "../../dragAndDrop/fakeData";
+import { fakeDataColumn } from "../../../dragAndDrop/fakeData";
 import { makeStyles } from "@material-ui/core/styles";
 import update from "immutability-helper";
 
@@ -27,9 +27,9 @@ const ColumnArea = props => {
   const renderColumn = (column, index) => {
     return (
       <Column
-        key={column.id}
+        key={column.columnId}
         index={index}
-        id={column.id}
+        id={column.columnId}
         text={column.text}
         moveColumn={moveColumn}
       />

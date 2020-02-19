@@ -1,10 +1,10 @@
 import React, { useRef, useCallback, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDrag, useDrop } from "react-dnd";
-import ItemTypes from "../../dragAndDrop/ItemTypes";
+import ItemTypes from "../../../dragAndDrop/ItemTypes";
 import update from "immutability-helper";
 import Card from "../card/Card";
-import { fakeData } from "../../dragAndDrop/fakeData";
+import { fakeData } from "../../../dragAndDrop/fakeData";
 
 //materialUi
 import Typography from "@material-ui/core/Typography";
