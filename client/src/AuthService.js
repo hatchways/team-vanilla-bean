@@ -47,18 +47,18 @@ const authFetch = (url, options) => {
 };
 
 const _checkStatus = response => {
-  try {
-    if (response.status >= 200 && response.status < 300) {
-      return response.json();
-    } else if (response.status === 403) {
-      //invalid token
-      logout();
+  return response.json().then(res => {
+    if (!response.ok) {
+      if (response.status === 403) {
+        logout();
+      }
+
+      const error = (res && res.error) || response.statusText;
+      return Promise.reject(error);
     }
-  } catch {
-    let error = new Error(response.statusText);
-    error.response = response;
-    throw error;
-  }
+
+    return res;
+  });
 };
 
 export { login, loggedIn, logout, authFetch };
