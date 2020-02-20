@@ -1,21 +1,30 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Draggable } from "react-beautiful-dnd";
 
-const Card = ({ key, index, task, props }) => {
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
+
+import { Draggable } from "react-beautiful-dnd";
+import { red } from "@material-ui/core/colors";
+
+const TaskCard = ({ key, index, task, props }) => {
   const classes = useStyles(props);
 
   return (
     <Draggable draggableId={task.id} index={index}>
       {(provided, snapshot) => (
-        <div
+        <Card
           className={snapshot.isDragging ? classes.dragged : classes.root}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}>
-          {task.content}
-        </div>
+          <CardContent>
+            <div className={classes.tag}></div>
+            <Typography>{task.content}</Typography>
+          </CardContent>
+        </Card>
       )}
     </Draggable>
   );
@@ -24,19 +33,24 @@ const Card = ({ key, index, task, props }) => {
 //Styling part
 const useStyles = makeStyles({
   root: {
-    border: "1px dashed gray",
-    padding: "0.5rem 1rem",
+    borderRadius: 5,
     marginBottom: ".5rem",
     backgroundColor: "white",
     cursor: "move"
   },
   dragged: {
-    border: "1px dashed gray",
-    padding: "0.5rem 1rem",
+    borderRadius: 5,
     marginBottom: ".5rem",
     backgroundColor: "lightgreen",
     cursor: "move"
+  },
+  tag: {
+    margin: "10px 0",
+    borderRadius: 10,
+    height: 10,
+    width: 50,
+    backgroundColor: "red"
   }
 });
 
-export default Card;
+export default TaskCard;
