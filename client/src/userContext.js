@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import { fakeData } from "../dragAndDrop/fakeData";
+import { fakeData } from "./dragAndDrop/fakeData";
 
 export const UserContext = createContext();
 

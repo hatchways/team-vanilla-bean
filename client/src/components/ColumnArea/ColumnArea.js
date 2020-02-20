@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import Column from "../Column/Column";
 import { makeStyles } from "@material-ui/core/styles";
-import { UserContext } from "../../userContext/userContext";
+import { UserContext } from "../../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 const ColumnArea = props => {
@@ -92,7 +92,7 @@ const ColumnArea = props => {
 const useStyles = makeStyles({
   root: {
     display: "flex",
-    justifyContent: "start",
+    justifyContent: "flex-start",
     alignContent: "center",
     width: "100%"
   }

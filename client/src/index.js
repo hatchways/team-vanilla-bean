@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import UserProvider from "./userContext/userContext";
+import UserProvider from "./userContext";
 
 ReactDOM.render(
   <UserProvider>
