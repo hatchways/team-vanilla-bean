@@ -9,6 +9,7 @@ import {
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
 import { login, loggedIn } from "../AuthService";
+import { handleError } from "../utils/handleError";
 
 function SignIn(props) {
   const classes = useStyles();
@@ -23,7 +24,7 @@ function SignIn(props) {
         loggedIn() && props.history.push("/");
       })
       .catch(err => {
-        //TODO: retrieve and display error message
+        handleError(err);
       });
   };
 
