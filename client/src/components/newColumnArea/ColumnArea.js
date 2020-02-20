@@ -10,7 +10,7 @@ const ColumnArea = props => {
   let [taskState, setTaskState] = value1;
 
   const onDragEnd = result => {
-    const { destination, source, draggableId } = result;
+    const { destination, source, draggableId, type } = result;
     if (!destination) {
       return;
     }
@@ -18,8 +18,15 @@ const ColumnArea = props => {
       return;
     }
 
-    const start = taskState.columns[source.droppableId];
+    if (type === "column") {
+      const newColumnOrder = Array.from(taskState.columnOrder);
+      newColumnOrder.splice(source.index, 1);
+      newColumnOrder.splice(destination.index, 0, draggableId);
+      setTaskState({ ...taskState, columnOrder: newColumnOrder });
+      return;
+    }
 
+    const start = taskState.columns[source.droppableId];
     const finish = taskState.columns[destination.droppableId];
 
     //for the case card move around in same column
@@ -65,24 +72,16 @@ const ColumnArea = props => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
-        {provided =>
-          taskState.columnOrder.map((columnId, index) => {
-            const column = taskState.columns[columnId];
-            const tasks = column.taskIds.map(taskId => taskState.tasks[taskId]);
-            return (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                <Column
-                  key={column.id}
-                  column={column}
-                  tasks={tasks}
-                  index={index}
-                  className={classes.root}
-                />
-                {provided.placeholder}
-              </div>
-            );
-          })
-        }
+        {provided => (
+          <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
+            {taskState.columnOrder.map((columnId, index) => {
+              const column = taskState.columns[columnId];
+              const tasks = column.taskIds.map(taskId => taskState.tasks[taskId]);
+              return <Column key={column.id} column={column} tasks={tasks} index={index} />;
+            })}
+            {provided.placeholder}
+          </div>
+        )}
       </Droppable>
     </DragDropContext>
   );
@@ -90,7 +89,6 @@ const ColumnArea = props => {
 const useStyles = makeStyles({
   root: {
     display: "flex",
-    flexDirection: "row",
     justifyContent: "start",
     alignContent: "center",
     width: "100%"
