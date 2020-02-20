@@ -34,23 +34,23 @@ const Column = props => {
     return (
       <Draggable draggableId={column.id} index={index}>
         {provided => (
-          <div {...provided.draggableProps} ref={provided.innerRef} className={classes.root}>
-            <Typography {...provided.dragHandleProps} variant='h3'>
+          <div {...provided.draggableProps} ref={provided.innerRef}>
+            <Typography {...provided.dragHandleProps} variant='h5' className={classes.title}>
               {column.title}
             </Typography>
             <Droppable droppableId={column.id} type='card'>
               {(provided, snapshot) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
+                <div {...provided.droppableProps} className={classes.root} ref={provided.innerRef}>
                   {tasks.map((task, index) => (
                     <Card key={task.id} task={task} index={index} />
                   ))}
                   {provided.placeholder}
+                  <Button className={classes.btn} variant='contained' color='secondary'>
+                    Add a Card
+                  </Button>
                 </div>
               )}
             </Droppable>
-            <Button className={classes.btn} variant='contained' color='secondary'>
-              Add a Card
-            </Button>
           </div>
         )}
       </Draggable>
@@ -62,21 +62,23 @@ const Column = props => {
 const useStyles = makeStyles({
   root: {
     backgroundColor: "#F4F6FF",
-    minHeight: 300,
-    height: "100%",
+    minHeight: 50,
     width: "12rem",
     margin: "0 2rem",
     color: "black",
-    padding: "1rem",
+    padding: 10,
     textAlign: "left",
     lineHeight: "normal",
     display: "flex",
     flexDirection: "column",
     flexGrow: 1
   },
+  title: {
+    textAlign: "center"
+  },
   btn: {
-    position: "relative",
-    top: 10
+    marginTop: 20,
+    marginBottom: 10
   }
 });
 
