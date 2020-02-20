@@ -24,7 +24,7 @@ function SignUp(props) {
         loggedIn() && props.history.push("/");
       })
       .catch(err => {
-        handleError(errs);
+        handleError(err);
       });
   };
 
