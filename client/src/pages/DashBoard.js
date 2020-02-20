@@ -1,6 +1,6 @@
 import React from "react";
 import { withTheme } from "@material-ui/core/styles";
-import NewColumnArea from "../components/newColumnArea/ColumnArea";
+import NewColumnArea from "../components/ColumnArea/ColumnArea";
 
 const DashBoard = props => {
   return <NewColumnArea />;

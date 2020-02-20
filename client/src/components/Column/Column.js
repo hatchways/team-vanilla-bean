@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Card from "../newCard/Card";
+import Card from "../Card/Card";
 //check how to use Cards in column data
 
 //materialUi
@@ -61,19 +61,22 @@ const Column = props => {
 //Styling part
 const useStyles = makeStyles({
   root: {
-    // display: "flex",
-    // flexDirection: "column",
     backgroundColor: "#F4F6FF",
     minHeight: 300,
+    height: "100%",
     width: "12rem",
     margin: "0 2rem",
     color: "black",
     padding: "1rem",
     textAlign: "left",
-    lineHeight: "normal"
-  },
-  cardList: {
+    lineHeight: "normal",
+    display: "flex",
+    flexDirection: "column",
     flexGrow: 1
+  },
+  btn: {
+    position: "relative",
+    top: 10
   }
 });
 

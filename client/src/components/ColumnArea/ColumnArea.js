@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import Column from "../newColumn/Column";
+import Column from "../Column/Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../../userContext/userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
