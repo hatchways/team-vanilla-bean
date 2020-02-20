@@ -1,14 +1,22 @@
+const headers = {
+  Accept: "application/json",
+  "Content-Type": "application/json"
+};
+
 const login = (route, email, password) => {
-  return requestAPI(`/user/${route}`, {
+  return fetch(`/user/${route}`, {
     method: "POST",
+    headers,
     body: JSON.stringify({
       email,
       password
     })
-  }).then(res => {
-    setStorage(res.token, email);
-    return Promise.resolve(res);
-  });
+  })
+    .then(_checkStatus)
+    .then(res => {
+      setStorage(res.token, email);
+      return Promise.resolve(res);
+    });
 };
 
 const loggedIn = () => {
@@ -25,36 +33,32 @@ const getToken = () => {
 };
 
 const logout = () => {
-  localStorage.removeItem("token");
+  localStorage.clear();
+  window.location.href = "/signin";
 };
 
-const requestAPI = (url, options) => {
-  const headers = {
-    Accept: "application/json",
-    "Content-Type": "application/json"
-  };
-
-  // Setting Authorization header
-  if (loggedIn()) {
-    headers["Authorization"] = "Bearer " + getToken();
-  }
+const authFetch = (url, options) => {
+  headers["Authorization"] = "Bearer " + getToken();
 
   return fetch(url, {
     headers,
     ...options
-  })
-    .then(_checkStatus)
-    .then(response => response.json());
+  }).then(_checkStatus);
 };
 
 const _checkStatus = response => {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  } else {
-    var error = new Error(response.statusText);
+  try {
+    if (response.status >= 200 && response.status < 300) {
+      return response.json();
+    } else if (response.status === 403) {
+      //invalid token
+      logout();
+    }
+  } catch {
+    let error = new Error(response.statusText);
     error.response = response;
     throw error;
   }
 };
 
-export { login, loggedIn, logout };
+export { login, loggedIn, logout, authFetch };

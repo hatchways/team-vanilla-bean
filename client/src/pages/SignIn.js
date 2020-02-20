@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Button,
@@ -14,13 +14,19 @@ function SignIn(props) {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const redirect = () => {
+    loggedIn() && props.history.push("/dashboard");
+  };
+
+  useEffect(() => {
+    redirect();
+  });
 
   const handleSignIn = e => {
     e.preventDefault();
     login("signin", email, password)
       .then(() => {
-        //redirect to home
-        loggedIn() && props.history.push("/dashboard");
+        redirect();
       })
       .catch(err => {
         //TODO: retrieve and display error message
