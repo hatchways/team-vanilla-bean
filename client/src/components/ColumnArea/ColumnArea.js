@@ -14,10 +14,12 @@ const ColumnArea = props => {
     if (!destination) {
       return;
     }
+    //Check if it is dropped to same column and same index
     if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return;
     }
 
+    //For moving column
     if (type === "column") {
       const newColumnOrder = Array.from(taskState.columnOrder);
       newColumnOrder.splice(source.index, 1);
@@ -80,6 +82,7 @@ const ColumnArea = props => {
               return <Column key={column.id} column={column} tasks={tasks} index={index} />;
             })}
             {provided.placeholder}
+            <Column createNew />
           </div>
         )}
       </Droppable>
