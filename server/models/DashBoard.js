@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const DashBoardSchema = new mongoose.Schema({
+// const TasksSchema = new Schema({
+
+// })
+
+const DashBoardSchema = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"

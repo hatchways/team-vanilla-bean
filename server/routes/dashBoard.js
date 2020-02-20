@@ -5,32 +5,32 @@ const router = express.Router();
 const DashBoard = require("../models/DashBoard");
 
 //Download dashBoard
-router.get("/download", async (req, res) => {
+router.post("/download", async (req, res) => {
   res.send("hello from dash boad download");
 });
 
-//Post Card
-router.post("/card", async (req, res) => {
+//add Card
+router.post("/addCard", async (req, res) => {
   res.send("hello from dash boad download");
 });
 
 //Post column
-router.post("/card", async (req, res) => {
+router.post("/addColumn", async (req, res) => {
   res.send("hello from dash boad download");
 });
 
 //delete card
-router.delete("/card", async (req, res) => {
+router.delete("/deleteCard", async (req, res) => {
   res.send("hello from dash boad download");
 });
 
 //delete column
-router.delete("/card", async (req, res) => {
+router.delete("/deleteColumn", async (req, res) => {
   res.send("hello from dash boad download");
 });
 
 //delete dashboard
-router.delete("/card", async (req, res) => {
+router.delete("/deleteDashBoard", async (req, res) => {
   res.send("hello from dash boad download");
 });
 
