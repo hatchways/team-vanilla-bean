@@ -9,7 +9,7 @@ import {
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
 import { login, loggedIn } from "../AuthService";
-import { handleError } from "../utils/handleError";
+import { handleError } from "../utils/handleAlerts";
 
 function SignIn(props) {
   const classes = useStyles();
