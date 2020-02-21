@@ -23,7 +23,7 @@ app.use(express.static(join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/ping", pingRouter);
 app.use("/user", userRouter);
-app.use("/dashbord", dashBoardRouter);
+app.use("/dashboard", dashBoardRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

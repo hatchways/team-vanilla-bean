@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const TaskSchema = new Schema(
   {
     Task_id: {
-      id: { type: String },
+      id: { type: mongoose.Schema.Types.ObjectId },
       content: { type: String }
     }
   },
@@ -13,8 +13,8 @@ const TaskSchema = new Schema(
 
 const ColumnSchema = new Schema(
   {
-    Columun_id: {
-      id: { type: String },
+    Column_id: {
+      id: { type: mongoose.Schema.Types.ObjectId },
       title: { type: String },
       taskIds: { type: Array }
     }
@@ -32,11 +32,7 @@ const DashBoardSchema = new Schema(
       TaskSchema
     },
     columns: {
-      Columun_id: {
-        id: { type: String },
-        title: { type: String },
-        taskIds: { type: Array }
-      }
+      ColumnSchema
     },
     columnOrder: {
       type: Array
@@ -46,5 +42,3 @@ const DashBoardSchema = new Schema(
 );
 
 module.exports = mongoose.model("DashBoard", DashBoardSchema);
-module.exports = mongoose.model("Task", TaskSchema);
-// module.exports = mongoose.model("Column", ColumnSchema);

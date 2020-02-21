@@ -3,6 +3,8 @@ const router = express.Router();
 
 //Models
 const DashBoard = require("../models/DashBoard");
+const Task = require("../models/DashBoard");
+const Column = require("../models/DashBoard");
 
 //Download dashBoard
 router.get("/download", async (req, res) => {
@@ -16,15 +18,12 @@ router.get("/download", async (req, res) => {
 //add Card
 router.post("/addColumn", async (req, res) => {
   const testPost = new DashBoard({
-    tasks: {},
-    columns: {
-      "column-1": {
-        id: "column-1",
-        title: "To do",
-        taskIds: []
-      }
+    tasks: {
+      "task-1": {}
     },
-    columnOrder: ["column-1"]
+    columns: {
+      "column-1": {}
+    }
   });
 
   testPost.save((err, data) => {
