@@ -6,38 +6,25 @@ const DashBoard = require("../models/DashBoard");
 
 //Download dashBoard
 router.get("/download", async (req, res) => {
-  DashBoard.find({}, function(err, data) {
+  const id = req.body;
+  DashBoard.findOne({ _id: "5e4ec3d5769a0009ce7357e4" }, function(err, data) {
     console.log(">>>> " + data);
+    res.send(data);
   });
 });
 
 //add Card
-router.post("/addCard", async (req, res) => {
+router.post("/addColumn", async (req, res) => {
   const testPost = new DashBoard({
-    tasks: {
-      "task-1": { id: "task-1", content: "take out the garbage" },
-      "task-2": { id: "task-2", content: "Watch movie" },
-      "task-3": { id: "task-3", content: "Catch my phone" },
-      "task-4": { id: "task-4", content: "cookDinner" }
-    },
+    tasks: {},
     columns: {
       "column-1": {
         id: "column-1",
         title: "To do",
-        taskIds: ["task-1", "task-2", "task-3", "task-4"]
-      },
-      "column-2": {
-        id: "column-2",
-        title: "In progress",
-        taskIds: []
-      },
-      "column-3": {
-        id: "column-3",
-        title: "Done",
         taskIds: []
       }
     },
-    columnOrder: ["column-1", "column-2", "column-3"]
+    columnOrder: ["column-1"]
   });
 
   testPost.save((err, data) => {
@@ -47,7 +34,7 @@ router.post("/addCard", async (req, res) => {
 });
 
 //Post column
-router.post("/addColumn", async (req, res) => {
+router.post("/addCard", async (req, res) => {
   res.send("hello from dash boad download");
 });
 
@@ -63,7 +50,14 @@ router.delete("/deleteColumn", async (req, res) => {
 
 //delete dashboard
 router.delete("/deleteDashBoard", async (req, res) => {
-  res.send("hello from dash boad download");
+  let dashBoardId = req.body.dashBoardId;
+  DashBoard.remove({ _id: `${dashBoardId}` }, function(err) {
+    if (!err) {
+      res.send("deleted");
+    } else {
+      res.send(err);
+    }
+  });
 });
 
 module.exports = router;
