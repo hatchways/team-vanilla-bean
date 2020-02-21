@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Button,
@@ -9,21 +9,28 @@ import {
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
 import { login, loggedIn } from "../AuthService";
+import { handleError } from "../utils/handleAlerts";
 
 function SignUp(props) {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const redirect = () => {
+    loggedIn() && props.history.push("/dashboard");
+  };
+
+  useEffect(() => {
+    redirect();
+  });
 
   const handleSignUp = e => {
     e.preventDefault();
     login("signup", email, password)
       .then(() => {
-        //redirect to home
-        loggedIn() && props.history.push("/");
+        redirect();
       })
       .catch(err => {
-        //TODO: retrieve and display error message
+        handleError(err);
       });
   };
 
@@ -112,7 +119,7 @@ function SignUp(props) {
           </Typography>
 
           <Typography variant="h2">
-            <Link to="/user/signin">Login</Link>
+            <Link to="/signin">Login</Link>
           </Typography>
         </Container>
       </Grid>
