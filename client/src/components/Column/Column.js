@@ -23,7 +23,7 @@ const Column = props => {
       <Card className={classes.addColumn}>
         <CardContent>
           <TextField>Enter column Name</TextField>
-          <Button className={classes.btn} variant='contained' color='secondary'>
+          <Button className={classes.btn} variant="contained" color="primary">
             Add a Card
           </Button>
         </CardContent>
@@ -34,19 +34,31 @@ const Column = props => {
       <div>
         <Draggable draggableId={column.id} index={index}>
           {provided => (
-            <Card {...provided.draggableProps} ref={provided.innerRef} className={classes.root}>
+            <Card
+              {...provided.draggableProps}
+              ref={provided.innerRef}
+              className={classes.root}
+            >
               <CardContent>
-                <Typography {...provided.dragHandleProps} variant='h5' className={classes.title}>
+                <Typography
+                  {...provided.dragHandleProps}
+                  variant="h5"
+                  className={classes.title}
+                >
                   {column.title}
                 </Typography>
-                <Droppable droppableId={column.id} type='card'>
+                <Droppable droppableId={column.id} type="card">
                   {(provided, snapshot) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       {tasks.map((task, index) => (
                         <TaskCard key={task.id} task={task} index={index} />
                       ))}
                       {provided.placeholder}
-                      <Button className={classes.btn} variant='contained' color='secondary'>
+                      <Button
+                        className={classes.btn}
+                        variant="contained"
+                        color="primary"
+                      >
                         Add a Card
                       </Button>
                     </div>
