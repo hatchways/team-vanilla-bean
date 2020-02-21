@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { login, loggedIn } from "../AuthService";
 import { handleError } from "../utils/handleAlerts";
 
-function SignIn(props) {
+const SignIn = props => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -124,6 +124,6 @@ function SignIn(props) {
       </Grid>
     </Grid>
   );
-}
+};
 
 export default SignIn;
