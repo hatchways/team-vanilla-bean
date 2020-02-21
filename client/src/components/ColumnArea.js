@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import Column from "../Column/Column";
+import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
-import { UserContext } from "../../userContext";
+import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 const ColumnArea = props => {
@@ -15,7 +15,10 @@ const ColumnArea = props => {
       return;
     }
     //Check if it is dropped to same column and same index
-    if (destination.droppableId === source.droppableId && destination.index === source.index) {
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
       return;
     }
 
@@ -67,19 +70,40 @@ const ColumnArea = props => {
 
     setTaskState({
       ...taskState,
-      columns: { ...taskState.columns, [newStart.id]: newStart, [newFinish.id]: newFinish }
+      columns: {
+        ...taskState.columns,
+        [newStart.id]: newStart,
+        [newFinish.id]: newFinish
+      }
     });
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
+      <Droppable
+        droppableId="all-columns"
+        direction='"horizontal'
+        type="column"
+      >
         {provided => (
-          <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
+          <div
+            className={classes.root}
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+          >
             {taskState.columnOrder.map((columnId, index) => {
               const column = taskState.columns[columnId];
-              const tasks = column.taskIds.map(taskId => taskState.tasks[taskId]);
-              return <Column key={column.id} column={column} tasks={tasks} index={index} />;
+              const tasks = column.taskIds.map(
+                taskId => taskState.tasks[taskId]
+              );
+              return (
+                <Column
+                  key={column.id}
+                  column={column}
+                  tasks={tasks}
+                  index={index}
+                />
+              );
             })}
             {provided.placeholder}
             <Column createNew />

@@ -6,20 +6,20 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 
 import { Draggable } from "react-beautiful-dnd";
-import { red } from "@material-ui/core/colors";
 
-const TaskCard = ({ key, index, task, props }) => {
+const TaskCard = ({ index, task, props }) => {
   const classes = useStyles(props);
 
   return (
     <Draggable draggableId={task.id} index={index}>
       {(provided, snapshot) => (
         <Card
-          className={snapshot.isDragging ? classes.dragged : classes.root}
+          className={snapshot.isdragging ? classes.dragged : classes.root}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          isDragging={snapshot.isDragging}>
+          isdragging={snapshot.isdragging}
+        >
           <CardContent>
             <div className={classes.tag}></div>
             <Typography>{task.content}</Typography>
@@ -41,7 +41,6 @@ const useStyles = makeStyles({
   dragged: {
     borderRadius: 5,
     marginBottom: ".5rem",
-    backgroundColor: "lightgreen",
     cursor: "move"
   },
   tag: {

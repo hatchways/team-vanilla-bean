@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-import TaskCard from "../TaskCard/TaskCard";
+import TaskCard from "./TaskCard";
 //check how to use Cards in column data
 
 //materialUi
