@@ -1,11 +1,9 @@
 import React from "react";
+import { withTheme } from "@material-ui/core/styles";
+import NewColumnArea from "../components/ColumnArea/ColumnArea";
 
-function Dashboard() {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-  );
-}
+const DashBoard = props => {
+  return <NewColumnArea />;
+};
 
-export default Dashboard;
+export default withTheme(DashBoard);
