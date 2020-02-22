@@ -65,7 +65,7 @@ export default function FormDialog() {
           >
             <CloseIcon />
           </IconButton>
-          <Typography variant="h1">Create new board</Typography>
+          <Typography variant="h1">Create Column</Typography>
         </DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit}>
