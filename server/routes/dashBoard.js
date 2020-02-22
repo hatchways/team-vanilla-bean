@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const checkToken = require("../auth/validateToken");
 
 // Models;
 const { Task, Column, DashBoard } = require("../models/DashBoard");
 
-router.post("/getDashBoard", async (req, res) => {
+router.post("/getDashBoard", checkToken, async (req, res) => {
   const { dashBoardId } = req.body;
   console.log("dashBoardId", dashBoardId);
   try {
@@ -20,9 +21,15 @@ router.post("/getDashBoard", async (req, res) => {
 
 //Add DashBoard @in progress need to update UserId
 router.post("/addDashBoard", async (req, res) => {
-  const { dashBoardTitle, id } = req.body;
+  // const token =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWU0MGE3YTFjOGM1OGQwM2Q3YmRiZWNkIn0sImlhdCI6MTU4MTI5NTUyMSwiZXhwIjoxNTgxNjU1NTIxfQ.XClpjFBKjD2tY2BYirTunhdE4bFsnKQa6FXawkyU4QM";
+  const { dashBoardTitle, id, token } = req.body;
+  // const { decoded } = req.decoded;
+  console.log(req.body);
+
   try {
-    //Initial data
+    let userId = "";
+
     const task1 = new Task({
       content: "This is Your Task!",
       description: "",
