@@ -1,44 +1,32 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const TaskSchema = new Schema(
-  {
-    Task_id: {
-      id: { type: mongoose.Schema.Types.ObjectId },
-      content: { type: String }
-    }
-  },
-  { strict: false }
-);
+const User = require("../models/User");
 
-const ColumnSchema = new Schema(
-  {
-    Column_id: {
-      id: { type: mongoose.Schema.Types.ObjectId },
-      title: { type: String },
-      taskIds: { type: Array }
-    }
-  },
-  { strict: false }
-);
+const TaskSchema = new Schema({
+  content: { type: String },
+  description: { type: String },
+  deadline: { type: String },
+  comments: [{ type: String }],
+  tag: { tag: { type: String }, color: { type: Number } },
+  action: { tag: { type: String }, color: { type: Number } }
+});
 
-const DashBoardSchema = new Schema(
-  {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    },
-    tasks: {
-      TaskSchema
-    },
-    columns: {
-      ColumnSchema
-    },
-    columnOrder: {
-      type: Array
-    }
-  },
-  { strict: false }
-);
+const ColumnSchema = new Schema({
+  taskOrder: [{ type: mongoose.Schema.Types.ObjectId, ref: TaskSchema }], //don't populate this, it's for ordering
+  title: { type: String },
+  tasks: { type: Map, of: TaskSchema }
+});
 
-module.exports = mongoose.model("DashBoard", DashBoardSchema);
+const DashBoardSchema = new Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: User },
+  dashBoardTitle: String,
+  columns: { type: Map, of: ColumnSchema },
+  columnOrder: [{ type: mongoose.Schema.Types.ObjectId, ref: ColumnSchema }]
+});
+
+module.exports = {
+  DashBoard: mongoose.model("DashBoard", DashBoardSchema),
+  Column: mongoose.model("Column", ColumnSchema),
+  Task: mongoose.model("Task", TaskSchema)
+};
