@@ -4,6 +4,20 @@ const router = express.Router();
 // Models;
 const { Task, Column, DashBoard } = require("../models/DashBoard");
 
+router.post("/getDashBoard", async (req, res) => {
+  const { dashBoardId } = req.body;
+  console.log("dashBoardId", dashBoardId);
+  try {
+    let dashBoard = DashBoard.find({ _id: dashBoardId });
+    res.send(dashBoard);
+  } catch (err) {
+    res.send(err);
+  }
+
+  // let data = await Column.find();
+  // console.log(data);
+});
+
 //Add DashBoard
 router.post("/addDashBoard", async (req, res) => {
   const { dashBoardTitle, id } = req.body;
@@ -52,12 +66,25 @@ router.post("/addColumn", async (req, res) => {
       taskOrder: []
     });
     const newId = newColumn._id;
-    console.log(newColumn);
+    let newColumns = {};
 
+    let Board = await DashBoard.findOne({ _id: dashBoardId });
+
+    for (const key of Board.columns.keys()) {
+      // Prints "github", "twitter", "instagram"
+      let item = Board.columns.get(key);
+      newColumns[item.id] = item;
+    }
+
+    console.log("old", newColumns);
+    newColumns = {
+      ...newColumns,
+      [newId]: newColumn
+    };
     const dashBoard = DashBoard.findOneAndUpdate(
       { _id: dashBoardId },
-      { $push: { columns: { [newId]: newColumn } } },
-      { safe: true, upsert: true },
+      { $set: { columns: newColumns } },
+      { new: true },
       (err, data) => {
         if (err) console.log(err);
         res.send(data);
@@ -99,41 +126,6 @@ router.post("/addTask", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
-});
-
-router.get("/testPopulate", async (req, res) => {
-  Column.find({ title: "Im title" }, (err, res) => {
-    if (err) console.log("err", err);
-    console.log(res);
-  });
-  // let data = await Column.find();
-  // console.log(data);
-});
-
-//Download dashBoard
-// router.get("/download", async (req, res) => {
-//   const id = req.body;
-//   DashBoard.findOne({ _id: "5e4ec3d5769a0009ce7357e4" }, function(err, data) {
-//     console.log(">>>> " + data);
-//     res.send(data);
-//   });
-// });
-
-//add Card
-router.post("/addColumn", async (req, res) => {
-  const testPost = new DashBoard({
-    tasks: {
-      "task-1": {}
-    },
-    columns: {
-      "column-1": {}
-    }
-  });
-
-  testPost.save((err, data) => {
-    if (err) console.log(err);
-    res.send(data);
-  });
 });
 
 //Post column
