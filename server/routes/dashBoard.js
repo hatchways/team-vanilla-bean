@@ -8,7 +8,7 @@ router.post("/getDashBoard", async (req, res) => {
   const { dashBoardId } = req.body;
   console.log("dashBoardId", dashBoardId);
   try {
-    let dashBoard = DashBoard.find({ _id: dashBoardId });
+    let dashBoard = await DashBoard.find({ _id: dashBoardId });
     res.send(dashBoard);
   } catch (err) {
     res.send(err);
@@ -18,7 +18,7 @@ router.post("/getDashBoard", async (req, res) => {
   // console.log(data);
 });
 
-//Add DashBoard
+//Add DashBoard @in progress need to update UserId
 router.post("/addDashBoard", async (req, res) => {
   const { dashBoardTitle, id } = req.body;
   try {
@@ -56,7 +56,7 @@ router.post("/addDashBoard", async (req, res) => {
   }
 });
 
-// Add a column
+// Add a column @Done
 router.post("/addColumn", async (req, res) => {
   const { dashBoardId, title } = req.body;
   try {
@@ -75,15 +75,14 @@ router.post("/addColumn", async (req, res) => {
       let item = Board.columns.get(key);
       newColumns[item.id] = item;
     }
-
-    console.log("old", newColumns);
     newColumns = {
       ...newColumns,
       [newId]: newColumn
     };
+
     const dashBoard = DashBoard.findOneAndUpdate(
       { _id: dashBoardId },
-      { $set: { columns: newColumns } },
+      { $set: { columns: newColumns }, $push: { columnOrder: newId } },
       { new: true },
       (err, data) => {
         if (err) console.log(err);
@@ -95,9 +94,9 @@ router.post("/addColumn", async (req, res) => {
   }
 });
 
-// Add a Card
+// Add a Card @in progress
 router.post("/addTask", async (req, res) => {
-  const { dashboardId, columnId, content, description, tag, action } = req.body;
+  const { dashBoardId, columnId, content, description, tag, action } = req.body;
   try {
     const newTask = new Task({
       content,
@@ -106,30 +105,46 @@ router.post("/addTask", async (req, res) => {
       action
     });
 
-    const test = [{ 2: "1" }, { 2: "1" }, { 2: "1" }, { 2: "1" }];
+    let newTasks = {};
+    let Board = await DashBoard.findOne({ _id: dashBoardId });
+    let Column = await Board.columns.get(columnId);
 
-    Column.findOne({ _id: columnId }, (err, data) => {
-      if (err) console.log(err);
-      console.log(data);
-      res.send(data);
-    });
+    for (const key of Column.tasks.keys()) {
+      let item = Column.tasks.get(key);
+      newTasks[item.id] = item;
+    }
 
-    // const dashBoard = Column.findOneAndUpdate(
-    //   { _id: 5e50bcf0a5b57d4d3d28b660 },
-    //   { $push: { columns: { [newId]: newColumn } } },
-    //   { safe: true, upsert: true },
-    //   (err, data) => {
-    //     if (err) console.log(err);
-    //     res.send(data);
-    //   }
-    // );
+    newTasks = {
+      ...newTasks,
+      [newTask._id]: newTask
+    };
+
+    const danshBoard = DashBoard.findOneAndUpdate(
+      { _id: dashBoardId, columns: columnId },
+      { $set: { tasks: newTasks }, $push: { taskOrder: newTask._id } },
+      { new: true },
+      (err, data) => {
+        if (err) console.log(err);
+        res.send(data);
+      }
+    );
   } catch (err) {
     console.log(err);
   }
 });
 
-//Post column
-router.post("/addCard", async (req, res) => {
+//Update task index within same column
+router.put("/updateTaskIndex", async (req, res) => {
+  res.send("hello from dash boad download");
+});
+
+//Update column index
+router.put("/updateColumnIndex", async (req, res) => {
+  res.send("hello from dash boad download");
+});
+
+//Update task index between Column
+router.put("/updateTaskAndColumn", async (req, res) => {
   res.send("hello from dash boad download");
 });
 
