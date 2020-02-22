@@ -12,8 +12,9 @@ const BlueButton = props => {
       variant="contained"
       color="primary"
       size="large"
+      onClick={props.onClick}
     >
-      {props.text}
+      {props.children}
     </Button>
   );
 };

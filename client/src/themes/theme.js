@@ -16,5 +16,29 @@ export const theme = createMuiTheme({
   },
   palette: {
     primary: { main: "#759CFC" }
+  },
+  overrides: {
+    MuiInputLabel: {
+      outlined: {
+        color: "black",
+        textAlign: "center",
+        "&$shrink": {
+          width: "auto",
+          color: "#759CFC"
+        },
+        width: "90%"
+      }
+    },
+    MuiOutlinedInput: {
+      notchedOutline: {
+        borderColor: "rgba(117,156,252,0.3)"
+      },
+      root: {
+        fontWeight: 500,
+        "&:hover $notchedOutline": {
+          borderColor: "#759CFC"
+        }
+      }
+    }
   }
 });

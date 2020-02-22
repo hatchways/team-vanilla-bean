@@ -20,25 +20,8 @@ const useStyles = makeStyles(theme => ({
   title: {
     marginBottom: theme.spacing(4)
   },
-  button: {
-    marginTop: theme.spacing(4),
-    color: "white",
-    fontWeight: 600,
-    textTransform: "none",
-    width: "45%",
-    height: theme.spacing(6)
-  },
-  inputLabel: {
-    color: "black",
-    width: "90%"
-  },
   input: {
-    height: "3.9em",
-    fontWeight: 500
-  },
-  shrink: {
-    width: "auto",
-    color: "#759CFC"
+    height: "3.9em"
   },
   password: {
     fontSize: 18

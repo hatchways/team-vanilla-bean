@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Button,
-  TextField,
-  Grid,
-  Typography
-} from "@material-ui/core";
+import { Container, TextField, Grid, Typography } from "@material-ui/core";
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
 import { login, loggedIn } from "../AuthService";
 import { handleError } from "../utils/handleAlerts";
+import Button from "../components/BlueButton";
 
 const SignUp = props => {
   const classes = useStyles();
@@ -54,12 +49,6 @@ const SignUp = props => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                InputLabelProps={{
-                  classes: {
-                    root: classes.inputLabel,
-                    shrink: classes.shrink
-                  }
-                }}
                 InputProps={{
                   classes: {
                     root: classes.input,
@@ -80,12 +69,6 @@ const SignUp = props => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                InputLabelProps={{
-                  classes: {
-                    root: classes.inputLabel,
-                    shrink: classes.shrink
-                  }
-                }}
                 InputProps={{
                   classes: {
                     root: classes.input,
@@ -100,15 +83,7 @@ const SignUp = props => {
                 }}
               />
 
-              <Button
-                className={classes.button}
-                type="submit"
-                variant="contained"
-                color="primary"
-                size="large"
-              >
-                Sign up
-              </Button>
+              <Button>Sign up</Button>
             </form>
           </div>
         </Container>
