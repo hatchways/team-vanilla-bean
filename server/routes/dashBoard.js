@@ -5,7 +5,8 @@ const checkToken = require("../auth/validateToken");
 // Models;
 const { Task, Column, DashBoard } = require("../models/DashBoard");
 
-router.post("/getDashBoard", checkToken, async (req, res) => {
+//@CreateBoard, how to decode Token?
+router.post("/getDashBoard", async (req, res) => {
   const { dashBoardId } = req.body;
   console.log("dashBoardId", dashBoardId);
   try {
@@ -101,7 +102,7 @@ router.post("/addColumn", async (req, res) => {
   }
 });
 
-// Add a Card @in progress
+// Add a Card
 router.post("/addTask", async (req, res) => {
   const { dashBoardId, columnId, content, description, tag, action } = req.body;
   try {
@@ -126,9 +127,15 @@ router.post("/addTask", async (req, res) => {
       [newTask._id]: newTask
     };
 
+    let updateCond = {};
+    updateCond["$set"] = {};
+    updateCond["$set"]["columns." + columnId + ".tasks"] = newTasks;
+    updateCond["$push"] = {};
+    updateCond["$push"]["columns." + columnId + ".taskOrder"] = newTask._id;
+
     const danshBoard = DashBoard.findOneAndUpdate(
-      { _id: dashBoardId, columns: columnId },
-      { $set: { tasks: newTasks }, $push: { taskOrder: newTask._id } },
+      { _id: dashBoardId },
+      updateCond,
       { new: true },
       (err, data) => {
         if (err) console.log(err);
