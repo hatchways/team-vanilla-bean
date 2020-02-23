@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const checkToken = require("../auth/validateToken");
 const updateData = require("../util/util");
 
 // Models;
@@ -151,18 +150,16 @@ router.put("/updateTaskIndex", async (req, res) => {
 
 //Update column index @Done
 router.put("/updateColumnIndex", async (req, res) => {
-  const { dashBoardId, newOrder } = req.body;
+  const { dashBoardId, columnOrder } = req.body;
   try {
-    DashBoard.findOneAndUpdate(
-      { _id: dashBoardId },
-      { $set: { columnOrder: newOrder } },
-      { new: true },
-      (err, data) => {
-        if (err) console.log(err);
-        res.send(data);
-      }
-    );
-  } catch (error) {
+    //data manipulation
+    let updateCond = {};
+    updateCond["$set"] = {};
+    updateCond["$set"]["columnOrder"] = columnOrder;
+
+    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    res.send(result);
+  } catch (err) {
     res.send(err);
   }
 });
@@ -180,20 +177,15 @@ router.put("/moveTasksToOther", async (req, res) => {
   } = req.body;
 
   try {
-    console.log(dashBoardId);
-
     let updateCond = {};
     updateCond["$set"] = {};
     updateCond["$set"]["columns." + columnSourceId + ".tasks"] = columnSourceTasks;
     updateCond["$set"]["columns." + columnSourceId + ".taskOrder"] = columnSourceTaskOrder;
     updateCond["$set"]["columns." + columnToSourceId + ".tasks"] = columnToTasks;
     updateCond["$set"]["columns." + columnToSourceId + ".taskOrder"] = columnToTaskOrder;
-    console.log("after", updateCond);
 
-    DashBoard.findOneAndUpdate({ _id: dashBoardId }, updateCond, { new: true }, (err, data) => {
-      if (err) console.log(err);
-      res.send(data);
-    });
+    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    res.send(result);
   } catch (err) {
     console.log(err);
   }
@@ -203,16 +195,15 @@ router.put("/moveTasksToOther", async (req, res) => {
 router.put("/deleteTask", async (req, res) => {
   const { dashBoardId, columnId, taskId } = req.body;
   try {
+    //data manipulation
     let updateCond = {};
     updateCond["$unset"] = {};
     updateCond["$unset"]["columns." + columnId + ".tasks." + taskId] = "";
     updateCond["$pull"] = {};
     updateCond["$pull"]["columns." + columnId + ".taskOrder"] = taskId;
 
-    DashBoard.findOneAndUpdate({ _id: dashBoardId }, updateCond, { new: true }, (err, data) => {
-      if (err) console.log(err);
-      res.send(data);
-    });
+    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    res.send(result);
   } catch (err) {
     res.send(err);
   }
@@ -222,16 +213,15 @@ router.put("/deleteTask", async (req, res) => {
 router.put("/deleteColumn", async (req, res) => {
   const { dashBoardId, columnId } = req.body;
   try {
+    //data manipulation
     let updateCond = {};
     updateCond["$unset"] = {};
     updateCond["$unset"]["columns." + columnId] = "";
     updateCond["$pull"] = {};
     updateCond["$pull"]["columnOrder"] = columnId;
 
-    DashBoard.findOneAndUpdate({ _id: dashBoardId }, updateCond, { new: true }, (err, data) => {
-      if (err) console.log(err);
-      res.send(data);
-    });
+    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    res.send(result);
   } catch (err) {
     res.send(err);
   }
@@ -242,7 +232,7 @@ router.delete("/deleteDashBoard", async (req, res) => {
   const { dashBoardId } = req.body;
   DashBoard.remove({ _id: dashBoardId }, function(err) {
     if (!err) {
-      res.send("deleted");
+      res.send("Dashboard deleted");
     } else {
       res.send(err);
     }
