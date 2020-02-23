@@ -221,16 +221,23 @@ router.put("/moveTasksToOther", async (req, res) => {
   }
 });
 
-//delete card
-router.delete("/deleteTask", async (req, res) => {
-  const { dashBoardId, columnOrder, taskId } = req.body;
-  DashBoard.remove({ _id: dashBoardId }, function(err) {
-    if (!err) {
-      res.send("deleted");
-    } else {
-      res.send(err);
-    }
-  });
+//delete card @done
+router.put("/deleteTask", async (req, res) => {
+  const { dashBoardId, columnId, taskId } = req.body;
+  try {
+    let updateCond = {};
+    updateCond["$unset"] = {};
+    updateCond["$unset"]["columns." + columnId + ".tasks." + taskId] = "";
+    updateCond["$pull"] = {};
+    updateCond["$pull"]["columns." + columnId + ".taskOrder"] = taskId;
+
+    DashBoard.findOneAndUpdate({ _id: dashBoardId }, updateCond, { new: true }, (err, data) => {
+      if (err) console.log(err);
+      res.send(data);
+    });
+  } catch (err) {
+    res.send(err);
+  }
 });
 
 //delete column @done
@@ -252,7 +259,7 @@ router.put("/deleteColumn", async (req, res) => {
   }
 });
 
-//delete dashboard
+//delete dashboard @done
 router.delete("/deleteDashBoard", async (req, res) => {
   const { dashBoardId } = req.body;
   DashBoard.remove({ _id: dashBoardId }, function(err) {
