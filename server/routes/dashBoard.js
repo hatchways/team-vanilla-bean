@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const updateData = require("../util/util");
+const jwt = require("jsonwebtoken");
 
 // Models;
 const { Task, Column, DashBoard } = require("../models/DashBoard");
@@ -18,9 +19,12 @@ router.post("/getDashBoard", async (req, res) => {
 
 //Add DashBoard @in progress need to update UserId
 router.post("/addDashBoard", async (req, res) => {
-  const { dashBoardTitle, id, token } = req.body;
+  const { dashBoardTitle, token } = req.body;
+  let userId = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+  console.log(userId);
 
   try {
+    // Initial states
     const task1 = new Task({
       content: "This is Your Task!",
       description: "",
@@ -41,7 +45,7 @@ router.post("/addDashBoard", async (req, res) => {
     });
 
     const newDashBoard = new DashBoard({
-      user: id,
+      user: userId,
       dashBoardTitle: dashBoardTitle,
       columns: { [column1._id]: column1, [column2._id]: column2 },
       columnOrder: [column1.id, column2.id]
