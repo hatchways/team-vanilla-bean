@@ -1,31 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const updateData = require("../util/util");
-const jwt = require("jsonwebtoken");
+const { updateData, decodeToken } = require("../util/util");
 
 // Models;
-const { Task, Column, DashBoard } = require("../models/DashBoard");
+const { Task, Column, Dashboard } = require("../models/Dashboard");
 
 //@CreateBoard
-router.post("/getDashBoard", async (req, res) => {
-  const { dashBoardId } = req.body;
+router.post("/getDashboard", async (req, res) => {
+  const { token } = req.body;
+  let userId = await decodeToken(token);
+
   try {
-    let dashBoard = await DashBoard.find({ _id: dashBoardId });
-    res.send(dashBoard);
+    let dashboard = await Dashboard.findOne({ user: userId });
+    res.send(dashboard);
   } catch (err) {
-    res.status(404).json({ error: "dashboard does not exist" });
+    res.status(404).json({ error: "Dashboard does not exist" });
   }
 });
 
-//Add DashBoard @in progress need to update UserId
+//Add Dashboard @in progress need to update UserId
 router.post("/addDashBoard", async (req, res) => {
-  const { dashBoardTitle, token } = req.body;
+  const { dashboardTitle, token } = req.body;
 
-  let user = await jwt.verify(token, process.env.JWT_SECRET_KEY);
-  let userId = user.id;
+  let userId = await decodeToken(token);
 
-  if (!user) {
-    return res.status(401).json({ error: "token is not valid" });
+  if (!userId) {
+    return res.status(401).json({ error: "Token is not valid" });
   }
 
   try {
@@ -49,9 +49,9 @@ router.post("/addDashBoard", async (req, res) => {
       tasks: {}
     });
 
-    const newDashBoard = new DashBoard({
+    const newDashBoard = new Dashboard({
       user: userId,
-      dashBoardTitle: dashBoardTitle,
+      dashboardTitle: dashboardTitle,
       columns: { [column1._id]: column1, [column2._id]: column2 },
       columnOrder: [column1.id, column2.id]
     });
@@ -75,7 +75,7 @@ router.post("/addColumn", async (req, res) => {
 
     //
     let newColumns = {};
-    let Board = await DashBoard.findOne({ _id: dashBoardId });
+    let Board = await Dashboard.findOne({ _id: dashBoardId });
 
     for (const key of Board.columns.keys()) {
       let item = Board.columns.get(key);
@@ -94,7 +94,7 @@ router.post("/addColumn", async (req, res) => {
     updateCond["$push"] = {};
     updateCond["$push"]["columnOrder"] = newColumn._id;
 
-    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    const result = await updateData(Dashboard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
     res.status(500).json({ error: "Failed to add column" });
@@ -113,7 +113,7 @@ router.post("/addTask", async (req, res) => {
     });
 
     let newTasks = {};
-    let Board = await DashBoard.findOne({ _id: dashBoardId });
+    let Board = await Dashboard.findOne({ _id: dashBoardId });
     let Column = await Board.columns.get(columnId);
 
     for (const key of Column.tasks.keys()) {
@@ -133,7 +133,7 @@ router.post("/addTask", async (req, res) => {
     updateCond["$push"] = {};
     updateCond["$push"]["columns." + columnId + ".taskOrder"] = newTask._id;
 
-    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    const result = await updateData(Dashboard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
     res.status(500).json({ error: "Failed to add task" });
@@ -150,7 +150,7 @@ router.put("/updateTaskIndex", async (req, res) => {
     updateCond["$set"] = {};
     updateCond["$set"]["columns." + columnId + ".taskOrder"] = taskOrder;
 
-    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    const result = await updateData(Dashboard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
     res.status(500).json({ error: "Failed to move task" });
@@ -166,7 +166,7 @@ router.put("/updateColumnIndex", async (req, res) => {
     updateCond["$set"] = {};
     updateCond["$set"]["columnOrder"] = columnOrder;
 
-    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    const result = await updateData(Dashboard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
     res.send(err);
@@ -193,7 +193,7 @@ router.put("/moveTasksToOther", async (req, res) => {
     updateCond["$set"]["columns." + columnToSourceId + ".tasks"] = columnToTasks;
     updateCond["$set"]["columns." + columnToSourceId + ".taskOrder"] = columnToTaskOrder;
 
-    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    const result = await updateData(Dashboard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
     res.status(500).json({ error: "Failed to move task to the column" });
@@ -211,7 +211,7 @@ router.put("/deleteTask", async (req, res) => {
     updateCond["$pull"] = {};
     updateCond["$pull"]["columns." + columnId + ".taskOrder"] = taskId;
 
-    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    const result = await updateData(Dashboard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
     res.status(500).json({ error: "Failed to delete task" });
@@ -229,7 +229,7 @@ router.put("/deleteColumn", async (req, res) => {
     updateCond["$pull"] = {};
     updateCond["$pull"]["columnOrder"] = columnId;
 
-    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    const result = await updateData(Dashboard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
     res.status(500).json({ error: "Failed to delete column" });
@@ -239,7 +239,7 @@ router.put("/deleteColumn", async (req, res) => {
 //delete dashboard @done
 router.delete("/deleteDashBoard", async (req, res) => {
   const { dashBoardId } = req.body;
-  DashBoard.remove({ _id: dashBoardId }, function(err) {
+  Dashboard.remove({ _id: dashBoardId }, function(err) {
     if (!err) {
       res.send("Dashboard deleted");
     } else {
