@@ -6,22 +6,27 @@ const jwt = require("jsonwebtoken");
 // Models;
 const { Task, Column, DashBoard } = require("../models/DashBoard");
 
-//@CreateBoard, how to decode Token?
+//@CreateBoard
 router.post("/getDashBoard", async (req, res) => {
   const { dashBoardId } = req.body;
   try {
     let dashBoard = await DashBoard.find({ _id: dashBoardId });
     res.send(dashBoard);
   } catch (err) {
-    res.send(err);
+    res.status(404).json({ error: "dashboard does not exist" });
   }
 });
 
 //Add DashBoard @in progress need to update UserId
 router.post("/addDashBoard", async (req, res) => {
   const { dashBoardTitle, token } = req.body;
-  let userId = await jwt.verify(token, process.env.JWT_SECRET_KEY);
-  console.log(userId);
+
+  let user = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+  let userId = user.id;
+
+  if (!user) {
+    return res.status(401).json({ error: "token is not valid" });
+  }
 
   try {
     // Initial states
@@ -54,7 +59,7 @@ router.post("/addDashBoard", async (req, res) => {
     let data = await newDashBoard.save();
     res.send(data);
   } catch (err) {
-    res.send(err);
+    res.status(500).json({ error: "Failed to add dashboard" });
   }
 });
 
@@ -92,7 +97,7 @@ router.post("/addColumn", async (req, res) => {
     const result = await updateData(DashBoard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
-    res.send(err);
+    res.status(500).json({ error: "Failed to add column" });
   }
 });
 
@@ -131,7 +136,7 @@ router.post("/addTask", async (req, res) => {
     const result = await updateData(DashBoard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
-    console.log(err);
+    res.status(500).json({ error: "Failed to add task" });
   }
 });
 
@@ -148,7 +153,7 @@ router.put("/updateTaskIndex", async (req, res) => {
     const result = await updateData(DashBoard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
-    res.send(err);
+    res.status(500).json({ error: "Failed to move task" });
   }
 });
 
@@ -191,7 +196,7 @@ router.put("/moveTasksToOther", async (req, res) => {
     const result = await updateData(DashBoard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
-    console.log(err);
+    res.status(500).json({ error: "Failed to move task to the column" });
   }
 });
 
@@ -209,7 +214,7 @@ router.put("/deleteTask", async (req, res) => {
     const result = await updateData(DashBoard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
-    res.send(err);
+    res.status(500).json({ error: "Failed to delete task" });
   }
 });
 
@@ -227,7 +232,7 @@ router.put("/deleteColumn", async (req, res) => {
     const result = await updateData(DashBoard, dashBoardId, updateCond);
     res.send(result);
   } catch (err) {
-    res.send(err);
+    res.status(500).json({ error: "Failed to delete column" });
   }
 });
 
@@ -238,7 +243,7 @@ router.delete("/deleteDashBoard", async (req, res) => {
     if (!err) {
       res.send("Dashboard deleted");
     } else {
-      res.send(err);
+      res.status(500).json({ error: "Failed to delete dashboard" });
     }
   });
 });
