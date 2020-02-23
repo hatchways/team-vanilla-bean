@@ -15,9 +15,6 @@ router.post("/getDashBoard", async (req, res) => {
   } catch (err) {
     res.send(err);
   }
-
-  // let data = await Column.find();
-  // console.log(data);
 });
 
 //Add DashBoard @in progress need to update UserId
@@ -74,12 +71,11 @@ router.post("/addColumn", async (req, res) => {
       taskOrder: []
     });
     const newId = newColumn._id;
-    let newColumns = {};
 
+    let newColumns = {};
     let Board = await DashBoard.findOne({ _id: dashBoardId });
 
     for (const key of Board.columns.keys()) {
-      // Prints "github", "twitter", "instagram"
       let item = Board.columns.get(key);
       newColumns[item.id] = item;
     }
@@ -88,9 +84,15 @@ router.post("/addColumn", async (req, res) => {
       [newId]: newColumn
     };
 
+    let updateCond = {};
+    updateCond["$set"] = {};
+    updateCond["$set"]["columns"] = newColumns;
+    updateCond["$push"] = {};
+    updateCond["$push"]["columnOrder"] = newId;
+
     const dashBoard = DashBoard.findOneAndUpdate(
       { _id: dashBoardId },
-      { $set: { columns: newColumns }, $push: { columnOrder: newId } },
+      updateCond,
       { new: true },
       (err, data) => {
         if (err) console.log(err);
@@ -102,7 +104,7 @@ router.post("/addColumn", async (req, res) => {
   }
 });
 
-// Add a Card
+// Add a Card @Done
 router.post("/addTask", async (req, res) => {
   const { dashBoardId, columnId, content, description, tag, action } = req.body;
   try {
@@ -147,35 +149,113 @@ router.post("/addTask", async (req, res) => {
   }
 });
 
-//Update task index within same column
+//Update task index within same column @Done
 router.put("/updateTaskIndex", async (req, res) => {
-  res.send("hello from dash boad download");
+  try {
+    const { dashBoardId, columnId, newOrder } = req.body;
+    let updateCond = {};
+    updateCond["$set"] = {};
+    updateCond["$set"]["columns." + columnId + ".taskOrder"] = newOrder;
+
+    const dashboard = DashBoard.findOneAndUpdate(
+      { _id: dashBoardId },
+      updateCond,
+      { new: true },
+      (err, data) => {
+        if (err) console.log(err);
+        res.send(data);
+      }
+    );
+  } catch (err) {
+    res.send(err);
+  }
 });
 
-//Update column index
+//Update column index @Done
 router.put("/updateColumnIndex", async (req, res) => {
-  res.send("hello from dash boad download");
+  const { dashBoardId, newOrder } = req.body;
+  try {
+    DashBoard.findOneAndUpdate(
+      { _id: dashBoardId },
+      { $set: { columnOrder: newOrder } },
+      { new: true },
+      (err, data) => {
+        if (err) console.log(err);
+        res.send(data);
+      }
+    );
+  } catch (error) {
+    res.send(err);
+  }
 });
 
-//Update task index between Column
-router.put("/updateTaskAndColumn", async (req, res) => {
-  res.send("hello from dash boad download");
+//Update task index between Column @Done
+router.put("/moveTasksToOther", async (req, res) => {
+  const {
+    columnSourceId,
+    columnSourceTasks,
+    columnSourceTaskOrder,
+    columnToSourceId,
+    columnToTasks,
+    columnToTaskOrder,
+    dashBoardId
+  } = req.body;
+
+  try {
+    console.log(dashBoardId);
+
+    let updateCond = {};
+    updateCond["$set"] = {};
+    updateCond["$set"]["columns." + columnSourceId + ".tasks"] = columnSourceTasks;
+    updateCond["$set"]["columns." + columnSourceId + ".taskOrder"] = columnSourceTaskOrder;
+    updateCond["$set"]["columns." + columnToSourceId + ".tasks"] = columnToTasks;
+    updateCond["$set"]["columns." + columnToSourceId + ".taskOrder"] = columnToTaskOrder;
+    console.log("after", updateCond);
+
+    DashBoard.findOneAndUpdate({ _id: dashBoardId }, updateCond, { new: true }, (err, data) => {
+      if (err) console.log(err);
+      res.send(data);
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 //delete card
-router.delete("/deleteCard", async (req, res) => {
-  res.send("hello from dash boad download");
+router.delete("/deleteTask", async (req, res) => {
+  const { dashBoardId, columnOrder, taskId } = req.body;
+  DashBoard.remove({ _id: dashBoardId }, function(err) {
+    if (!err) {
+      res.send("deleted");
+    } else {
+      res.send(err);
+    }
+  });
 });
 
-//delete column
-router.delete("/deleteColumn", async (req, res) => {
-  res.send("hello from dash boad download");
+//delete column @done
+router.put("/deleteColumn", async (req, res) => {
+  const { dashBoardId, columnId } = req.body;
+  try {
+    let updateCond = {};
+    updateCond["$unset"] = {};
+    updateCond["$unset"]["columns." + columnId] = "";
+    updateCond["$pull"] = {};
+    updateCond["$pull"]["columnOrder"] = columnId;
+
+    DashBoard.findOneAndUpdate({ _id: dashBoardId }, updateCond, { new: true }, (err, data) => {
+      if (err) console.log(err);
+      res.send(data);
+    });
+  } catch (err) {
+    res.send(err);
+  }
 });
 
 //delete dashboard
 router.delete("/deleteDashBoard", async (req, res) => {
-  let dashBoardId = req.body.dashBoardId;
-  DashBoard.remove({ _id: `${dashBoardId}` }, function(err) {
+  const { dashBoardId } = req.body;
+  DashBoard.remove({ _id: dashBoardId }, function(err) {
     if (!err) {
       res.send("deleted");
     } else {
