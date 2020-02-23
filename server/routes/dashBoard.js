@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const checkToken = require("../auth/validateToken");
+const updateData = require("../util/util");
 
 // Models;
 const { Task, Column, DashBoard } = require("../models/DashBoard");
@@ -8,7 +9,6 @@ const { Task, Column, DashBoard } = require("../models/DashBoard");
 //@CreateBoard, how to decode Token?
 router.post("/getDashBoard", async (req, res) => {
   const { dashBoardId } = req.body;
-  console.log("dashBoardId", dashBoardId);
   try {
     let dashBoard = await DashBoard.find({ _id: dashBoardId });
     res.send(dashBoard);
@@ -19,15 +19,9 @@ router.post("/getDashBoard", async (req, res) => {
 
 //Add DashBoard @in progress need to update UserId
 router.post("/addDashBoard", async (req, res) => {
-  // const token =
-  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWU0MGE3YTFjOGM1OGQwM2Q3YmRiZWNkIn0sImlhdCI6MTU4MTI5NTUyMSwiZXhwIjoxNTgxNjU1NTIxfQ.XClpjFBKjD2tY2BYirTunhdE4bFsnKQa6FXawkyU4QM";
   const { dashBoardTitle, id, token } = req.body;
-  // const { decoded } = req.decoded;
-  console.log(req.body);
 
   try {
-    let userId = "";
-
     const task1 = new Task({
       content: "This is Your Task!",
       description: "",
@@ -63,15 +57,15 @@ router.post("/addDashBoard", async (req, res) => {
 
 // Add a column @Done
 router.post("/addColumn", async (req, res) => {
-  const { dashBoardId, title } = req.body;
+  const { dashBoardId, columnTitle } = req.body;
   try {
     const newColumn = new Column({
-      title,
+      columnTitle,
       tasks: [],
       taskOrder: []
     });
-    const newId = newColumn._id;
 
+    //
     let newColumns = {};
     let Board = await DashBoard.findOne({ _id: dashBoardId });
 
@@ -79,28 +73,23 @@ router.post("/addColumn", async (req, res) => {
       let item = Board.columns.get(key);
       newColumns[item.id] = item;
     }
+
     newColumns = {
       ...newColumns,
-      [newId]: newColumn
+      [newColumn._id]: newColumn
     };
 
+    //manipulate data
     let updateCond = {};
     updateCond["$set"] = {};
     updateCond["$set"]["columns"] = newColumns;
     updateCond["$push"] = {};
-    updateCond["$push"]["columnOrder"] = newId;
+    updateCond["$push"]["columnOrder"] = newColumn._id;
 
-    const dashBoard = DashBoard.findOneAndUpdate(
-      { _id: dashBoardId },
-      updateCond,
-      { new: true },
-      (err, data) => {
-        if (err) console.log(err);
-        res.send(data);
-      }
-    );
+    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    res.send(result);
   } catch (err) {
-    console.log(err);
+    res.send(err);
   }
 });
 
@@ -129,21 +118,15 @@ router.post("/addTask", async (req, res) => {
       [newTask._id]: newTask
     };
 
+    //data manipulation
     let updateCond = {};
     updateCond["$set"] = {};
     updateCond["$set"]["columns." + columnId + ".tasks"] = newTasks;
     updateCond["$push"] = {};
     updateCond["$push"]["columns." + columnId + ".taskOrder"] = newTask._id;
 
-    const danshBoard = DashBoard.findOneAndUpdate(
-      { _id: dashBoardId },
-      updateCond,
-      { new: true },
-      (err, data) => {
-        if (err) console.log(err);
-        res.send(data);
-      }
-    );
+    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    res.send(result);
   } catch (err) {
     console.log(err);
   }
@@ -152,20 +135,15 @@ router.post("/addTask", async (req, res) => {
 //Update task index within same column @Done
 router.put("/updateTaskIndex", async (req, res) => {
   try {
-    const { dashBoardId, columnId, newOrder } = req.body;
+    const { dashBoardId, columnId, taskOrder } = req.body;
+
+    //data manipulation
     let updateCond = {};
     updateCond["$set"] = {};
-    updateCond["$set"]["columns." + columnId + ".taskOrder"] = newOrder;
+    updateCond["$set"]["columns." + columnId + ".taskOrder"] = taskOrder;
 
-    const dashboard = DashBoard.findOneAndUpdate(
-      { _id: dashBoardId },
-      updateCond,
-      { new: true },
-      (err, data) => {
-        if (err) console.log(err);
-        res.send(data);
-      }
-    );
+    const result = await updateData(DashBoard, dashBoardId, updateCond);
+    res.send(result);
   } catch (err) {
     res.send(err);
   }

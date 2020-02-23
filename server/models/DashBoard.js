@@ -17,7 +17,7 @@ const TaskSchema = new Schema(
 
 const ColumnSchema = new Schema(
   {
-    title: { type: String },
+    columnTitle: { type: String },
     tasks: { type: Map, of: TaskSchema },
     taskOrder: [{ type: mongoose.Schema.Types.ObjectId, ref: TaskSchema }] //don't populate this, it's for ordering
   }
