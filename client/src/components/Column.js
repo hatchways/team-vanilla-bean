@@ -26,8 +26,6 @@ const Column = props => {
   });
   const { newTaskName, newColumnTitle } = testSt;
 
-  console.log(testSt);
-
   const onChange = e => {
     setTextSt({
       ...testSt,
@@ -77,7 +75,7 @@ const Column = props => {
                   <CancelIcon onClick={e => deleteColumn(e)} />
                 </Grid>
                 <Droppable droppableId={column.id} type='card'>
-                  {(provided, snapshot) => (
+                  {provided => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       {tasks.map((task, index) => (
                         <TaskCard key={task.id} task={task} index={index} />

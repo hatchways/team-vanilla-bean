@@ -3,6 +3,7 @@ import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import Button from "@material-ui/core/Button";
 
 const ColumnArea = props => {
   const classes = useStyles(props);
@@ -15,10 +16,7 @@ const ColumnArea = props => {
       return;
     }
     //Check if it is dropped to same column and same index
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return;
     }
 
@@ -78,32 +76,44 @@ const ColumnArea = props => {
     });
   };
 
+  const testDl = async e => {
+    e.preventDefault();
+    let token = localStorage.getItem("token");
+
+    let meme = { token: token };
+    let options = {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(meme)
+    };
+
+    let response = await fetch("/dashboard/getDashBoard", options);
+    let data = await response.json();
+
+    console.log(data);
+
+    // setTaskState(data);
+
+    // return data;
+  };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable
-        droppableId="all-columns"
-        direction='"horizontal'
-        type="column"
-      >
+      <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
         {provided => (
-          <div
-            className={classes.root}
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-          >
+          <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
+            <Button
+              onClick={e => {
+                testDl(e);
+              }}>
+              download data{" "}
+            </Button>
             {taskState.columnOrder.map((columnId, index) => {
               const column = taskState.columns[columnId];
-              const tasks = column.taskIds.map(
-                taskId => taskState.tasks[taskId]
-              );
-              return (
-                <Column
-                  key={column.id}
-                  column={column}
-                  tasks={tasks}
-                  index={index}
-                />
-              );
+              const tasks = column.taskIds.map(taskId => taskState.tasks[taskId]);
+              return <Column key={column.id} column={column} tasks={tasks} index={index} />;
             })}
             {provided.placeholder}
             <Column createNew />

@@ -8,6 +8,7 @@ const { Task, Column, Dashboard } = require("../models/Dashboard");
 //@CreateBoard
 router.post("/getDashboard", async (req, res) => {
   const { token } = req.body;
+
   let userId = await decodeToken(token);
 
   try {
