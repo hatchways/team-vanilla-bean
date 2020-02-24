@@ -78,7 +78,7 @@ export default function FormDialog() {
               autoFocus
               fullWidth
             ></TextField>
-            <Button type="submit">Create</Button>
+            <Button>Create</Button>
           </form>
         </DialogContent>
       </Dialog>

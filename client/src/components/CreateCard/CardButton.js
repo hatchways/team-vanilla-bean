@@ -8,7 +8,10 @@ const CardButton = props => {
       backgroundColor: "#F4F6FF",
       color: "#B5C0D9",
       marginBottom: "5%",
-      textTransform: "none"
+      textTransform: "none",
+      "&:hover": {
+        color: "white"
+      }
     }
   }));
 
@@ -17,9 +20,9 @@ const CardButton = props => {
     <Button
       size="small"
       variant="contained"
-      fullWidth
       className={classes.button}
       disableElevation
+      fullWidth
     >
       {props.children}
     </Button>

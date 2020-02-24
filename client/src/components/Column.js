@@ -106,7 +106,7 @@ const Column = props => {
                         variant="contained"
                         color="primary"
                       >
-                        Add a Card
+                        Add a card
                       </Button>
                     </div>
                   )}

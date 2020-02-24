@@ -1,10 +1,10 @@
 import React from "react";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography, Box } from "@material-ui/core";
 import CardButton from "./CardButton";
 
-const Comment = () => {
+const ButtonList = () => {
   return (
-    <Grid item xs={2} style={{ marginLeft: "5%" }} container>
+    <Grid item xs={2} container>
       <Grid item>
         <Typography color="secondary" variant="caption">
           ADD TO CARD:
@@ -14,18 +14,17 @@ const Comment = () => {
         <CardButton>Deadline</CardButton>
         <CardButton>Attachment</CardButton>
         <CardButton>Cover</CardButton>
-      </Grid>
-      <Grid item>
-        <Typography color="secondary" variant="caption">
-          ACTIONS:
-        </Typography>
-        <CardButton>Move</CardButton>
-        <CardButton>Copy</CardButton>
-        <CardButton>Share</CardButton>
-        <CardButton>Delete</CardButton>
+        <Box style={{ marginTop: "30%" }}>
+          <Typography color="secondary" variant="caption">
+            ACTIONS:
+          </Typography>
+          <CardButton>Copy</CardButton>
+          <CardButton>Share</CardButton>
+          <CardButton>Delete</CardButton>
+        </Box>
       </Grid>
     </Grid>
   );
 };
 
-export default Comment;
+export default ButtonList;

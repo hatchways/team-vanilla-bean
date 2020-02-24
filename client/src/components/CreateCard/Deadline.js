@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, Typography, Link } from "@material-ui/core";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 
-const Description = () => {
+const Deadline = () => {
   return (
     <Grid item container>
       <Grid item xs={1}>
@@ -21,4 +21,4 @@ const Description = () => {
   );
 };
 
-export default Description;
+export default Deadline;
