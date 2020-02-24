@@ -1,26 +1,26 @@
 export const fakeData = {
-  tasks: {
-    "task-1": { id: "task-1", content: "take out the garbage" },
-    "task-2": { id: "task-2", content: "Watch movie" },
-    "task-3": { id: "task-3", content: "Catch my phone" },
-    "task-4": { id: "task-4", content: "cookDinner" }
-  },
+  columnOrder: ["5e5405c8dcd6133596dc66c6", "5e5405c8dcd6133596dc66c8"],
+  _id: "5e5405c8dcd6133596dc66c9",
+  user: "5e52dd27c6d5af1df4761b08",
   columns: {
-    "column-1": {
-      id: "column-1",
-      title: "To do",
-      taskIds: ["task-1", "task-2", "task-3", "task-4"]
+    "5e5405c8dcd6133596dc66c6": {
+      taskOrder: ["5e5405c8dcd6133596dc66c5"],
+      _id: "5e5405c8dcd6133596dc66c6",
+      tasks: {
+        "5e5405c8dcd6133596dc66c5": {
+          comments: [],
+          _id: "5e5405c8dcd6133596dc66c5",
+          content: "This is Your Task!",
+          description: "",
+          deadline: ""
+        }
+      }
     },
-    "column-2": {
-      id: "column-2",
-      title: "In progress",
-      taskIds: []
-    },
-    "column-3": {
-      id: "column-3",
-      title: "Done",
-      taskIds: []
+    "5e5405c8dcd6133596dc66c8": {
+      taskOrder: [],
+      _id: "5e5405c8dcd6133596dc66c8",
+      tasks: {}
     }
   },
-  columnOrder: ["column-1", "column-2", "column-3"]
+  __v: 0
 };

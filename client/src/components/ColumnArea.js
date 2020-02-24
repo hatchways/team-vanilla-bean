@@ -92,11 +92,7 @@ const ColumnArea = props => {
     let response = await fetch("/dashboard/getDashBoard", options);
     let data = await response.json();
 
-    console.log(data);
-
-    // setTaskState(data);
-
-    // return data;
+    setTaskState(data);
   };
 
   return (
@@ -108,12 +104,19 @@ const ColumnArea = props => {
               onClick={e => {
                 testDl(e);
               }}>
-              download data{" "}
+              download data
             </Button>
             {taskState.columnOrder.map((columnId, index) => {
-              const column = taskState.columns[columnId];
-              const tasks = column.taskIds.map(taskId => taskState.tasks[taskId]);
-              return <Column key={column.id} column={column} tasks={tasks} index={index} />;
+              const column = taskState.columns[columnId]._id;
+              const tasks = taskState.columns[column].taskOrder;
+
+              const bebe = taskState.columns[column];
+              console.log("column", column);
+              console.log("bebe", bebe);
+              console.log("tasks", tasks);
+              {
+                /* return <Column key={column.id} column={column} tasks={tasks} index={index} />; */
+              }
             })}
             {provided.placeholder}
             <Column createNew />
