@@ -49,15 +49,20 @@ const Column = props => {
     return (
       <Card className={classes.addColumn}>
         <CardContent>
-          <TextField name='newColumnTitle' value={newColumnTitle} onChange={e => onChange(e)}>
+          <TextField
+            name="newColumnTitle"
+            value={newColumnTitle}
+            onChange={e => onChange(e)}
+          >
             Enter column Name
           </TextField>
           <Button
             className={classes.btn}
-            type='submit'
-            variant='contained'
-            color='primary'
-            onChange={e => createNewColumn(e)}>
+            type="submit"
+            variant="contained"
+            color="primary"
+            onChange={e => createNewColumn(e)}
+          >
             Create New column
           </Button>
         </CardContent>
@@ -68,22 +73,39 @@ const Column = props => {
       <div>
         <Draggable draggableId={column.id} index={index}>
           {provided => (
-            <Card {...provided.draggableProps} ref={provided.innerRef} className={classes.root}>
+            <Card
+              {...provided.draggableProps}
+              ref={provided.innerRef}
+              className={classes.root}
+            >
               <CardContent>
-                <Grid container direction='row' justify='space-between' alignItems='flex-start'>
-                  <Typography {...provided.dragHandleProps} variant='h5' className={classes.title}>
+                <Grid
+                  container
+                  direction="row"
+                  justify="space-between"
+                  alignItems="flex-start"
+                >
+                  <Typography
+                    {...provided.dragHandleProps}
+                    variant="h5"
+                    className={classes.title}
+                  >
                     {column.title}
                   </Typography>
                   <CancelIcon onClick={e => deleteColumn(e)} />
                 </Grid>
-                <Droppable droppableId={column.id} type='card'>
+                <Droppable droppableId={column.id} type="card">
                   {(provided, snapshot) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       {tasks.map((task, index) => (
                         <TaskCard key={task.id} task={task} index={index} />
                       ))}
                       {provided.placeholder}
-                      <Button className={classes.btn} variant='contained' color='primary'>
+                      <Button
+                        className={classes.btn}
+                        variant="contained"
+                        color="primary"
+                      >
                         Add a Card
                       </Button>
                     </div>
@@ -118,7 +140,8 @@ const useStyles = makeStyles({
   btn: {
     marginTop: 20,
     marginBottom: 10,
-    color: "white"
+    color: "white",
+    textTransform: "none"
   },
   addColumn: {
     backgroundColor: "#F4F6FF",
