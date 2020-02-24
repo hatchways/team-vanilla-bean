@@ -7,7 +7,7 @@ import DashBoard from "./pages/DashBoard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import CreateBoard from "./components/CreateBoard";
-import CreateCard from "./components/CreateCard";
+import CreateCard from "./components/CreateCard/Modal";
 import CreateColumn from "./components/CreateColumn";
 
 import PrivateRoute from "./utils/routes";

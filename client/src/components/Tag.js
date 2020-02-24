@@ -8,7 +8,8 @@ const Tag = props => {
       borderRadius: 10,
       height: 10,
       width: 50,
-      backgroundColor: props.color || "red"
+      backgroundColor: props.color || "red",
+      float: props.card && "right"
     }
   });
 
