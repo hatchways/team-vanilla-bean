@@ -1,14 +1,24 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import Button from "@material-ui/core/Button";
+
+//materia-ui
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const ColumnArea = props => {
   const classes = useStyles(props);
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
+  const [loadingState, setLoadingState] = useState({
+    loading: true
+  });
+  const { loading } = loadingState;
+
+  useEffect(() => {
+    downLoadData();
+  }, []);
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
@@ -76,8 +86,8 @@ const ColumnArea = props => {
     });
   };
 
-  const testDl = async e => {
-    e.preventDefault();
+  const downLoadData = async () => {
+    setLoadingState({ loading: true });
     let token = localStorage.getItem("token");
 
     let meme = { token: token };
@@ -89,43 +99,49 @@ const ColumnArea = props => {
       body: JSON.stringify(meme)
     };
 
-    let response = await fetch("/dashboard/getDashBoard", options);
-    let data = await response.json();
+    try {
+      let response = await fetch("/dashboard/getDashBoard", options);
+      let data = await response.json();
+      console.log(data);
 
-    setTaskState(data);
+      setTaskState(data);
+      setLoadingState({ loading: false });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
-        {provided => (
-          <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
-            <Button
-              onClick={e => {
-                testDl(e);
-              }}>
-              download data
-            </Button>
-            {taskState.columnOrder.map((columnId, index) => {
-              const column = taskState.columns[columnId]._id;
-              const tasks = taskState.columns[column].taskOrder;
+  if (loading) {
+    return <LinearProgress variant='query' />;
+  } else {
+    return (
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
+          {provided => (
+            <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
+              {taskState ? (
+                taskState.columnOrder.map((columnId, index) => {
+                  const column = taskState.columns[columnId];
+                  let taskOrder = taskState.columns[columnId].taskOrder || [];
+                  let tasks = taskOrder.map(task => {
+                    return column.tasks[task];
+                  });
 
-              const bebe = taskState.columns[column];
-              console.log("column", column);
-              console.log("bebe", bebe);
-              console.log("tasks", tasks);
-              {
-                /* return <Column key={column.id} column={column} tasks={tasks} index={index} />; */
-              }
-            })}
-            {provided.placeholder}
-            <Column createNew />
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
-  );
+                  return <Column key={column._id} column={column} tasks={tasks} index={index} />;
+                })
+              ) : (
+                <h1>hello</h1>
+              )}
+              {provided.placeholder}
+              <Column createNew />
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    );
+  }
 };
+
 const useStyles = makeStyles({
   root: {
     display: "flex",

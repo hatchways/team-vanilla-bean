@@ -10,16 +10,18 @@ import { Draggable } from "react-beautiful-dnd";
 const TaskCard = ({ index, task, props }) => {
   const classes = useStyles(props);
 
+  console.log(index);
+  console.log(task);
+
   return (
-    <Draggable draggableId={task.id} index={index}>
+    <Draggable draggableId={task._id} index={index}>
       {(provided, snapshot) => (
         <Card
           className={snapshot.isdragging ? classes.dragged : classes.root}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          isdragging={snapshot.isdragging}
-        >
+          isdragging={snapshot.isdragging}>
           <CardContent>
             <div className={classes.tag}></div>
             <Typography>{task.content}</Typography>
