@@ -10,9 +10,6 @@ import { Draggable } from "react-beautiful-dnd";
 const TaskCard = ({ index, task, props }) => {
   const classes = useStyles(props);
 
-  console.log(index);
-  console.log(task);
-
   return (
     <Draggable draggableId={task._id} index={index}>
       {(provided, snapshot) => (

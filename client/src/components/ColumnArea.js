@@ -22,6 +22,7 @@ const ColumnArea = props => {
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
+
     if (!destination) {
       return;
     }
@@ -36,52 +37,89 @@ const ColumnArea = props => {
       newColumnOrder.splice(source.index, 1);
       newColumnOrder.splice(destination.index, 0, draggableId);
       setTaskState({ ...taskState, columnOrder: newColumnOrder });
+
+      //Need update Column position later
       return;
     }
 
     const start = taskState.columns[source.droppableId];
     const finish = taskState.columns[destination.droppableId];
 
-    //for the case card move around in same column
+    //for the case task move around in same column
     if (start === finish) {
-      const newTaskIds = Array.from(start.taskIds);
+      const newTaskIds = Array.from(start.taskOrder);
+
       newTaskIds.splice(source.index, 1);
       newTaskIds.splice(destination.index, 0, draggableId);
       const newColumn = {
         ...start,
-        taskIds: newTaskIds
+        taskOrder: newTaskIds
       };
-
       setTaskState({
         ...taskState,
         columns: {
           ...taskState.columns,
-          [newColumn.id]: newColumn
+          [newColumn._id]: newColumn
         }
       });
+
+      //need save newState to db
       return;
     }
 
-    const startTaskIds = Array.from(start.taskIds);
-    startTaskIds.splice(source.index, 1);
+    const startTaskOrder = Array.from(start.taskOrder);
+    const startTaskIndex = source.index;
+    const startColumn = source.droppableId;
+    const endTaskIndex = destination.index;
+    const endColumn = destination.droppableId;
+
+    // console.log(startTaskIndex);
+    // console.log(startColumn);
+    // console.log(endTaskIndex);
+    // console.log(endColumn);
+
+    // console.log(startTaskOrder[startTaskIndex]);
+
+    let movedItemId;
+    const newStartTasks = Object.keys(start.tasks).reduce((object, key) => {
+      if (key !== startTaskOrder[startTaskIndex]) {
+        object[key] = start.tasks[key];
+      } else {
+        movedItemId = startTaskOrder[startTaskIndex];
+      }
+      return object;
+    }, {});
+    console.log(newStartTasks);
+
+    startTaskOrder.splice(source.index, 1);
     const newStart = {
       ...start,
-      taskIds: startTaskIds
+      taskOrder: startTaskOrder,
+      tasks: newStartTasks
     };
 
-    const finishTaskIds = Array.from(finish.taskIds);
-    finishTaskIds.splice(destination.index, 0, draggableId);
+    console.log("newStart", newStart);
+
+    const finishTaskOrder = Array.from(finish.taskOrder);
+    finishTaskOrder.splice(destination.index, 0, draggableId);
+
+    let movedItem = taskState.columns[startColumn].tasks[movedItemId];
+    let existedTasks = taskState.columns[endColumn].tasks;
+
+    existedTasks[movedItem._id] = movedItem;
+
     const newFinish = {
       ...finish,
-      taskIds: finishTaskIds
+      taskOrder: finishTaskOrder,
+      tasks: { ...existedTasks }
     };
 
     setTaskState({
       ...taskState,
       columns: {
         ...taskState.columns,
-        [newStart.id]: newStart,
-        [newFinish.id]: newFinish
+        [newStart._id]: newStart,
+        [newFinish._id]: newFinish
       }
     });
   };
@@ -102,7 +140,6 @@ const ColumnArea = props => {
     try {
       let response = await fetch("/dashboard/getDashBoard", options);
       let data = await response.json();
-      console.log(data);
 
       setTaskState(data);
       setLoadingState({ loading: false });
@@ -110,6 +147,8 @@ const ColumnArea = props => {
       console.log(err);
     }
   };
+
+  console.log("123", taskState);
 
   if (loading) {
     return <LinearProgress variant='query' />;

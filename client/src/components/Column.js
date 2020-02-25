@@ -19,7 +19,6 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 const Column = props => {
   const classes = useStyles(props);
   const { column, tasks, createNew, index } = props;
-  console.log(column);
 
   const [testSt, setTextSt] = useState({
     newTaskName: "",
@@ -69,8 +68,13 @@ const Column = props => {
           {provided => (
             <Card {...provided.draggableProps} ref={provided.innerRef} className={classes.root}>
               <CardContent>
-                <Grid container direction='row' justify='space-between' alignItems='flex-start'>
-                  <Typography {...provided.dragHandleProps} variant='h5' className={classes.title}>
+                <Grid
+                  container
+                  direction='row'
+                  justify='space-between'
+                  alignItems='flex-start'
+                  {...provided.dragHandleProps}>
+                  <Typography variant='h5' className={classes.title}>
                     {column.columnTitle}
                   </Typography>
                   <CancelIcon onClick={e => deleteColumn(e)} />
