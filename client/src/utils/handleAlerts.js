@@ -29,6 +29,9 @@ const handleError = err => {
     case "Failed to move the column":
       message = "We could not save the column index. Please try again.";
       break;
+    case "Failed to add column":
+      message = "We could not add the column index. Please try again.";
+      break;
     default:
       message =
         "We're experiencing a problem with our server. Sorry for the inconvenience. Please try again later.";
