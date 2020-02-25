@@ -13,6 +13,9 @@ import {
   fetchOption
 } from "../utils/handleUpdateTasks";
 
+//Component
+import CreateColumnButton from "../components/CreateColumnButton";
+
 //materia-ui
 import LinearProgress from "@material-ui/core/LinearProgress";
 
@@ -27,7 +30,6 @@ const ColumnArea = props => {
   const { loading } = loadingState;
 
   //download data for first access
-
   const downLoadData = async () => {
     try {
       setLoadingState({ loading: true });
@@ -170,7 +172,7 @@ const ColumnArea = props => {
                 <h1>hello</h1>
               )}
               {provided.placeholder}
-              <Column createNew />
+              <CreateColumnButton />
             </div>
           )}
         </Droppable>

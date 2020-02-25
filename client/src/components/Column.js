@@ -7,7 +7,6 @@ import TaskCard from "./TaskCard";
 //materialUi
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
@@ -43,62 +42,40 @@ const Column = props => {
     //Send newColumnTitle to create new column
   };
 
-  if (createNew) {
-    return (
-      <Card className={classes.addColumn}>
-        <CardContent>
-          <TextField name='newColumnTitle' value={newColumnTitle} onChange={e => onChange(e)}>
-            Enter column Name
-          </TextField>
-          <Button
-            className={classes.btn}
-            type='submit'
-            variant='contained'
-            color='primary'
-            onChange={e => createNewColumn(e)}>
-            Create New column
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  } else {
-    return (
-      <div>
-        <Draggable draggableId={column._id} index={index}>
-          {provided => (
-            <Card {...provided.draggableProps} ref={provided.innerRef} className={classes.root}>
-              <CardContent>
-                <Grid
-                  container
-                  direction='row'
-                  justify='space-between'
-                  alignItems='flex-start'
-                  {...provided.dragHandleProps}>
-                  <Typography variant='h5' className={classes.title}>
-                    {column.columnTitle}
-                  </Typography>
-                  <CancelIcon onClick={e => deleteColumn(e)} />
-                </Grid>
-                <Droppable droppableId={column._id} type='card'>
-                  {provided => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {tasks.map((task, index) => (
-                        <TaskCard key={task._id} task={task} index={index} />
-                      ))}
-                      {provided.placeholder}
-                      <Button className={classes.btn} variant='contained' color='primary'>
-                        Add a Card
-                      </Button>
-                    </div>
-                  )}
-                </Droppable>
-              </CardContent>
-            </Card>
-          )}
-        </Draggable>
-      </div>
-    );
-  }
+  return (
+    <Draggable draggableId={column._id} index={index}>
+      {provided => (
+        <Card {...provided.draggableProps} ref={provided.innerRef} className={classes.root}>
+          <CardContent>
+            <Grid
+              container
+              direction='row'
+              justify='space-between'
+              alignItems='flex-start'
+              {...provided.dragHandleProps}>
+              <Typography variant='h5' className={classes.title}>
+                {column.columnTitle}
+              </Typography>
+              <CancelIcon onClick={e => deleteColumn(e)} />
+            </Grid>
+            <Droppable droppableId={column._id} type='card'>
+              {provided => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {tasks.map((task, index) => (
+                    <TaskCard key={task._id} task={task} index={index} />
+                  ))}
+                  {provided.placeholder}
+                  <Button className={classes.btn} variant='contained' color='primary'>
+                    Add a Card
+                  </Button>
+                </div>
+              )}
+            </Droppable>
+          </CardContent>
+        </Card>
+      )}
+    </Draggable>
+  );
 };
 
 //Styling part
