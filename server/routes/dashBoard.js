@@ -40,12 +40,12 @@ router.post("/addDashBoard", async (req, res) => {
       action: {}
     });
     const column1 = new Column({
-      title: "progress",
+      columnTitle: "progress",
       taskOrder: [task1.id],
       tasks: { [task1._id]: task1 }
     });
     const column2 = new Column({
-      title: "completed",
+      columnTitle: "completed",
       taskOrder: [],
       tasks: {}
     });
@@ -158,7 +158,7 @@ router.put("/updateTaskIndex", async (req, res) => {
     const result = await updateData(Dashboard, dashboardId, updateCond);
     res.send(result);
   } catch (err) {
-    res.status(500).json({ error: "Failed to move task" });
+    res.status(500).json({ error: "Failed to move the task" });
   }
 });
 
@@ -173,11 +173,9 @@ router.put("/updateColumnIndex", async (req, res) => {
     console.log(updateCond);
 
     const result = await updateData(Dashboard, dashboardId, updateCond);
-    console.log(result);
-
     res.send(result);
   } catch (err) {
-    res.send(err);
+    res.status(500).json({ error: "Failed to move the column" });
   }
 });
 

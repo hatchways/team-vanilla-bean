@@ -3,6 +3,8 @@ import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { Redirect } from "react-router-dom";
+import { handleError } from "../utils/handleAlerts";
 
 //materia-ui
 import LinearProgress from "@material-ui/core/LinearProgress";
@@ -17,7 +19,7 @@ const ColumnArea = props => {
   });
   const { loading } = loadingState;
 
-  //download data. might not need
+  //download data for first access
   useEffect(() => {
     downLoadData();
   }, []);
@@ -49,7 +51,6 @@ const ColumnArea = props => {
     //for the case task move around in same column
     if (start === finish) {
       const taskOrder = Array.from(start.taskOrder);
-
       taskOrder.splice(source.index, 1);
       taskOrder.splice(destination.index, 0, draggableId);
       const newColumn = {
@@ -68,21 +69,24 @@ const ColumnArea = props => {
       return;
     }
 
+    //Move task to other column
     const startTaskOrder = Array.from(start.taskOrder);
     const startTaskIndex = source.index;
     const startColumn = source.droppableId;
     const endColumn = destination.droppableId;
+    let movedTaskId;
 
-    let movedItemId;
+    //Delete moved task from tasks in original column
     const newStartTasks = Object.keys(start.tasks).reduce((object, key) => {
       if (key !== startTaskOrder[startTaskIndex]) {
         object[key] = start.tasks[key];
       } else {
-        movedItemId = startTaskOrder[startTaskIndex];
+        movedTaskId = startTaskOrder[startTaskIndex];
       }
       return object;
     }, {});
 
+    //update original column
     startTaskOrder.splice(source.index, 1);
     const newStart = {
       ...start,
@@ -90,14 +94,16 @@ const ColumnArea = props => {
       tasks: newStartTasks
     };
 
+    //update destination column
     const finishTaskOrder = Array.from(finish.taskOrder);
     finishTaskOrder.splice(destination.index, 0, draggableId);
 
-    let movedItem = taskState.columns[startColumn].tasks[movedItemId];
+    let movedTask = taskState.columns[startColumn].tasks[movedTaskId];
     let existedTasks = taskState.columns[endColumn].tasks;
 
-    existedTasks[movedItem._id] = movedItem;
+    existedTasks[movedTask._id] = movedTask;
 
+    //new destination column
     const newFinish = {
       ...finish,
       taskOrder: finishTaskOrder,
@@ -116,81 +122,58 @@ const ColumnArea = props => {
     moveTasksToOther(newStart, newFinish);
   };
 
-  const downLoadData = async () => {
-    setLoadingState({ loading: true });
-    let token = localStorage.getItem("token");
-
-    let meme = { token: token };
-    let options = {
-      method: "post",
+  const fetchOption = (method, body) => {
+    return {
+      method: method,
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(meme)
+      body: JSON.stringify(body)
     };
+  };
 
+  const downLoadData = async () => {
     try {
-      let response = await fetch("/dashboard/getDashBoard", options);
-      let data = await response.json();
+      setLoadingState({ loading: true });
+      let token = localStorage.getItem("token");
+      if (!token) {
+        return <Redirect to='/signin' />;
+      }
+      let body = { token };
 
+      let response = await fetch("/dashboard/getDashBoard", fetchOption("post", body));
+      let data = await response.json();
       setTaskState(data);
-      setLoadingState({ loading: false });
     } catch (err) {
-      console.log(err);
+      handleError(err);
     }
+    setLoadingState({ loading: false });
   };
 
   const updateTaskIndexInColumn = async (columnId, taskOrder) => {
     try {
       let dashboardId = taskState._id;
       let body = { dashboardId: dashboardId, columnId, taskOrder };
-      let options = {
-        method: "put",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
-      };
-      let response = await fetch("/dashboard/updateTaskIndex", options);
-      let data = await response.json();
-      console.log(data);
+      await fetch("/dashboard/updateTaskIndex", fetchOption("put", body));
     } catch (err) {
-      console.log(err);
+      handleError(err);
     }
   };
 
   const moveTasksToOther = async (newStart, newFinish) => {
     try {
-      let columnSourceId = newStart._id;
-      let columnSourceTasks = newStart.tasks;
-      let columnSourceTaskOrder = newStart.taskOrder;
-      let columnToSourceId = newFinish._id;
-      let columnToTasks = newFinish.tasks;
-      let columnToTaskOrder = newFinish.taskOrder;
-      let dashboardId = taskState._id;
-
       let body = {
-        columnSourceId,
-        columnSourceTasks,
-        columnSourceTaskOrder,
-        columnToSourceId,
-        columnToTasks,
-        columnToTaskOrder,
-        dashboardId
+        columnSourceId: newStart._id,
+        columnSourceTasks: newStart.tasks,
+        columnSourceTaskOrder: newStart.taskOrder,
+        columnToSourceId: newFinish._id,
+        columnToTasks: newFinish.tasks,
+        columnToTaskOrder: newFinish.taskOrder,
+        dashboardId: taskState._id
       };
-
-      let options = {
-        method: "put",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
-      };
-      let response = await fetch("/dashboard/moveTasksToOther", options);
-      let data = await response.json();
-      console.log("result", data);
+      await fetch("/dashboard/moveTasksToOther", fetchOption("put", body));
     } catch (err) {
-      console.log(err);
+      handleError(err);
     }
   };
 
@@ -200,19 +183,9 @@ const ColumnArea = props => {
         dashboardId,
         columnOrder
       };
-
-      let options = {
-        method: "put",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
-      };
-      let response = await fetch("/dashboard/updateColumnIndex", options);
-      let data = await response.json();
-      console.log("result", data);
+      await fetch("/dashboard/updateColumnIndex", fetchOption("put", body));
     } catch (err) {
-      console.log(err);
+      handleError(err);
     }
   };
 

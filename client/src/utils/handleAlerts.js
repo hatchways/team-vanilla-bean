@@ -9,15 +9,25 @@ const handleError = err => {
   let message = "";
   switch (err) {
     case "Email not found":
-      message =
-        "The email address that you've entered doesn't match any account. Please sign up.";
+      message = "The email address that you've entered doesn't match any account. Please sign up.";
       break;
     case "Email already exists":
       message = "This email address is already in use.";
       break;
     case "Password is incorrect":
-      message =
-        "The password that you've entered is incorrect. Please try again.";
+      message = "The password that you've entered is incorrect. Please try again.";
+      break;
+    case "Dashboard does not exist":
+      message = "The Dashboard does not exist. Please try again.";
+      break;
+    case "Failed to move the task":
+      message = "We could not save the task index. Please try again.";
+      break;
+    case "Failed to move task to the column":
+      message = "We could not save the task to the column. Please try again.";
+      break;
+    case "Failed to move the column":
+      message = "We could not save the column index. Please try again.";
       break;
     default:
       message =
