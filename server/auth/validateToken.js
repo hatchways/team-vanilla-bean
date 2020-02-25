@@ -14,8 +14,7 @@ const checkToken = (req, res, next) => {
           error: "Token is not valid"
         });
       } else {
-        req.decoded = decoded;
-        next();
+        res.status(200).send(decoded.id);
       }
     });
   } else {
