@@ -6,6 +6,13 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { Redirect } from "react-router-dom";
 import { handleError } from "../utils/handleAlerts";
 
+import {
+  updateTaskIndexInColumn,
+  moveTasksToOther,
+  updateColumnIndex,
+  fetchOption
+} from "../utils/handleUpdateTasks";
+
 //materia-ui
 import LinearProgress from "@material-ui/core/LinearProgress";
 
@@ -20,6 +27,25 @@ const ColumnArea = props => {
   const { loading } = loadingState;
 
   //download data for first access
+
+  const downLoadData = async () => {
+    try {
+      setLoadingState({ loading: true });
+      let token = localStorage.getItem("token");
+      if (!token) {
+        return <Redirect to='/signin' />;
+      }
+      let body = { token };
+
+      let response = await fetch("/dashboard/getDashBoard", fetchOption("post", body));
+      let data = await response.json();
+      setTaskState(data);
+    } catch (err) {
+      handleError(err);
+    }
+    setLoadingState({ loading: false });
+  };
+
   useEffect(() => {
     downLoadData();
   }, []);
@@ -65,7 +91,7 @@ const ColumnArea = props => {
           [newColumn._id]: newColumn
         }
       });
-      updateTaskIndexInColumn(newColumn._id, taskOrder);
+      updateTaskIndexInColumn(taskState._id, newColumn._id, taskOrder);
       return;
     }
 
@@ -119,74 +145,7 @@ const ColumnArea = props => {
       }
     });
 
-    moveTasksToOther(newStart, newFinish);
-  };
-
-  const fetchOption = (method, body) => {
-    return {
-      method: method,
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
-    };
-  };
-
-  const downLoadData = async () => {
-    try {
-      setLoadingState({ loading: true });
-      let token = localStorage.getItem("token");
-      if (!token) {
-        return <Redirect to='/signin' />;
-      }
-      let body = { token };
-
-      let response = await fetch("/dashboard/getDashBoard", fetchOption("post", body));
-      let data = await response.json();
-      setTaskState(data);
-    } catch (err) {
-      handleError(err);
-    }
-    setLoadingState({ loading: false });
-  };
-
-  const updateTaskIndexInColumn = async (columnId, taskOrder) => {
-    try {
-      let dashboardId = taskState._id;
-      let body = { dashboardId: dashboardId, columnId, taskOrder };
-      await fetch("/dashboard/updateTaskIndex", fetchOption("put", body));
-    } catch (err) {
-      handleError(err);
-    }
-  };
-
-  const moveTasksToOther = async (newStart, newFinish) => {
-    try {
-      let body = {
-        columnSourceId: newStart._id,
-        columnSourceTasks: newStart.tasks,
-        columnSourceTaskOrder: newStart.taskOrder,
-        columnToSourceId: newFinish._id,
-        columnToTasks: newFinish.tasks,
-        columnToTaskOrder: newFinish.taskOrder,
-        dashboardId: taskState._id
-      };
-      await fetch("/dashboard/moveTasksToOther", fetchOption("put", body));
-    } catch (err) {
-      handleError(err);
-    }
-  };
-
-  const updateColumnIndex = async (dashboardId, columnOrder) => {
-    try {
-      let body = {
-        dashboardId,
-        columnOrder
-      };
-      await fetch("/dashboard/updateColumnIndex", fetchOption("put", body));
-    } catch (err) {
-      handleError(err);
-    }
+    moveTasksToOther(taskState._id, newStart, newFinish);
   };
 
   if (loading) {
