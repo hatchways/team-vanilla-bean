@@ -1,11 +1,9 @@
 import React, { useState } from "react";
+
 import ControlPoint from "@material-ui/icons/ControlPoint";
-import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import CreateColumn from "./CreateColumn";
-
 import CardContent from "@material-ui/core/CardContent";
-
 import { makeStyles } from "@material-ui/core/styles";
 
 const CreateColumnButton = props => {
@@ -46,7 +44,7 @@ const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
     transition: "0.2s",
-    opacity: 0.5,
+    opacity: 0.3,
     cursor: "pointer",
     "&:hover": {
       opacity: 1,

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import TaskCard from "./TaskCard";
+import BlueButton from "../components/BlueButton";
 //check how to use Cards in column data
 
 //materialUi
@@ -65,9 +66,9 @@ const Column = props => {
                     <TaskCard key={task._id} task={task} index={index} />
                   ))}
                   {provided.placeholder}
-                  <Button className={classes.btn} variant='contained' color='primary'>
+                  <BlueButton className={classes.btn} variant='contained' color='primary'>
                     Add a Card
-                  </Button>
+                  </BlueButton>
                 </div>
               )}
             </Droppable>
