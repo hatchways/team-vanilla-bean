@@ -7,9 +7,10 @@ const Tag = props => {
       margin: "10px 0",
       borderRadius: 10,
       height: 10,
-      width: 50,
-      backgroundColor: props.color || "red",
-      float: props.card && "right"
+      width: props.card ? 60 : 50,
+      backgroundColor: props.color || "white",
+      display: props.card && "inline-block",
+      marginLeft: props.card && "3%"
     }
   });
 

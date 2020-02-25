@@ -12,12 +12,16 @@ import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import CancelIcon from "@material-ui/icons/Cancel";
+import CreateCard from "./CreateCard/Modal";
 
 //Drag and Drop
 import { Droppable, Draggable } from "react-beautiful-dnd";
 
 const Column = props => {
   const classes = useStyles(props);
+  const [openCard, setOpenCard] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(false);
+
   const { column, tasks, createNew, index } = props;
 
   const [testSt, setTextSt] = useState({
@@ -25,8 +29,6 @@ const Column = props => {
     newColumnTitle: ""
   });
   const { newTaskName, newColumnTitle } = testSt;
-
-  console.log(testSt);
 
   const onChange = e => {
     setTextSt({
@@ -43,6 +45,21 @@ const Column = props => {
   const deleteColumn = e => {
     e.preventDefault();
     //Send newColumnTitle to create new column
+  };
+
+  //close card modal
+  const closeCard = () => {
+    setOpenCard(false);
+  };
+
+  const openCardModal = () => {
+    setSelectedTask(null);
+    setOpenCard(true);
+  };
+
+  const editCard = (open, id) => {
+    setOpenCard(open);
+    setSelectedTask(id);
   };
 
   if (createNew) {
@@ -95,19 +112,31 @@ const Column = props => {
                   <CancelIcon onClick={e => deleteColumn(e)} />
                 </Grid>
                 <Droppable droppableId={column.id} type="card">
-                  {(provided, snapshot) => (
+                  {provided => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       {tasks.map((task, index) => (
-                        <TaskCard key={task.id} task={task} index={index} />
+                        <TaskCard
+                          key={task.id}
+                          task={task}
+                          index={index}
+                          editCard={editCard}
+                        />
                       ))}
                       {provided.placeholder}
                       <Button
                         className={classes.btn}
                         variant="contained"
                         color="primary"
+                        onClick={openCardModal}
                       >
                         Add a card
                       </Button>
+                      <CreateCard
+                        open={openCard}
+                        column={column.title}
+                        selectedTask={selectedTask}
+                        handleClose={closeCard}
+                      />
                     </div>
                   )}
                 </Droppable>

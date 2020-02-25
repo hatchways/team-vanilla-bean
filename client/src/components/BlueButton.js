@@ -5,11 +5,11 @@ import { makeStyles } from "@material-ui/core/styles";
 const BlueButton = props => {
   const useStyles = makeStyles(theme => ({
     button: {
-      marginTop: props.none ? 0 : theme.spacing(4),
+      marginTop: props.mini ? 0 : theme.spacing(4),
       color: "white",
       textTransform: "none",
-      width: props.width || "45%",
-      height: props.height || theme.spacing(6)
+      width: props.mini ? "auto" : "45%",
+      height: props.mini ? "auto" : theme.spacing(6)
     }
   }));
   const classes = useStyles();
@@ -20,7 +20,7 @@ const BlueButton = props => {
       type="submit"
       variant="contained"
       color="primary"
-      size={props.size ? props.size : "large"}
+      size={props.mini ? "small" : "large"}
       onClick={props.onClick}
     >
       {props.children}

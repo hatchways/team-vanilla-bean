@@ -1,10 +1,9 @@
 import React from "react";
-import { Grid, IconButton, Typography, TextField } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+import { Grid, Typography, TextField } from "@material-ui/core";
 import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined";
 import BlueButton from "../BlueButton";
 
-const Description = () => {
+const Description = props => {
   return (
     <Grid item container>
       <Grid item xs={1}>
@@ -17,17 +16,15 @@ const Description = () => {
         </Typography>
         <TextField
           placeholder="Add description..."
+          defaultValue={props.description}
+          onChange={e => props.changeDescription(e.target.value)}
           variant="outlined"
           multiline
           rows={4}
           fullWidth
+          margin="normal"
         />
-        <BlueButton size="small" height="auto" width="auto" none>
-          Save
-        </BlueButton>
-        <IconButton color="primary" aria-label="close">
-          <CloseIcon fontSize="small" />
-        </IconButton>
+        <BlueButton mini>Save</BlueButton>
       </Grid>
     </Grid>
   );

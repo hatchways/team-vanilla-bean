@@ -8,7 +8,7 @@ import Tag from "./Tag";
 
 import { Draggable } from "react-beautiful-dnd";
 
-const TaskCard = ({ index, task, props }) => {
+const TaskCard = ({ index, task, props, editCard }) => {
   const classes = useStyles(props);
 
   return (
@@ -20,6 +20,9 @@ const TaskCard = ({ index, task, props }) => {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           isdragging={snapshot.isdragging}
+          onClick={() => {
+            editCard(true, task.id);
+          }}
         >
           <CardContent>
             <Tag color="green" />

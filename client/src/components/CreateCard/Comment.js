@@ -1,7 +1,6 @@
 import React from "react";
 import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
-import CloseIcon from "@material-ui/icons/Close";
-import { TextField, IconButton, Grid, Typography } from "@material-ui/core";
+import { TextField, Grid, Typography } from "@material-ui/core";
 import BlueButton from "../BlueButton";
 
 const Comment = () => {
@@ -21,13 +20,9 @@ const Comment = () => {
           multiline
           rows={2}
           fullWidth
+          margin="normal"
         />
-        <BlueButton size="small" height="auto" width="auto" none>
-          Save
-        </BlueButton>
-        <IconButton color="primary" aria-label="close">
-          <CloseIcon fontSize="small" />
-        </IconButton>
+        <BlueButton mini>Save</BlueButton>
       </Grid>
     </Grid>
   );

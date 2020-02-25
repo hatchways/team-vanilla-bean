@@ -49,6 +49,13 @@ export const theme = createMuiTheme({
           borderColor: "#759CFC"
         }
       }
+    },
+    MuiInput: {
+      underline: {
+        "&&&:before": {
+          borderBottom: "none"
+        }
+      }
     }
   }
 });
