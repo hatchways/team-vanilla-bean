@@ -10,7 +10,7 @@ import {
 
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
-import Button from "@material-ui/core/Button";
+import BlueButton from "../components/BlueButton";
 
 import { addColumn } from "../utils/handleUpdateTasks";
 import { UserContext } from "../userContext";
@@ -75,7 +75,7 @@ export default function FormDialog(props) {
               onChange={e => setTitle(e.target.value)}
               autoFocus
               fullWidth></TextField>
-            <Button type='submit'>Create</Button>
+            <BlueButton type='submit'>Create</BlueButton>
           </form>
         </DialogContent>
       </Dialog>
