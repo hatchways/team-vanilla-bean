@@ -9,7 +9,7 @@ const TaskSchema = new Schema(
     description: { type: String },
     deadline: { type: String },
     comments: [{ type: String }],
-    tag: { tag: { type: String }, color: { type: Number } },
+    tag: { type: String },
     action: { tag: { type: String }, color: { type: Number } }
   }
   // { strict: false }
