@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import ControlPoint from "@material-ui/icons/ControlPoint";
 import Typography from "@material-ui/core/Typography";
-import Fade from "@material-ui/core/Fade";
 import Card from "@material-ui/core/Card";
+import CreateColumn from "./CreateColumn";
 
 import CardContent from "@material-ui/core/CardContent";
 
@@ -10,17 +10,25 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const CreateColumnButton = props => {
   const classes = useStyles(props);
+  const [open, setOpen] = useState(false);
 
-  const addColumn = e => {
-    console.log(e);
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
   return (
-    <Card className={classes.addColumn} onClick={e => addColumn(e)}>
-      <CardContent>
-        <ControlPoint points='0,100 50,00, 100,100' className={classes.plusIcon} />
-      </CardContent>
-    </Card>
+    <div>
+      <Card className={classes.addColumn} onClick={handleClickOpen}>
+        <CardContent>
+          <ControlPoint className={classes.plusIcon} />
+        </CardContent>
+      </Card>
+      <CreateColumn open={open} handleClose={handleClose} />
+    </div>
   );
 };
 

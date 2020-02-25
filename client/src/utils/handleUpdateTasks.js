@@ -48,3 +48,16 @@ export const updateColumnIndex = async (dashboardId, columnOrder) => {
     handleError(err);
   }
 };
+
+export const addColumn = async (dashboardId, columnTitle) => {
+  try {
+    let body = {
+      dashboardId,
+      columnTitle
+    };
+    let response = await fetch("/dashboard/addColumn", fetchOption("post", body));
+    return response.json();
+  } catch (err) {
+    handleError(err);
+  }
+};
