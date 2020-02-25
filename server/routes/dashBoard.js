@@ -40,12 +40,12 @@ router.post("/addDashBoard", async (req, res) => {
       action: {}
     });
     const column1 = new Column({
-      title: "First column",
+      title: "progress",
       taskOrder: [task1.id],
       tasks: { [task1._id]: task1 }
     });
     const column2 = new Column({
-      title: "Second column",
+      title: "completed",
       taskOrder: [],
       tasks: {}
     });
@@ -67,6 +67,8 @@ router.post("/addDashBoard", async (req, res) => {
 // Add a column @Done
 router.post("/addColumn", async (req, res) => {
   const { dashboardId, columnTitle } = req.body;
+  console.log(req.body);
+
   try {
     const newColumn = new Column({
       columnTitle,
@@ -126,7 +128,6 @@ router.post("/addTask", async (req, res) => {
       ...newTasks,
       [newTask._id]: newTask
     };
-    console.log("newTask", newTask);
 
     //data manipulation
     let updateCond = {};
@@ -163,14 +164,17 @@ router.put("/updateTaskIndex", async (req, res) => {
 
 //Update column index @Done
 router.put("/updateColumnIndex", async (req, res) => {
-  const { dashboardId, columnOrder } = req.body;
   try {
+    const { dashboardId, columnOrder } = req.body;
     //data manipulation
     let updateCond = {};
     updateCond["$set"] = {};
     updateCond["$set"]["columnOrder"] = columnOrder;
+    console.log(updateCond);
 
     const result = await updateData(Dashboard, dashboardId, updateCond);
+    console.log(result);
+
     res.send(result);
   } catch (err) {
     res.send(err);

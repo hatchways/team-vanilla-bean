@@ -12,10 +12,12 @@ const ColumnArea = props => {
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
   const [loadingState, setLoadingState] = useState({
-    loading: true
+    loading: true,
+    disableMove: false
   });
   const { loading } = loadingState;
 
+  //download data. might not need
   useEffect(() => {
     downLoadData();
   }, []);
@@ -37,8 +39,7 @@ const ColumnArea = props => {
       newColumnOrder.splice(source.index, 1);
       newColumnOrder.splice(destination.index, 0, draggableId);
       setTaskState({ ...taskState, columnOrder: newColumnOrder });
-
-      //Need update Column position later
+      updateColumnIndex(taskState._id, newColumnOrder);
       return;
     }
 
@@ -47,14 +48,15 @@ const ColumnArea = props => {
 
     //for the case task move around in same column
     if (start === finish) {
-      const newTaskIds = Array.from(start.taskOrder);
+      const taskOrder = Array.from(start.taskOrder);
 
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
+      taskOrder.splice(source.index, 1);
+      taskOrder.splice(destination.index, 0, draggableId);
       const newColumn = {
         ...start,
-        taskOrder: newTaskIds
+        taskOrder: taskOrder
       };
+
       setTaskState({
         ...taskState,
         columns: {
@@ -62,23 +64,14 @@ const ColumnArea = props => {
           [newColumn._id]: newColumn
         }
       });
-
-      //need save newState to db
+      updateTaskIndexInColumn(newColumn._id, taskOrder);
       return;
     }
 
     const startTaskOrder = Array.from(start.taskOrder);
     const startTaskIndex = source.index;
     const startColumn = source.droppableId;
-    const endTaskIndex = destination.index;
     const endColumn = destination.droppableId;
-
-    // console.log(startTaskIndex);
-    // console.log(startColumn);
-    // console.log(endTaskIndex);
-    // console.log(endColumn);
-
-    // console.log(startTaskOrder[startTaskIndex]);
 
     let movedItemId;
     const newStartTasks = Object.keys(start.tasks).reduce((object, key) => {
@@ -89,7 +82,6 @@ const ColumnArea = props => {
       }
       return object;
     }, {});
-    console.log(newStartTasks);
 
     startTaskOrder.splice(source.index, 1);
     const newStart = {
@@ -97,8 +89,6 @@ const ColumnArea = props => {
       taskOrder: startTaskOrder,
       tasks: newStartTasks
     };
-
-    console.log("newStart", newStart);
 
     const finishTaskOrder = Array.from(finish.taskOrder);
     finishTaskOrder.splice(destination.index, 0, draggableId);
@@ -122,6 +112,8 @@ const ColumnArea = props => {
         [newFinish._id]: newFinish
       }
     });
+
+    moveTasksToOther(newStart, newFinish);
   };
 
   const downLoadData = async () => {
@@ -148,7 +140,81 @@ const ColumnArea = props => {
     }
   };
 
-  console.log("123", taskState);
+  const updateTaskIndexInColumn = async (columnId, taskOrder) => {
+    try {
+      let dashboardId = taskState._id;
+      let body = { dashboardId: dashboardId, columnId, taskOrder };
+      let options = {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      };
+      let response = await fetch("/dashboard/updateTaskIndex", options);
+      let data = await response.json();
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const moveTasksToOther = async (newStart, newFinish) => {
+    try {
+      let columnSourceId = newStart._id;
+      let columnSourceTasks = newStart.tasks;
+      let columnSourceTaskOrder = newStart.taskOrder;
+      let columnToSourceId = newFinish._id;
+      let columnToTasks = newFinish.tasks;
+      let columnToTaskOrder = newFinish.taskOrder;
+      let dashboardId = taskState._id;
+
+      let body = {
+        columnSourceId,
+        columnSourceTasks,
+        columnSourceTaskOrder,
+        columnToSourceId,
+        columnToTasks,
+        columnToTaskOrder,
+        dashboardId
+      };
+
+      let options = {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      };
+      let response = await fetch("/dashboard/moveTasksToOther", options);
+      let data = await response.json();
+      console.log("result", data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const updateColumnIndex = async (dashboardId, columnOrder) => {
+    try {
+      let body = {
+        dashboardId,
+        columnOrder
+      };
+
+      let options = {
+        method: "put",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      };
+      let response = await fetch("/dashboard/updateColumnIndex", options);
+      let data = await response.json();
+      console.log("result", data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   if (loading) {
     return <LinearProgress variant='query' />;
