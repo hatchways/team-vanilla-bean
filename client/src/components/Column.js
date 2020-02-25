@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import TaskCard from "./TaskCard";
@@ -7,7 +7,6 @@ import BlueButton from "../components/BlueButton";
 
 //materialUi
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
@@ -18,25 +17,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 
 const Column = props => {
   const classes = useStyles(props);
-  const { column, tasks, createNew, index } = props;
-
-  const [testSt, setTextSt] = useState({
-    newTaskName: "",
-    newColumnTitle: ""
-  });
-  const { newTaskName, newColumnTitle } = testSt;
-
-  const onChange = e => {
-    setTextSt({
-      ...testSt,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const createNewColumn = e => {
-    e.preventDefault();
-    //Send newColumnTitle to create new column
-  };
+  const { column, tasks, index } = props;
 
   const deleteColumn = e => {
     e.preventDefault();

@@ -19,7 +19,7 @@ router.post("/getDashboard", async (req, res) => {
   }
 });
 
-//Add Dashboard @in progress need to update UserId
+//Add Dashboard @Done
 router.post("/addDashBoard", async (req, res) => {
   const { dashboardTitle, token } = req.body;
 
@@ -67,7 +67,6 @@ router.post("/addDashBoard", async (req, res) => {
 // Add a column @Done
 router.post("/addColumn", async (req, res) => {
   const { dashboardId, columnTitle } = req.body;
-  console.log(req.body);
 
   try {
     const newColumn = new Column({
@@ -135,7 +134,6 @@ router.post("/addTask", async (req, res) => {
     updateCond["$set"]["columns." + columnId + ".tasks"] = newTasks;
     updateCond["$push"] = {};
     updateCond["$push"]["columns." + columnId + ".taskOrder"] = newTask._id;
-    console.log(updateCond);
 
     const result = await updateData(Dashboard, dashboardId, updateCond);
     res.send(result);
@@ -148,7 +146,6 @@ router.post("/addTask", async (req, res) => {
 router.put("/updateTaskIndex", async (req, res) => {
   try {
     const { dashboardId, columnId, taskOrder } = req.body;
-    console.log(dashboardId, columnId, taskOrder);
 
     //data manipulation
     let updateCond = {};
@@ -170,7 +167,6 @@ router.put("/updateColumnIndex", async (req, res) => {
     let updateCond = {};
     updateCond["$set"] = {};
     updateCond["$set"]["columnOrder"] = columnOrder;
-    console.log(updateCond);
 
     const result = await updateData(Dashboard, dashboardId, updateCond);
     res.send(result);

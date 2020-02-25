@@ -1,5 +1,4 @@
 import { handleError } from "./handleAlerts";
-import { Redirect } from "react-router-dom";
 
 export const fetchOption = (method, body) => {
   return {
