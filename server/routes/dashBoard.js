@@ -20,7 +20,7 @@ router.get("/dashboard", checkToken, async (req, res) => {
 
 //Add Dashboard @Done
 router.post("/dashboard", checkToken, async (req, res) => {
-  const { dashboardTitle, token } = req.body;
+  const { dashboardTitle } = req.body;
   let userId = req.decoded.id;
 
   if (!dashboardTitle) {
