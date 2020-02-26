@@ -64,8 +64,8 @@ const Column = props => {
 const useStyles = makeStyles({
   root: {
     backgroundColor: "#F4F6FF",
-    minHeight: 50,
-    width: "15rem",
+    // minHeight: 50
+    width: "300px",
     margin: "0 1rem",
     color: "black",
     textAlign: "left",

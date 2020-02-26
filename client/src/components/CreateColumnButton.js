@@ -9,6 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 const CreateColumnButton = props => {
   const classes = useStyles(props);
   const [open, setOpen] = useState(false);
+  const { position } = props;
 
   const handleClose = () => {
     setOpen(false);
@@ -25,7 +26,7 @@ const CreateColumnButton = props => {
           <ControlPoint className={classes.plusIcon} />
         </CardContent>
       </Card>
-      <CreateColumn open={open} handleClose={handleClose} />
+      <CreateColumn open={open} handleClose={handleClose} position={position} />
     </div>
   );
 };
@@ -33,10 +34,12 @@ const CreateColumnButton = props => {
 const useStyles = makeStyles({
   addColumn: {
     backgroundColor: "#D3D3D3",
-    height: 200,
-    width: "15rem",
-    margin: "0 1rem",
-    color: "black",
+    minHeight: "400px",
+    maxWidth: "100px",
+    overflow: "hidden",
+    height: "100% !important",
+    // height: "100vh",
+    color: "white",
     textAlign: "left",
     lineHeight: "normal",
     display: "flex",
@@ -44,7 +47,7 @@ const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
     transition: "0.2s",
-    opacity: 0.3,
+    opacity: 0,
     cursor: "pointer",
     "&:hover": {
       opacity: 1,
@@ -52,7 +55,7 @@ const useStyles = makeStyles({
     }
   },
   plusIcon: {
-    fontSize: 100
+    fontSize: 50
   }
 });
 

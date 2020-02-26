@@ -1,8 +1,8 @@
 import React from "react";
-import NewColumnArea from "../components/ColumnArea";
+import ColumnArea from "../components/ColumnArea";
 
 const DashBoard = () => {
-  return <NewColumnArea />;
+  return <ColumnArea />;
 };
 
 export default DashBoard;

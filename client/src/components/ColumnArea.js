@@ -3,14 +3,13 @@ import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { Redirect } from "react-router-dom";
 import { handleError } from "../utils/handleAlerts";
+import { authFetch } from "../AuthService";
 
 import {
   updateTaskIndexInColumn,
   moveTasksToOther,
-  updateColumnIndex,
-  fetchOption
+  updateColumnIndex
 } from "../utils/handleUpdateTasks";
 
 //Component
@@ -18,6 +17,8 @@ import CreateColumnButton from "../components/CreateColumnButton";
 
 //materia-ui
 import LinearProgress from "@material-ui/core/LinearProgress";
+import Grid from "@material-ui/core/Grid";
+import Container from "@material-ui/core/Container";
 
 const ColumnArea = props => {
   const classes = useStyles(props);
@@ -30,18 +31,12 @@ const ColumnArea = props => {
   const { loading } = loadingState;
 
   //download data for first access
-  const downLoadData = async () => {
+  const downLoadData = () => {
     try {
       setLoadingState({ loading: true });
-      let token = localStorage.getItem("token");
-      if (!token) {
-        return <Redirect to='/signin' />;
-      }
-      let body = { token };
-
-      let response = await fetch("/dashboard/getDashBoard", fetchOption("post", body));
-      let data = await response.json();
-      setTaskState(data);
+      authFetch("/dashboards/dashboard").then(res => {
+        setTaskState(res);
+      });
     } catch (err) {
       handleError(err);
     }
@@ -54,7 +49,6 @@ const ColumnArea = props => {
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
-
     if (!destination) {
       return;
     }
@@ -68,6 +62,8 @@ const ColumnArea = props => {
       const newColumnOrder = Array.from(taskState.columnOrder);
       newColumnOrder.splice(source.index, 1);
       newColumnOrder.splice(destination.index, 0, draggableId);
+      console.log("newColumnorder", newColumnOrder);
+
       setTaskState({ ...taskState, columnOrder: newColumnOrder });
       updateColumnIndex(taskState._id, newColumnOrder);
       return;
@@ -158,21 +154,30 @@ const ColumnArea = props => {
         <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
           {provided => (
             <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
-              {taskState ? (
-                taskState.columnOrder.map((columnId, index) => {
-                  const column = taskState.columns[columnId];
-                  let taskOrder = taskState.columns[columnId].taskOrder || [];
-                  let tasks = taskOrder.map(task => {
-                    return column.tasks[task];
-                  });
+              <Container className={classes.container}>
+                <Grid container direction='row' justify='flex-start' alignItems='flex-start'>
+                  <CreateColumnButton position='left' />
+                  {taskState ? (
+                    taskState.columnOrder.map((columnId, index) => {
+                      const column = taskState.columns[columnId];
+                      let taskOrder = taskState.columns[columnId].taskOrder || [];
+                      let tasks = taskOrder.map(task => {
+                        return column.tasks[task];
+                      });
 
-                  return <Column key={column._id} column={column} tasks={tasks} index={index} />;
-                })
-              ) : (
-                <h1>hello</h1>
-              )}
-              {provided.placeholder}
-              <CreateColumnButton />
+                      return (
+                        <Column key={column._id} column={column} tasks={tasks} index={index} />
+                      );
+                    })
+                  ) : (
+                    <h1>hello</h1>
+                  )}
+
+                  <CreateColumnButton position='right' />
+
+                  {provided.placeholder}
+                </Grid>
+              </Container>
             </div>
           )}
         </Droppable>
@@ -185,8 +190,13 @@ const useStyles = makeStyles({
   root: {
     display: "flex",
     justifyContent: "flex-start",
-    alignContent: "center",
-    width: "100%"
+    alignContent: "center"
+    // width: 20000,
+    // overflowX: "auto"
+  },
+  container: {
+    overflowY: "scroll",
+    whiteSpace: "nowrap"
   }
 });
 export default ColumnArea;

@@ -1,25 +1,16 @@
 import { handleError } from "./handleAlerts";
-
-export const fetchOption = (method, body) => {
-  return {
-    method: method,
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(body)
-  };
-};
+import { authFetch } from "../AuthService";
 
 export const updateTaskIndexInColumn = async (dashboardId, columnId, taskOrder) => {
   try {
     let body = { dashboardId, columnId, taskOrder };
-    await fetch("/dashboard/updateTaskIndex", fetchOption("put", body));
+    authFetch("/dashboards/task", { method: "put", body: JSON.stringify(body) });
   } catch (err) {
     handleError(err);
   }
 };
 
-export const moveTasksToOther = async (dashboardId, newStart, newFinish) => {
+export const moveTasksToOther = async (dashboardId, newStart, newFinish, cd) => {
   try {
     let body = {
       columnSourceId: newStart._id,
@@ -30,7 +21,7 @@ export const moveTasksToOther = async (dashboardId, newStart, newFinish) => {
       columnToTaskOrder: newFinish.taskOrder,
       dashboardId
     };
-    await fetch("/dashboard/moveTasksToOther", fetchOption("put", body));
+    authFetch("/dashboards/task-column", { method: "put", body: JSON.stringify(body) });
   } catch (err) {
     handleError(err);
   }
@@ -42,20 +33,28 @@ export const updateColumnIndex = async (dashboardId, columnOrder) => {
       dashboardId,
       columnOrder
     };
-    await fetch("/dashboard/updateColumnIndex", fetchOption("put", body));
+    authFetch("/dashboards/column", { method: "put", body: JSON.stringify(body) });
   } catch (err) {
     handleError(err);
   }
 };
 
-export const addColumn = async (dashboardId, columnTitle) => {
+export const addColumn = (dashboardId, columnTitle, position, cb) => {
   try {
+    console.log(position);
+
     let body = {
       dashboardId,
-      columnTitle
+      columnTitle,
+      position
     };
-    let response = await fetch("/dashboard/addColumn", fetchOption("post", body));
-    return response.json();
+
+    authFetch("/dashboards/column", {
+      method: "post",
+      body: JSON.stringify(body)
+    }).then(res => {
+      cb(res);
+    });
   } catch (err) {
     handleError(err);
   }

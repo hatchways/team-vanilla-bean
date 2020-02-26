@@ -16,19 +16,18 @@ import { addColumn } from "../utils/handleUpdateTasks";
 import { UserContext } from "../userContext";
 
 export default function FormDialog(props) {
-  const { open, handleClose } = props;
+  const { open, handleClose, position } = props;
   const [title, setTitle] = useState("");
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
 
-  const handleSubmit = async e => {
+  const handleSubmit = e => {
     e.preventDefault();
+    let dashboardId = taskState._id;
     try {
-      let dashboardId = taskState._id;
-      let response = await addColumn(dashboardId, title);
-      console.log(response);
-
-      setTaskState(response);
+      addColumn(dashboardId, title, position, res => {
+        setTaskState(res);
+      });
     } catch (err) {
       handleClose(err);
     }
