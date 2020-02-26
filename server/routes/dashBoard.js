@@ -93,7 +93,6 @@ router.post("/column", async (req, res) => {
     updateCond["$set"]["columns"] = newColumns;
     updateCond["$push"] = {};
     updateCond["$push"]["columnOrder"] = newColumn._id;
-    console.log(updateCond);
 
     const result = await updateData(Dashboard, dashboardId, updateCond);
     res.send(result);
