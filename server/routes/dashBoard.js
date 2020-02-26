@@ -1,14 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const { updateData, decodeToken } = require("../util/util");
+const { updateData } = require("../util/util");
+const checkToken = require("../auth/validateToken");
 
 // Models;
 const { Task, Column, Dashboard } = require("../models/Dashboard");
 
 //@CreateBoard
-router.get("/dashboard", async (req, res) => {
-  const { token } = req.body;
-  let userId = await decodeToken(token);
+router.get("/dashboard", checkToken, async (req, res) => {
+  const userId = req.decoded.id;
 
   try {
     let result = await Dashboard.findOne({ user: userId });
