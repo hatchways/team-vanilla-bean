@@ -8,7 +8,7 @@ const { Task, Column, Dashboard } = require("../models/Dashboard");
 
 //@CreateBoard
 router.get("/dashboard", checkToken, async (req, res) => {
-  const userId = req.decoded.id;
+  let userId = req.decoded.id;
 
   try {
     let result = await Dashboard.findOne({ user: userId });
@@ -19,10 +19,9 @@ router.get("/dashboard", checkToken, async (req, res) => {
 });
 
 //Add Dashboard @Done
-router.post("/dashboard", async (req, res) => {
+router.post("/dashboard", checkToken, async (req, res) => {
   const { dashboardTitle, token } = req.body;
-
-  let userId = await decodeToken(token);
+  let userId = req.decoded.id;
 
   if (!dashboardTitle) {
     return res.status(401).json({ error: "Please Enter dashboard name" });
