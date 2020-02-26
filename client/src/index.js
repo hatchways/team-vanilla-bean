@@ -3,10 +3,13 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import UserProvider from "./userContext";
+import { CardProvider } from "./components/CreateCard/cardContext";
 
 ReactDOM.render(
   <UserProvider>
-    <App />
+    <CardProvider>
+      <App />
+    </CardProvider>
   </UserProvider>,
   document.getElementById("root")
 );

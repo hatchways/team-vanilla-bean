@@ -21,6 +21,7 @@ const CardButton = props => {
       size="small"
       variant="contained"
       className={classes.button}
+      onClick={props.onClick}
       disableElevation
       fullWidth
     >

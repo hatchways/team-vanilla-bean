@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { CardContext } from "./CreateCard/cardContext";
 
 import TaskCard from "./TaskCard";
 //check how to use Cards in column data
@@ -19,8 +20,8 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 
 const Column = props => {
   const classes = useStyles(props);
-  const [openCard, setOpenCard] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(false);
+  const card = useContext(CardContext);
+  const { createNewCard } = card;
 
   const { column, tasks, createNew, index } = props;
 
@@ -45,21 +46,6 @@ const Column = props => {
   const deleteColumn = e => {
     e.preventDefault();
     //Send newColumnTitle to create new column
-  };
-
-  //close card modal
-  const closeCard = () => {
-    setOpenCard(false);
-  };
-
-  const openCardModal = () => {
-    setSelectedTask(null);
-    setOpenCard(true);
-  };
-
-  const editCard = (open, id) => {
-    setOpenCard(open);
-    setSelectedTask(id);
   };
 
   if (createNew) {
@@ -110,26 +96,22 @@ const Column = props => {
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       {tasks.map((task, index) => (
                         <TaskCard
+                          columnName={column.title}
                           key={task.id}
                           task={task}
                           index={index}
-                          editCard={editCard}
                         />
                       ))}
                       {provided.placeholder}
-                      <Button mini onClick={openCardModal}>
+
+                      <Button mini onClick={() => createNewCard(column.title)}>
                         Add a card
                       </Button>
-                      <CreateCard
-                        open={openCard}
-                        column={column.title}
-                        selectedTask={selectedTask}
-                        handleClose={closeCard}
-                      />
                     </div>
                   )}
                 </Droppable>
               </CardContent>
+              <CreateCard />
             </Card>
           )}
         </Draggable>

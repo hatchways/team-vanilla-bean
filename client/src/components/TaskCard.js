@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Tag from "./Tag";
+import { CardContext } from "./CreateCard/cardContext";
 
 import { Draggable } from "react-beautiful-dnd";
 
-const TaskCard = ({ index, task, props, editCard }) => {
+const TaskCard = ({ index, task, props, columnName }) => {
   const classes = useStyles(props);
+
+  const card = useContext(CardContext);
+  const { handleCurrentTask } = card;
 
   return (
     <Draggable draggableId={task.id} index={index}>
@@ -21,7 +25,7 @@ const TaskCard = ({ index, task, props, editCard }) => {
           ref={provided.innerRef}
           isdragging={snapshot.isdragging}
           onClick={() => {
-            editCard(true, task.id);
+            handleCurrentTask(task.id, columnName);
           }}
         >
           <CardContent>

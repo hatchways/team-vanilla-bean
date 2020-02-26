@@ -16,7 +16,7 @@ const Tag = props => {
 
   const classes = useStyles(props);
 
-  return <div className={classes.tag}></div>;
+  return <div className={classes.tag} onClick={props.onClick}></div>;
 };
 
 export default Tag;

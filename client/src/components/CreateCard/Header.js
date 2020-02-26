@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, IconButton, Typography, TextField } from "@material-ui/core";
 import Tag from "../Tag";
 import AssignmentOutlinedIcon from "@material-ui/icons/AssignmentOutlined";
 import CloseIcon from "@material-ui/icons/Close";
+import SelectTag from "./SelectTag";
 
-const Header = props => {
+import { CardContext } from "./cardContext";
+
+const Header = () => {
+  const card = useContext(CardContext);
+  const {
+    title,
+    handleTitleChange,
+    columnName,
+    handleCloseCard,
+    tag,
+    handleOpenTag,
+    openTag
+  } = card;
+
   const useStyles = makeStyles(theme => ({
     header: {
       borderBottom: "2px rgba(117,156,252, 0.1) solid"
@@ -26,7 +40,7 @@ const Header = props => {
   return (
     <Grid item xs={12} className={classes.header}>
       <IconButton
-        onClick={props.handleClose}
+        onClick={handleCloseCard}
         className={classes.closeButton}
         aria-label="close"
       >
@@ -40,14 +54,18 @@ const Header = props => {
         <Grid item xs={11}>
           <TextField
             placeholder="Add title..."
-            defaultValue={props.title}
-            autoFocus={!props.title}
+            value={title}
+            autoFocus={!title}
             InputProps={{ classes: { input: classes.text } }}
-            onChange={e => props.changeTitle(e.target.value)}
+            onChange={e => handleTitleChange(e)}
           />
-          <Tag color={props.tag} card />
+          {openTag ? (
+            <SelectTag />
+          ) : (
+            tag && <Tag onClick={handleOpenTag} color={tag} card />
+          )}
           <Typography variant="subtitle2" display="block" color="secondary">
-            In list "{props.column}"
+            In list "{columnName}"
           </Typography>
         </Grid>
       </Grid>

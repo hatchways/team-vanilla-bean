@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Grid, Typography, TextField } from "@material-ui/core";
 import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined";
 import BlueButton from "../BlueButton";
 
-const Description = props => {
+import { CardContext } from "./cardContext";
+
+const Description = () => {
+  const card = useContext(CardContext);
+  const { description, handleDescriptionChange } = card;
+
   return (
     <Grid item container>
       <Grid item xs={1}>
@@ -16,8 +21,8 @@ const Description = props => {
         </Typography>
         <TextField
           placeholder="Add description..."
-          defaultValue={props.description}
-          onChange={e => props.changeDescription(e.target.value)}
+          value={description}
+          onChange={e => handleDescriptionChange(e)}
           variant="outlined"
           multiline
           rows={4}
