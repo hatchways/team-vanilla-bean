@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { updateData } = require("../util/util");
+const updateData = require("../util/util");
 const checkToken = require("../auth/validateToken");
 
 // Models;
@@ -63,7 +63,7 @@ router.post("/dashboard", checkToken, async (req, res) => {
 });
 
 // Add a column @Done
-router.post("/column", async (req, res) => {
+router.post("/column", checkToken, async (req, res) => {
   const { dashboardId, columnTitle } = req.body;
   try {
     const newColumn = new Column({
@@ -100,7 +100,7 @@ router.post("/column", async (req, res) => {
 });
 
 // Add a Card @Done
-router.post("/task", async (req, res) => {
+router.post("/task", checkToken, async (req, res) => {
   const { dashboardId, columnId, content, description, tag, action } = req.body;
   try {
     const newTask = new Task({
@@ -139,7 +139,7 @@ router.post("/task", async (req, res) => {
 });
 
 //Update task index within same column @Done
-router.put("/task", async (req, res) => {
+router.put("/task", checkToken, async (req, res) => {
   try {
     const { dashboardId, columnId, taskOrder } = req.body;
 
@@ -156,7 +156,7 @@ router.put("/task", async (req, res) => {
 });
 
 //Update column index @Done
-router.put("/column", async (req, res) => {
+router.put("/column", checkToken, async (req, res) => {
   const { dashboardId, columnOrder } = req.body;
   try {
     //data manipulation
@@ -172,7 +172,7 @@ router.put("/column", async (req, res) => {
 });
 
 //Update task index between Column @Done
-router.put("/task-column", async (req, res) => {
+router.put("/task-column", checkToken, async (req, res) => {
   const {
     columnSourceId,
     columnSourceTasks,
@@ -192,6 +192,8 @@ router.put("/task-column", async (req, res) => {
     updateCond["$set"]["columns." + columnToSourceId + ".taskOrder"] = columnToTaskOrder;
 
     const result = await updateData(Dashboard, dashboardId, updateCond);
+    console.log(result);
+
     res.status(200).send(result);
   } catch (err) {
     res.status(400).json({ error: "Failed to move task to the column" });
@@ -199,7 +201,7 @@ router.put("/task-column", async (req, res) => {
 });
 
 //delete card @done
-router.put("/remove-task", async (req, res) => {
+router.put("/remove-task", checkToken, async (req, res) => {
   const { dashboardId, columnId, taskId } = req.body;
   try {
     //data manipulation
@@ -217,7 +219,7 @@ router.put("/remove-task", async (req, res) => {
 });
 
 //delete column @done
-router.put("/remove-column", async (req, res) => {
+router.put("/remove-column", checkToken, async (req, res) => {
   const { dashboardId, columnId } = req.body;
   try {
     //data manipulation
@@ -235,7 +237,7 @@ router.put("/remove-column", async (req, res) => {
 });
 
 //delete dashboard @done
-router.delete("/dashboard", async (req, res) => {
+router.delete("/dashboard", checkToken, async (req, res) => {
   const { dashboardId } = req.body;
   Dashboard.remove({ _id: dashboardId }, function(err) {
     if (!err) {
