@@ -21,10 +21,10 @@ router.get("/dashboard", checkToken, async (req, res) => {
 
 //Add Dashboard @Done
 router.post("/dashboard", checkToken, async (req, res) => {
-  const { dashboardTitle } = req.body;
+  const { title } = req.body;
   let userId = req.decoded.id;
 
-  if (!dashboardTitle) {
+  if (!title) {
     return res.status(401).json({ error: "Please Enter dashboard name" });
   }
 
@@ -39,19 +39,19 @@ router.post("/dashboard", checkToken, async (req, res) => {
       action: {}
     });
     const column1 = new Column({
-      columnTitle: "in progress",
+      title: "in progress",
       taskOrder: [task1.id],
       tasks: { [task1._id]: task1 }
     });
     const column2 = new Column({
-      columnTitle: "completed",
+      title: "completed",
       taskOrder: [],
       tasks: {}
     });
 
     const newDashBoard = new Dashboard({
       user: userId,
-      dashboardTitle: dashboardTitle,
+      title: title,
       columns: { [column1._id]: column1, [column2._id]: column2 },
       columnOrder: [column1.id, column2.id]
     });
@@ -65,11 +65,11 @@ router.post("/dashboard", checkToken, async (req, res) => {
 
 // Add a column @Done
 router.post("/column", checkToken, async (req, res) => {
-  const { dashboardId, columnTitle, position } = req.body;
+  const { dashboardId, title, position } = req.body;
 
   try {
     const newColumn = new Column({
-      columnTitle,
+      title,
       tasks: [],
       taskOrder: []
     });

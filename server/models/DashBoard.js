@@ -13,14 +13,14 @@ const TaskSchema = new Schema({
 });
 
 const ColumnSchema = new Schema({
-  columnTitle: { type: String },
+  title: { type: String },
   tasks: { type: Map, of: TaskSchema },
   taskOrder: [{ type: mongoose.Schema.Types.ObjectId, ref: TaskSchema }] //don't populate this, it's for ordering
 });
 
 const DashBoardSchema = new Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: User },
-  dashboardTitle: { type: String, required: true },
+  title: { type: String, required: true },
   columns: { type: Map, of: ColumnSchema },
   columnOrder: [{ type: mongoose.Schema.Types.ObjectId, ref: ColumnSchema }]
 });
