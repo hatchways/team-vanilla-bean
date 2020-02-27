@@ -39,7 +39,6 @@ const logout = () => {
 
 const authFetch = (url, options) => {
   headers["Authorization"] = "Bearer " + getToken();
-
   return fetch(url, {
     headers,
     ...options

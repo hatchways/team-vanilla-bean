@@ -5,7 +5,6 @@ const checkToken = (req, res, next) => {
 
   // Remove Bearer from string
   token = token.slice(7, token.length);
-
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
       if (err) {

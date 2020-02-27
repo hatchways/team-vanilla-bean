@@ -1,13 +1,49 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { handleError } from "../utils/handleAlerts";
+import { authFetch } from "../AuthService";
+
+import {
+  updateTaskIndexInColumn,
+  moveTasksToOther,
+  updateColumnIndex
+} from "../utils/handleUpdateTasks";
+
+//Component
+import CreateColumnButton from "../components/CreateColumnButton";
+
+//materia-ui
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 const ColumnArea = props => {
   const classes = useStyles(props);
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
+  const [loadingState, setLoadingState] = useState({
+    loading: true,
+    disableMove: false
+  });
+  const { loading } = loadingState;
+
+  //download data for first access
+  const downLoadData = () => {
+    try {
+      setLoadingState({ loading: true });
+      authFetch("/dashboards/dashboard").then(res => {
+        setTaskState(res);
+      });
+    } catch (err) {
+      handleError(err);
+    }
+    setLoadingState({ loading: false });
+  };
+
+  useEffect(() => {
+    downLoadData();
+  }, []);
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
@@ -15,10 +51,7 @@ const ColumnArea = props => {
       return;
     }
     //Check if it is dropped to same column and same index
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return;
     }
 
@@ -27,98 +60,140 @@ const ColumnArea = props => {
       const newColumnOrder = Array.from(taskState.columnOrder);
       newColumnOrder.splice(source.index, 1);
       newColumnOrder.splice(destination.index, 0, draggableId);
+
       setTaskState({ ...taskState, columnOrder: newColumnOrder });
+      updateColumnIndex(taskState._id, newColumnOrder);
       return;
     }
 
     const start = taskState.columns[source.droppableId];
     const finish = taskState.columns[destination.droppableId];
 
-    //for the case card move around in same column
+    //for the case task move around in same column
     if (start === finish) {
-      const newTaskIds = Array.from(start.taskIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
+      const taskOrder = Array.from(start.taskOrder);
+      taskOrder.splice(source.index, 1);
+      taskOrder.splice(destination.index, 0, draggableId);
       const newColumn = {
         ...start,
-        taskIds: newTaskIds
+        taskOrder: taskOrder
       };
 
       setTaskState({
         ...taskState,
         columns: {
           ...taskState.columns,
-          [newColumn.id]: newColumn
+          [newColumn._id]: newColumn
         }
       });
+      updateTaskIndexInColumn(taskState._id, newColumn._id, taskOrder);
       return;
     }
 
-    const startTaskIds = Array.from(start.taskIds);
-    startTaskIds.splice(source.index, 1);
+    //Move task to other column
+    const startTaskOrder = Array.from(start.taskOrder);
+    const startTaskIndex = source.index;
+    const startColumn = source.droppableId;
+    const endColumn = destination.droppableId;
+    let movedTaskId;
+
+    //Delete moved task from tasks in original column
+    const newStartTasks = Object.keys(start.tasks).reduce((object, key) => {
+      if (key !== startTaskOrder[startTaskIndex]) {
+        object[key] = start.tasks[key];
+      } else {
+        movedTaskId = startTaskOrder[startTaskIndex];
+      }
+      return object;
+    }, {});
+
+    //update original column
+    startTaskOrder.splice(source.index, 1);
     const newStart = {
       ...start,
-      taskIds: startTaskIds
+      taskOrder: startTaskOrder,
+      tasks: newStartTasks
     };
 
-    const finishTaskIds = Array.from(finish.taskIds);
-    finishTaskIds.splice(destination.index, 0, draggableId);
+    //update destination column
+    const finishTaskOrder = Array.from(finish.taskOrder);
+    finishTaskOrder.splice(destination.index, 0, draggableId);
+
+    let movedTask = taskState.columns[startColumn].tasks[movedTaskId];
+    let existedTasks = taskState.columns[endColumn].tasks;
+
+    existedTasks[movedTask._id] = movedTask;
+
+    //new destination column
     const newFinish = {
       ...finish,
-      taskIds: finishTaskIds
+      taskOrder: finishTaskOrder,
+      tasks: { ...existedTasks }
     };
 
     setTaskState({
       ...taskState,
       columns: {
         ...taskState.columns,
-        [newStart.id]: newStart,
-        [newFinish.id]: newFinish
+        [newStart._id]: newStart,
+        [newFinish._id]: newFinish
       }
     });
+
+    moveTasksToOther(taskState._id, newStart, newFinish);
   };
 
-  return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable
-        droppableId="all-columns"
-        direction='"horizontal'
-        type="column"
-      >
-        {provided => (
-          <div
-            className={classes.root}
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-          >
-            {taskState.columnOrder.map((columnId, index) => {
-              const column = taskState.columns[columnId];
-              const tasks = column.taskIds.map(
-                taskId => taskState.tasks[taskId]
-              );
-              return (
-                <Column
-                  key={column.id}
-                  column={column}
-                  tasks={tasks}
-                  index={index}
-                />
-              );
-            })}
-            {provided.placeholder}
-            <Column createNew />
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
-  );
-};
-const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignContent: "center",
-    width: "100%"
+  if (loading) {
+    return <LinearProgress variant='query' />;
+  } else {
+    return (
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
+          {provided => (
+            <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
+              <CreateColumnButton position='left' />
+              {taskState ? (
+                taskState.columnOrder.map((columnId, index) => {
+                  const column = taskState.columns[columnId];
+                  let taskOrder = taskState.columns[columnId].taskOrder || [];
+                  let tasks = taskOrder.map(task => {
+                    return column.tasks[task];
+                  });
+
+                  return (
+                    <div className={classes.columns}>
+                      <Column key={column._id} column={column} tasks={tasks} index={index} />
+                    </div>
+                  );
+                })
+              ) : (
+                <CreateColumnButton position='right' />
+              )}
+              <CreateColumnButton position='right' />
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    );
   }
-});
+};
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    // display: "flex",
+    // width: 2500,
+    // flexGrow: 1
+    // display: "flex",
+    // justifyContent: "center"
+    display: "flex",
+    overflow: "auto",
+    minHeight: "100vh"
+  },
+  columns: {
+    userSelect: "none",
+    padding: " 4 * 2"
+    // margin: "0 7px 0 0"
+  }
+}));
 export default ColumnArea;
