@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const User = require("./User");
 
 const TaskSchema = new Schema({
-  content: { type: String, required: true },
+  title: { type: String, required: true },
   description: { type: String },
   deadline: { type: String },
   comments: [{ type: String }],
@@ -13,7 +13,7 @@ const TaskSchema = new Schema({
 });
 
 const ColumnSchema = new Schema({
-  title: { type: String },
+  title: { type: String, required: true },
   tasks: { type: Map, of: TaskSchema },
   taskOrder: [{ type: mongoose.Schema.Types.ObjectId, ref: TaskSchema }] //don't populate this, it's for ordering
 });
