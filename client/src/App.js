@@ -6,7 +6,6 @@ import { theme } from "./themes/theme";
 import DashBoard from "./pages/DashBoard";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-
 import PrivateRoute from "./utils/routes";
 
 import "./App.css";
