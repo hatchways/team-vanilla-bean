@@ -48,7 +48,7 @@ const ColumnArea = props => {
         ...taskState,
         columns: {
           ...taskState.columns,
-          [newColumn.id]: newColumn
+          [newColumn._id]: newColumn
         }
       });
       return;
@@ -72,8 +72,8 @@ const ColumnArea = props => {
       ...taskState,
       columns: {
         ...taskState.columns,
-        [newStart.id]: newStart,
-        [newFinish.id]: newFinish
+        [newStart._id]: newStart,
+        [newFinish._id]: newFinish
       }
     });
   };
@@ -98,7 +98,7 @@ const ColumnArea = props => {
               );
               return (
                 <Column
-                  key={column.id}
+                  key={column._id}
                   column={column}
                   tasks={tasks}
                   index={index}

@@ -68,7 +68,7 @@ const Column = props => {
   } else {
     return (
       <div>
-        <Draggable draggableId={column.id} index={index}>
+        <Draggable draggableId={column._id} index={index}>
           {provided => (
             <Card
               {...provided.draggableProps}
@@ -91,13 +91,13 @@ const Column = props => {
                   </Typography>
                   <CancelIcon onClick={e => deleteColumn(e)} />
                 </Grid>
-                <Droppable droppableId={column.id} type="card">
+                <Droppable droppableId={column._id} type="card">
                   {provided => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       {tasks.map((task, index) => (
                         <TaskCard
-                          columnId={column.id}
-                          key={task.id}
+                          columnId={column._id}
+                          key={task._id}
                           task={task}
                           index={index}
                         />
@@ -106,7 +106,7 @@ const Column = props => {
 
                       <Button
                         mini
-                        onClick={() => handleCurrentTask(null, column.id)}
+                        onClick={() => handleCurrentTask(null, column._id)}
                       >
                         Add a card
                       </Button>
