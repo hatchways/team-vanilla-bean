@@ -30,7 +30,7 @@ const BlueNav = () => {
     <AppBar position='static' className={classes.root}>
       <Toolbar>
         <Typography variant='h6' className={classes.title}>
-          {taskState.dashboardTitle}
+          {taskState.title}
         </Typography>
         <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu'>
           <MenuIcon />
