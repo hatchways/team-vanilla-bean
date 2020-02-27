@@ -82,21 +82,28 @@ router.delete("/:dashboardId", checkToken, async (req, res) => {
 // Add a column @Done
 
 router.post("/:dashboardId/columns", checkToken, async (req, res) => {
-  const { dashboardId, title } = req.body;
+  const { dashboardId, title, position } = req.body;
   try {
+    if (!title) {
+      return res.status(401).json({ error: "Please Enter column title" });
+    }
+    let board = await Dashboard.findOne({ _id: dashboardId });
+
     const newColumn = new Column({
       title,
       tasks: [],
       taskOrder: []
     });
+    console.log(newColumn);
 
-    if (!title) {
-      return res.status(401).json({ error: "Please Enter column title" });
+    board.columns.set(newColumn._id.toString(), newColumn);
+
+    if (position === "left") {
+      board.columnOrder.unshift(newColumn._id.toString());
+    } else {
+      board.columnOrder.push(newColumn._id);
     }
 
-    let board = await Dashboard.findOne({ _id: dashboardId });
-    board.columns.set(newColumn._id.toString(), newColumn);
-    board.columnOrder.push(newColumn._id);
     const result = await board.save();
     res.status(200).json({ result });
   } catch (err) {
@@ -227,6 +234,8 @@ router.put("/:dashboardId/columns/:columnId/taskOrder", checkToken, async (req, 
 
 //Update task index between Column @Done
 router.put("/:dashboardId/columns/:columnId/taskColumnOrder", checkToken, async (req, res) => {
+  console.log(req.body);
+
   const {
     columnSourceId,
     columnSourceTasks,
