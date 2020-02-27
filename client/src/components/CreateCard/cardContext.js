@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useMemo } from "react";
 import moment from "moment";
 import { authFetch } from "../../AuthService";
 import { UserContext } from "../../userContext";
@@ -25,6 +25,8 @@ const CardProvider = props => {
   const [dashboard] = value1;
   const dashboardId = dashboard._id;
 
+  console.log(dashboardId);
+
   const handleCurrentTask = (taskId, columnId) => {
     const columnName = dashboard.columns[columnId].title;
     if (!taskId) {
@@ -44,6 +46,8 @@ const CardProvider = props => {
   };
 
   const fetchCard = (taskId, columnId) => {
+    columnId = "column-1";
+    taskId = "task-1";
     const task = dashboard.columns[columnId].tasks[taskId];
     setTitle(task.title);
     setDescription(task.description);
@@ -69,7 +73,8 @@ const CardProvider = props => {
           method: "POST",
           body: JSON.stringify(createTask)
         })
-          .then(() => handleCloseCard())
+          .then(res => handleUpdateContext(res))
+          .then(handleCloseCard())
           .then(() => handleSuccess(`${title} has been saved!`))
           .catch(err => {
             handleError(err);
@@ -95,6 +100,10 @@ const CardProvider = props => {
           });
       }
     }
+  };
+
+  const handleUpdateContext = res => {
+    console.log(res);
   };
 
   const handleOpenCard = () => {
