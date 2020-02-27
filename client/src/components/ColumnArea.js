@@ -17,8 +17,8 @@ import CreateColumnButton from "../components/CreateColumnButton";
 
 //materia-ui
 import LinearProgress from "@material-ui/core/LinearProgress";
-import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
+import List from "@material-ui/core/List";
 
 const ColumnArea = props => {
   const classes = useStyles(props);
@@ -153,9 +153,9 @@ const ColumnArea = props => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
           {provided => (
-            <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
-              <Container className={classes.container}>
-                <Grid container direction='row' justify='flex-start' alignItems='flex-start'>
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              <List style={{ maxWidth: "100%", overflow: "auto" }}>
+                <div className={classes.root}>
                   <CreateColumnButton position='left' />
                   {taskState ? (
                     taskState.columnOrder.map((columnId, index) => {
@@ -170,14 +170,12 @@ const ColumnArea = props => {
                       );
                     })
                   ) : (
-                    <h1>hello</h1>
+                    <CreateColumnButton position='right' />
                   )}
-
                   <CreateColumnButton position='right' />
-
                   {provided.placeholder}
-                </Grid>
-              </Container>
+                </div>
+              </List>
             </div>
           )}
         </Droppable>
@@ -186,17 +184,12 @@ const ColumnArea = props => {
   }
 };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
-    justifyContent: "flex-start",
-    alignContent: "center"
-    // width: 20000,
-    // overflowX: "auto"
+    // width: 2500
+    flexGrow: 1
   },
-  container: {
-    overflowY: "scroll",
-    whiteSpace: "nowrap"
-  }
-});
+  gridList: {}
+}));
 export default ColumnArea;

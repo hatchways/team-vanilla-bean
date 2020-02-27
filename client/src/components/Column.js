@@ -38,7 +38,7 @@ const Column = props => {
               <Typography variant='h5' className={classes.title}>
                 {column.columnTitle}
               </Typography>
-              <CancelIcon onClick={e => deleteColumn(e)} />
+              <CancelIcon className={classes.cancel} onClick={e => deleteColumn(e)} />
             </Grid>
             <Droppable droppableId={column._id} type='card'>
               {provided => (
@@ -92,6 +92,9 @@ const useStyles = makeStyles({
     lineHeight: "normal",
     display: "flex",
     flexDirection: "column"
+  },
+  cancel: {
+    color: "grey"
   }
 });
 
