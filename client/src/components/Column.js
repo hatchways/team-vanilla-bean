@@ -21,7 +21,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 const Column = props => {
   const classes = useStyles(props);
   const card = useContext(CardContext);
-  const { createNewCard } = card;
+  const { handleCurrentTask } = card;
 
   const { column, tasks, createNew, index } = props;
 
@@ -96,7 +96,7 @@ const Column = props => {
                     <div {...provided.droppableProps} ref={provided.innerRef}>
                       {tasks.map((task, index) => (
                         <TaskCard
-                          columnName={column.title}
+                          columnId={column.id}
                           key={task.id}
                           task={task}
                           index={index}
@@ -104,7 +104,10 @@ const Column = props => {
                       ))}
                       {provided.placeholder}
 
-                      <Button mini onClick={() => createNewCard(column.title)}>
+                      <Button
+                        mini
+                        onClick={() => handleCurrentTask(null, column.id)}
+                      >
                         Add a card
                       </Button>
                     </div>

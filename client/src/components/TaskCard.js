@@ -9,7 +9,7 @@ import { CardContext } from "./CreateCard/cardContext";
 
 import { Draggable } from "react-beautiful-dnd";
 
-const TaskCard = ({ index, task, props, columnName }) => {
+const TaskCard = ({ index, task, props, columnId }) => {
   const classes = useStyles(props);
 
   const card = useContext(CardContext);
@@ -25,7 +25,7 @@ const TaskCard = ({ index, task, props, columnName }) => {
           ref={provided.innerRef}
           isdragging={snapshot.isdragging}
           onClick={() => {
-            handleCurrentTask(task.id, columnName);
+            handleCurrentTask(task.id, columnId);
           }}
         >
           <CardContent>

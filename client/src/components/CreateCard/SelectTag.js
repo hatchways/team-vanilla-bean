@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { Typography } from "@material-ui/core";
 import { CardContext } from "./cardContext";
 
 const useStyles = makeStyles(theme => ({
@@ -14,7 +15,7 @@ const useStyles = makeStyles(theme => ({
       width: "20px",
       height: "20px"
     },
-    "& :hover": {
+    "& div:hover": {
       border: "1px solid #B5C0D9"
     }
   },
@@ -43,6 +44,9 @@ const SelectTag = () => {
 
   return (
     <div className={classes.root}>
+      <Typography variant="subtitle2" color="secondary">
+        Select Tag:
+      </Typography>
       <div
         className={classes.green}
         onClick={() => handleTagChange("#5ACD76")}
