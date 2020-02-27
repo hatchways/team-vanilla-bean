@@ -39,7 +39,7 @@ router.post("/dashboard", checkToken, async (req, res) => {
       action: {}
     });
     const column1 = new Column({
-      columnTitle: "progress",
+      columnTitle: "in progress",
       taskOrder: [task1.id],
       tasks: { [task1._id]: task1 }
     });
