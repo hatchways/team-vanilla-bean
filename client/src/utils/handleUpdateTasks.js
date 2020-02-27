@@ -41,8 +41,6 @@ export const updateColumnIndex = async (dashboardId, columnOrder) => {
 
 export const addColumn = (dashboardId, columnTitle, position, cb) => {
   try {
-    console.log(position);
-
     let body = {
       dashboardId,
       columnTitle,

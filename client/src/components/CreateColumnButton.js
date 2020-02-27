@@ -37,8 +37,6 @@ const useStyles = makeStyles({
     minHeight: "400px",
     maxWidth: "100px",
     overflow: "hidden",
-    height: "100% !important",
-    // height: "100vh",
     color: "white",
     textAlign: "left",
     lineHeight: "normal",

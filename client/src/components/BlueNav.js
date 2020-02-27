@@ -3,14 +3,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import { UserContext } from "../userContext";
 
 const BlueNav = () => {
   const { value1 } = useContext(UserContext);
-  let [taskState, setTaskState] = value1;
+  let [taskState] = value1;
   const useStyles = makeStyles(theme => ({
     root: {
       flexGrow: 1,

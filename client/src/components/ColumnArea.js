@@ -17,8 +17,6 @@ import CreateColumnButton from "../components/CreateColumnButton";
 
 //materia-ui
 import LinearProgress from "@material-ui/core/LinearProgress";
-import Container from "@material-ui/core/Container";
-import List from "@material-ui/core/List";
 
 const ColumnArea = props => {
   const classes = useStyles(props);
@@ -62,7 +60,6 @@ const ColumnArea = props => {
       const newColumnOrder = Array.from(taskState.columnOrder);
       newColumnOrder.splice(source.index, 1);
       newColumnOrder.splice(destination.index, 0, draggableId);
-      console.log("newColumnorder", newColumnOrder);
 
       setTaskState({ ...taskState, columnOrder: newColumnOrder });
       updateColumnIndex(taskState._id, newColumnOrder);
@@ -153,29 +150,27 @@ const ColumnArea = props => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
           {provided => (
-            <div {...provided.droppableProps} ref={provided.innerRef}>
-              <List style={{ maxWidth: "100%", overflow: "auto" }}>
-                <div className={classes.root}>
-                  <CreateColumnButton position='left' />
-                  {taskState ? (
-                    taskState.columnOrder.map((columnId, index) => {
-                      const column = taskState.columns[columnId];
-                      let taskOrder = taskState.columns[columnId].taskOrder || [];
-                      let tasks = taskOrder.map(task => {
-                        return column.tasks[task];
-                      });
+            <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
+              <CreateColumnButton position='left' />
+              {taskState ? (
+                taskState.columnOrder.map((columnId, index) => {
+                  const column = taskState.columns[columnId];
+                  let taskOrder = taskState.columns[columnId].taskOrder || [];
+                  let tasks = taskOrder.map(task => {
+                    return column.tasks[task];
+                  });
 
-                      return (
-                        <Column key={column._id} column={column} tasks={tasks} index={index} />
-                      );
-                    })
-                  ) : (
-                    <CreateColumnButton position='right' />
-                  )}
-                  <CreateColumnButton position='right' />
-                  {provided.placeholder}
-                </div>
-              </List>
+                  return (
+                    <div className={classes.columns}>
+                      <Column key={column._id} column={column} tasks={tasks} index={index} />
+                    </div>
+                  );
+                })
+              ) : (
+                <CreateColumnButton position='right' />
+              )}
+              <CreateColumnButton position='right' />
+              {provided.placeholder}
             </div>
           )}
         </Droppable>
@@ -186,10 +181,19 @@ const ColumnArea = props => {
 
 const useStyles = makeStyles(theme => ({
   root: {
+    // display: "flex",
+    // width: 2500,
+    // flexGrow: 1
+    // display: "flex",
+    // justifyContent: "center"
     display: "flex",
-    // width: 2500
-    flexGrow: 1
+    overflow: "auto",
+    minHeight: "100vh"
   },
-  gridList: {}
+  columns: {
+    userSelect: "none",
+    padding: " 4 * 2"
+    // margin: "0 7px 0 0"
+  }
 }));
 export default ColumnArea;

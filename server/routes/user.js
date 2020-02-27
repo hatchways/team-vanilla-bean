@@ -25,17 +25,12 @@ router.post("/signup", validationRules(), validate, async (req, res) => {
     };
 
     //Create JWT with user ID
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: 36000000 },
-      (err, token) => {
-        if (err) {
-          throw err;
-        }
-        res.status(200).json({ token });
+    jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: 36000000 }, (err, token) => {
+      if (err) {
+        throw err;
       }
-    );
+      res.status(200).json({ token });
+    });
   } catch (err) {
     console.log(err.message);
     res.status(404).end();
@@ -63,15 +58,10 @@ router.post("/signin", validationRules(), validate, async (req, res) => {
       id: user.id
     };
     //Create JWT with user ID
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET_KEY,
-      { expiresIn: 36000000 },
-      (err, token) => {
-        if (err) throw err;
-        res.status(200).json({ token });
-      }
-    );
+    jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: 36000000 }, (err, token) => {
+      if (err) throw err;
+      res.status(200).json({ token });
+    });
   } catch (err) {
     console.log(err.message);
     res.status(404).end();
