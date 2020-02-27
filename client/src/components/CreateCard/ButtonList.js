@@ -6,13 +6,7 @@ import { CardContext } from "./cardContext";
 
 const ButtonList = () => {
   const card = useContext(CardContext);
-  const { deadline, handleOpenTag, handleDeadlineChange } = card;
-
-  const handleDeadlineClick = () => {
-    if (!deadline) {
-      handleDeadlineChange(Date.now());
-    }
-  };
+  const { handleOpenDeadline, handleOpenTag } = card;
 
   return (
     <Grid item xs={2} container>
@@ -22,7 +16,7 @@ const ButtonList = () => {
         </Typography>
         <CardButton onClick={handleOpenTag}>Tag</CardButton>
         <CardButton>Check-list</CardButton>
-        <CardButton onClick={handleDeadlineClick}>Deadline</CardButton>
+        <CardButton onClick={handleOpenDeadline}>Deadline</CardButton>
         <CardButton>Attachment</CardButton>
         <CardButton>Cover</CardButton>
         <Box style={{ marginTop: "30%" }}>

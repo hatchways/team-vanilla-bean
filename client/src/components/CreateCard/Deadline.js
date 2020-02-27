@@ -4,15 +4,14 @@ import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import parseISO from "date-fns/parseISO";
-import moment from "moment";
 import { CardContext } from "./cardContext";
 
 const Deadline = () => {
   const card = useContext(CardContext);
-  const { deadline, handleDeadlineChange } = card;
+  const { deadline, handleDeadlineChange, openDeadline } = card;
 
   return (
-    deadline && (
+    openDeadline && (
       <Grid item container>
         <Grid item xs={1}>
           <AccessTimeIcon color="primary" />

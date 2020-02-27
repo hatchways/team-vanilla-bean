@@ -17,7 +17,8 @@ const Header = () => {
     handleCloseCard,
     tag,
     handleOpenTag,
-    openTag
+    openTag,
+    error
   } = card;
 
   const useStyles = makeStyles(theme => ({
@@ -58,6 +59,8 @@ const Header = () => {
             autoFocus={!title}
             InputProps={{ classes: { input: classes.text } }}
             onChange={e => handleTitleChange(e)}
+            helperText={error && "Title Required"}
+            error={!!error}
           />
           {openTag ? (
             <SelectTag />

@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import { TextField, Grid, Typography } from "@material-ui/core";
 import BlueButton from "../BlueButton";
+import { CardContext } from "./cardContext";
 
 const Comment = () => {
+  const card = useContext(CardContext);
+  const { handleSubmit } = card;
+
   return (
     <Grid item container>
       <Grid item xs={1}>
@@ -22,7 +26,9 @@ const Comment = () => {
           fullWidth
           margin="normal"
         />
-        <BlueButton mini>Save</BlueButton>
+        <BlueButton mini onClick={handleSubmit}>
+          Save
+        </BlueButton>
       </Grid>
     </Grid>
   );

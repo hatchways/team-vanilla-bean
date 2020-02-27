@@ -7,7 +7,7 @@ import { CardContext } from "./cardContext";
 
 const Description = () => {
   const card = useContext(CardContext);
-  const { description, handleDescriptionChange } = card;
+  const { description, handleDescriptionChange, handleSubmit } = card;
 
   return (
     <Grid item container>
@@ -29,7 +29,9 @@ const Description = () => {
           fullWidth
           margin="normal"
         />
-        <BlueButton mini>Save</BlueButton>
+        <BlueButton onClick={handleSubmit} mini>
+          Save
+        </BlueButton>
       </Grid>
     </Grid>
   );
