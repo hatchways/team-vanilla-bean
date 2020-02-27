@@ -140,12 +140,6 @@ const useStyles = makeStyles({
     textAlign: "left",
     marginBottom: 15
   },
-  btn: {
-    marginTop: 20,
-    marginBottom: 10,
-    color: "white",
-    textTransform: "none"
-  },
   addColumn: {
     backgroundColor: "#F4F6FF",
     height: 200,
