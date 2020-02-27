@@ -203,10 +203,7 @@ router.put("/:dashboardId/columns/:columnId/columnOrder", checkToken, async (req
 //Update task index within same column @Done
 router.put("/:dashboardId/columns/:columnId/taskOrder", checkToken, async (req, res) => {
   try {
-    console.log("triggered");
-
     const { dashboardId, columnId, taskOrder } = req.body;
-    console.log(req.param);
 
     //data manipulation
     let updateCond = {};
