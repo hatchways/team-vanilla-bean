@@ -1,11 +1,8 @@
 import React from "react";
+import NewColumnArea from "../components/ColumnArea";
 
 const DashBoard = () => {
-  return (
-    <div>
-      <h1>Dashboard</h1>
-    </div>
-  );
+  return <NewColumnArea />;
 };
 
 export default DashBoard;
