@@ -24,14 +24,9 @@ const ColumnArea = props => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(taskState);
-
     if (!taskState) {
       getDashboard(res => {
-        if (res == null) {
-          console.log("got a res");
-        } else {
-          console.log(res);
+        if (res !== null) {
           setTaskState(res);
         }
       });
@@ -145,9 +140,6 @@ const ColumnArea = props => {
   const handleClickOpen = () => {
     setOpen(true);
   };
-
-  console.log(typeof taskState);
-  console.log(loading);
 
   if (!taskState) {
     return <CreateBoardColumn open={open} handleClose={handleClose} dashboard />;

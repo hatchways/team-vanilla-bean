@@ -81,8 +81,6 @@ export const addDashboard = (title, cb) => {
     body: JSON.stringify(body)
   })
     .then(res => {
-      console.log(res.result);
-
       cb(res.result);
     })
     .catch(err => {

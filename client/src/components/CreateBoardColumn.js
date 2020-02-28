@@ -63,15 +63,17 @@ export default function FormDialog(props) {
     <div>
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={dashboard ? null : handleClose}
         aria-labelledby='form-dialog-title'
         PaperProps={{
           className: classes.root
         }}>
         <DialogTitle disableTypography id='form-dialog-title'>
-          <IconButton onClick={handleClose} className={classes.closeButton} aria-label='close'>
-            <CloseIcon />
-          </IconButton>
+          {dashboard ? null : (
+            <IconButton onClose={handleClose} className={classes.closeButton} aria-label='close'>
+              <CloseIcon />
+            </IconButton>
+          )}
           <Typography variant='h1'>{dashboard ? "Create Board" : "Create Column"}</Typography>
         </DialogTitle>
         <DialogContent>
