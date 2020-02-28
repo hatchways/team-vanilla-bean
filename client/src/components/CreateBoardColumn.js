@@ -16,11 +16,14 @@ import { addColumn, addDashboard } from "../utils/handleUpdateTasks";
 import { UserContext } from "../userContext";
 import { handleError } from "../utils/handleAlerts";
 
-export default function FormDialog(props) {
+import { withRouter } from "react-router-dom";
+
+const FormDialog = props => {
   const { open, handleClose, position, dashboard } = props;
   const [title, setTitle] = useState("");
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
+  console.log(props);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -28,9 +31,10 @@ export default function FormDialog(props) {
     if (dashboard) {
       addDashboard(title, res => {
         setTaskState(res);
+        handleClose(false);
         console.log(res);
 
-        handleClose(false);
+        props.history.push(`/dashboards/${res._id}`);
       });
     } else {
       try {
@@ -92,4 +96,6 @@ export default function FormDialog(props) {
       </Dialog>
     </div>
   );
-}
+};
+
+export default withRouter(FormDialog);

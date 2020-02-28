@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { getDashboard } from "../utils/handleUpdateTasks";
+import { withRouter } from "react-router";
 
 import {
   updateTaskIndexInColumn,
@@ -25,8 +26,10 @@ const ColumnArea = props => {
 
   useEffect(() => {
     if (!taskState) {
-      getDashboard(res => {
+      let dashboardId = props.match.params.dashboardId;
+      getDashboard(dashboardId, res => {
         if (res !== null) {
+          console.log(res);
           setTaskState(res);
         }
       });
@@ -194,4 +197,5 @@ const useStyles = makeStyles(theme => ({
     // margin: "0 7px 0 0"
   }
 }));
-export default ColumnArea;
+
+export default withRouter(ColumnArea);
