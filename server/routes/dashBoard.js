@@ -8,6 +8,19 @@ const { Task, Column, Dashboard } = require("../models/Dashboard");
 
 //@CreateBoard
 
+//get user's one dashboard
+router.get("/", checkToken, async (req, res) => {
+  let userId = req.decoded.id;
+  try {
+    let result = await Dashboard.findOne({ user: userId });
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ error: "Dashboard does not exist" });
+  }
+});
+
+//to get SpecificBoard @ need update
 router.get("/:dashboardId", checkToken, async (req, res) => {
   let userId = req.decoded.id;
 
@@ -94,7 +107,6 @@ router.post("/:dashboardId/columns", checkToken, async (req, res) => {
       tasks: [],
       taskOrder: []
     });
-    console.log(newColumn);
 
     board.columns.set(newColumn._id.toString(), newColumn);
 

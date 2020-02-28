@@ -1,59 +1,91 @@
 import { handleError } from "./handleAlerts";
 import { authFetch } from "../AuthService";
 
+//ToDo remove this after implementing create board function
+
+export const getDashboard = cb => {
+  authFetch("/dashboards", {
+    method: "get"
+  })
+    .then(res => {
+      cb(res.result);
+    })
+    .catch(err => handleError(err));
+};
+
 export const updateTaskIndexInColumn = async (dashboardId, columnId, taskOrder) => {
-  try {
-    let body = { dashboardId, columnId, taskOrder };
-    authFetch("/dashboards/task", { method: "put", body: JSON.stringify(body) });
-  } catch (err) {
-    handleError(err);
-  }
+  let body = { dashboardId, columnId, taskOrder };
+  authFetch(`dashboard/${dashboardId}/columns/${columnId}ß/taskOrder`, {
+    method: "put",
+    body: JSON.stringify(body)
+  }).catch(err => handleError(err));
 };
 
 export const moveTasksToOther = async (dashboardId, newStart, newFinish, cd) => {
-  try {
-    let body = {
-      columnSourceId: newStart._id,
-      columnSourceTasks: newStart.tasks,
-      columnSourceTaskOrder: newStart.taskOrder,
-      columnToSourceId: newFinish._id,
-      columnToTasks: newFinish.tasks,
-      columnToTaskOrder: newFinish.taskOrder,
-      dashboardId
-    };
-    authFetch("/dashboards/task-column", { method: "put", body: JSON.stringify(body) });
-  } catch (err) {
-    handleError(err);
-  }
+  const columnId = newStart._id;
+
+  let body = {
+    columnSourceId: newStart._id,
+    columnSourceTasks: newStart.tasks,
+    columnSourceTaskOrder: newStart.taskOrder,
+    columnToSourceId: newFinish._id,
+    columnToTasks: newFinish.tasks,
+    columnToTaskOrder: newFinish.taskOrder,
+    dashboardId
+  };
+  authFetch(`dashboards/${dashboardId}/columns/${columnId}/taskColumnOrder`, {
+    method: "put",
+    body: JSON.stringify(body)
+  }).catch(err => handleError(err));
 };
 
-export const updateColumnIndex = async (dashboardId, columnOrder) => {
-  try {
-    let body = {
-      dashboardId,
-      columnOrder
-    };
-    authFetch("/dashboards/column", { method: "put", body: JSON.stringify(body) });
-  } catch (err) {
-    handleError(err);
-  }
+export const updateColumnIndex = async (dashboardId, columnOrder, columnId) => {
+  let body = {
+    dashboardId,
+    columnOrder
+  };
+
+  authFetch(`dashboards/${dashboardId}/columns/${columnId}/columnOrder`, {
+    method: "put",
+    body: JSON.stringify(body)
+  }).catch(err => handleError(err));
 };
 
-export const addColumn = (dashboardId, columnTitle, position, cb) => {
-  try {
-    let body = {
-      dashboardId,
-      columnTitle,
-      position
-    };
+export const addColumn = (dashboardId, title, position, cb) => {
+  let body = {
+    dashboardId,
+    title,
+    position
+  };
 
-    authFetch("/dashboards/column", {
-      method: "post",
-      body: JSON.stringify(body)
-    }).then(res => {
-      cb(res);
+  authFetch(`/dashboards/${dashboardId}/columns`, {
+    method: "post",
+    body: JSON.stringify(body)
+  })
+    .then(res => {
+      cb(res.result);
+    })
+    .catch(err => {
+      handleError(err);
+      return null;
     });
-  } catch (err) {
-    handleError(err);
-  }
+};
+
+export const addDashboard = (title, cb) => {
+  let body = {
+    title
+  };
+
+  authFetch("/dashboards", {
+    method: "post",
+    body: JSON.stringify(body)
+  })
+    .then(res => {
+      console.log(res.result);
+
+      cb(res.result);
+    })
+    .catch(err => {
+      handleError(err);
+    });
 };

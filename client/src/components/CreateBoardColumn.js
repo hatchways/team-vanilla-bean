@@ -10,28 +10,38 @@ import {
 
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
-import BlueButton from "../components/BlueButton";
+import BlueButton from "./BlueButton";
 
-import { addColumn } from "../utils/handleUpdateTasks";
+import { addColumn, addDashboard } from "../utils/handleUpdateTasks";
 import { UserContext } from "../userContext";
+import { handleError } from "../utils/handleAlerts";
 
 export default function FormDialog(props) {
-  const { open, handleClose, position } = props;
+  const { open, handleClose, position, dashboard } = props;
   const [title, setTitle] = useState("");
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
 
   const handleSubmit = e => {
     e.preventDefault();
-    let dashboardId = taskState._id;
-    try {
-      addColumn(dashboardId, title, position, res => {
+    let dashboardId;
+    if (dashboard) {
+      addDashboard(title, res => {
         setTaskState(res);
+        console.log(res);
+
+        handleClose(false);
       });
-    } catch (err) {
-      handleClose(err);
+    } else {
+      try {
+        addColumn(dashboardId, title, position, res => {
+          setTaskState(res);
+          handleClose(false);
+        });
+      } catch (err) {
+        handleError(err);
+      }
     }
-    handleClose(false);
   };
 
   const useStyles = makeStyles(theme => ({
@@ -62,7 +72,7 @@ export default function FormDialog(props) {
           <IconButton onClick={handleClose} className={classes.closeButton} aria-label='close'>
             <CloseIcon />
           </IconButton>
-          <Typography variant='h1'>Create Column</Typography>
+          <Typography variant='h1'>{dashboard ? "Create Board" : "Create Column"}</Typography>
         </DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit}>

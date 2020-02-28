@@ -21,7 +21,7 @@ const TaskCard = ({ index, task, props }) => {
           isdragging={snapshot.isdragging}>
           <CardContent>
             <div className={classes.tag}></div>
-            <Typography>{task.content}</Typography>
+            <Typography>{task.title}</Typography>
           </CardContent>
         </Card>
       )}

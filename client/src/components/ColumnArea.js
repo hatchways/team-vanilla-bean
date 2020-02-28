@@ -3,8 +3,7 @@ import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { handleError } from "../utils/handleAlerts";
-import { authFetch } from "../AuthService";
+import { getDashboard } from "../utils/handleUpdateTasks";
 
 import {
   updateTaskIndexInColumn,
@@ -14,35 +13,29 @@ import {
 
 //Component
 import CreateColumnButton from "../components/CreateColumnButton";
+import CreateBoardColumn from "../components/CreateBoardColumn";
 
 //materia-ui
-import LinearProgress from "@material-ui/core/LinearProgress";
 
 const ColumnArea = props => {
   const classes = useStyles(props);
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
-  const [loadingState, setLoadingState] = useState({
-    loading: true,
-    disableMove: false
-  });
-  const { loading } = loadingState;
-
-  //download data for first access
-  const downLoadData = () => {
-    try {
-      setLoadingState({ loading: true });
-      authFetch("/dashboards/dashboard").then(res => {
-        setTaskState(res);
-      });
-    } catch (err) {
-      handleError(err);
-    }
-    setLoadingState({ loading: false });
-  };
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    downLoadData();
+    console.log(taskState);
+
+    if (!taskState) {
+      getDashboard(res => {
+        if (res == null) {
+          console.log("got a res");
+        } else {
+          console.log(res);
+          setTaskState(res);
+        }
+      });
+    }
   }, []);
 
   const onDragEnd = result => {
@@ -62,7 +55,7 @@ const ColumnArea = props => {
       newColumnOrder.splice(destination.index, 0, draggableId);
 
       setTaskState({ ...taskState, columnOrder: newColumnOrder });
-      updateColumnIndex(taskState._id, newColumnOrder);
+      updateColumnIndex(taskState._id, newColumnOrder, draggableId);
       return;
     }
 
@@ -143,8 +136,21 @@ const ColumnArea = props => {
     moveTasksToOther(taskState._id, newStart, newFinish);
   };
 
-  if (loading) {
-    return <LinearProgress variant='query' />;
+  const [open, setOpen] = useState(true);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  console.log(typeof taskState);
+  console.log(loading);
+
+  if (!taskState) {
+    return <CreateBoardColumn open={open} handleClose={handleClose} dashboard />;
   } else {
     return (
       <DragDropContext onDragEnd={onDragEnd}>

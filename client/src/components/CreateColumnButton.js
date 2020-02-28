@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import ControlPoint from "@material-ui/icons/ControlPoint";
 import Card from "@material-ui/core/Card";
-import CreateColumn from "./CreateColumn";
+import CreateBoardColumn from "./CreateBoardColumn";
 import CardContent from "@material-ui/core/CardContent";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -26,7 +26,7 @@ const CreateColumnButton = props => {
           <ControlPoint className={classes.plusIcon} />
         </CardContent>
       </Card>
-      <CreateColumn open={open} handleClose={handleClose} position={position} />
+      <CreateBoardColumn open={open} handleClose={handleClose} position={position} />
     </div>
   );
 };

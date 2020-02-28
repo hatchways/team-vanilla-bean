@@ -4,7 +4,7 @@ export const UserContext = createContext();
 
 //To Handdle state and comments globally
 const UserProvider = props => {
-  const [taskState, setTaskState] = useState("");
+  const [taskState, setTaskState] = useState(null);
 
   return (
     <UserContext.Provider value={{ value1: [taskState, setTaskState] }}>

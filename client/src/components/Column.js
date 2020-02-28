@@ -21,7 +21,7 @@ const Column = props => {
 
   const deleteColumn = e => {
     e.preventDefault();
-    //Send newColumnTitle to create new column
+    //Todo create delete column function
   };
 
   return (
@@ -36,7 +36,7 @@ const Column = props => {
               alignItems='flex-start'
               {...provided.dragHandleProps}>
               <Typography variant='h5' className={classes.title}>
-                {column.columnTitle}
+                {column.title}
               </Typography>
               <CancelIcon className={classes.cancel} onClick={e => deleteColumn(e)} />
             </Grid>
