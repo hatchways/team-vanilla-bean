@@ -3,6 +3,7 @@ import { authFetch } from "../AuthService";
 
 //ToDo remove this after implementing create board function
 
+//done
 export const getDashboard = (dashboardId, cb) => {
   let body = { dashboardId };
 
@@ -20,7 +21,7 @@ export const getDashboard = (dashboardId, cb) => {
 
 export const updateTaskIndexInColumn = async (dashboardId, columnId, taskOrder) => {
   let body = { dashboardId, columnId, taskOrder };
-  authFetch(`dashboard/${dashboardId}/columns/${columnId}ß/taskOrder`, {
+  authFetch(`/dashboards/${dashboardId}/columns/${columnId}ß/taskOrder`, {
     method: "put",
     body: JSON.stringify(body)
   }).catch(err => handleError(err));
@@ -38,24 +39,26 @@ export const moveTasksToOther = async (dashboardId, newStart, newFinish) => {
     columnToTaskOrder: newFinish.taskOrder,
     dashboardId
   };
-  authFetch(`dashboards/${dashboardId}/columns/${columnId}/taskColumnOrder`, {
+  authFetch(`/dashboards/${dashboardId}/columns/${columnId}/taskColumnOrder`, {
     method: "put",
     body: JSON.stringify(body)
   }).catch(err => handleError(err));
 };
 
-export const updateColumnIndex = async (dashboardId, columnOrder, columnId) => {
+export const updateColumnIndex = (dashboardId, columnOrder, columnId) => {
   let body = {
     dashboardId,
     columnOrder
   };
+  console.log(dashboardId);
 
-  authFetch(`dashboards/${dashboardId}/columns/${columnId}/columnOrder`, {
+  authFetch(`/dashboards/${dashboardId}/columns/${columnId}/columnOrder`, {
     method: "put",
     body: JSON.stringify(body)
   }).catch(err => handleError(err));
 };
 
+//done
 export const addColumn = (dashboardId, title, position, cb) => {
   let body = {
     dashboardId,

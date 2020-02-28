@@ -23,11 +23,9 @@ const FormDialog = props => {
   const [title, setTitle] = useState("");
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
-  console.log(props);
-
+  let dashboardId = props.match.params.dashboardId;
   const handleSubmit = e => {
     e.preventDefault();
-    let dashboardId;
     if (dashboard) {
       addDashboard(title, res => {
         setTaskState(res);

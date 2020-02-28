@@ -202,9 +202,12 @@ router.delete("/:dashboardId/columns/:columnId/tasks/:taskId", checkToken, async
 });
 //Update column index @Done
 router.put("/:dashboardId/columns/:columnId/columnOrder", checkToken, async (req, res) => {
-  const { dashboardId, columnOrder } = req.body;
   try {
-    const { dashboardId, columnOrder } = req.body;
+    const dashboardId = req.params.dashboardId;
+    const { columnOrder } = req.body;
+
+    // const
+    // const { dashboardId, columnOrder } = req.body;
     //data manipulation
     let updateCond = {};
     updateCond["$set"] = {};

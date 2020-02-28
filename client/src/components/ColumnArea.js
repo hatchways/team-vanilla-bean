@@ -23,10 +23,9 @@ const ColumnArea = props => {
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
   const [loading, setLoading] = useState(true);
-
+  let dashboardId = props.match.params.dashboardId;
   useEffect(() => {
     if (!taskState) {
-      let dashboardId = props.match.params.dashboardId;
       getDashboard(dashboardId, res => {
         if (res !== null) {
           console.log(res);
@@ -53,7 +52,7 @@ const ColumnArea = props => {
       newColumnOrder.splice(destination.index, 0, draggableId);
 
       setTaskState({ ...taskState, columnOrder: newColumnOrder });
-      updateColumnIndex(taskState._id, newColumnOrder, draggableId);
+      updateColumnIndex(dashboardId, newColumnOrder, draggableId);
       return;
     }
 
@@ -77,7 +76,7 @@ const ColumnArea = props => {
           [newColumn._id]: newColumn
         }
       });
-      updateTaskIndexInColumn(taskState._id, newColumn._id, taskOrder);
+      updateTaskIndexInColumn(dashboardId, newColumn._id, taskOrder);
       return;
     }
 
@@ -131,7 +130,7 @@ const ColumnArea = props => {
       }
     });
 
-    moveTasksToOther(taskState._id, newStart, newFinish);
+    moveTasksToOther(dashboardId, newStart, newFinish);
   };
 
   const [open, setOpen] = useState(true);
