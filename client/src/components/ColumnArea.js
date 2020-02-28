@@ -22,7 +22,6 @@ const ColumnArea = props => {
   const classes = useStyles(props);
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
-  const [loading, setLoading] = useState(true);
   let dashboardId = props.match.params.dashboardId;
   useEffect(() => {
     if (!taskState) {
