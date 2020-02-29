@@ -27,7 +27,6 @@ const ColumnArea = props => {
     if (!taskState) {
       getDashboard(dashboardId, res => {
         if (res !== null) {
-          console.log(res);
           setTaskState(res);
         }
       });

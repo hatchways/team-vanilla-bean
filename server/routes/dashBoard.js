@@ -13,12 +13,8 @@ router.post("/:dashboardId", checkToken, async (req, res) => {
   let userId = req.decoded.id;
   let id = req.params.dashboardId;
 
-  console.log(req.body);
-
   try {
     let result = await Dashboard.findOne({ user: userId, _id: id });
-    console.log(result);
-
     res.status(200).json({ result });
   } catch (err) {
     console.log(err);
@@ -242,8 +238,6 @@ router.put("/:dashboardId/columns/:columnId/taskOrder", checkToken, async (req, 
 
 //Update task index between Column @Done
 router.put("/:dashboardId/columns/:columnId/taskColumnOrder", checkToken, async (req, res) => {
-  console.log(req.body);
-
   const {
     columnSourceId,
     columnSourceTasks,

@@ -7,8 +7,6 @@ import { authFetch } from "../AuthService";
 export const getDashboard = (dashboardId, cb) => {
   let body = { dashboardId };
 
-  console.log(dashboardId);
-
   authFetch(`/dashboards/${dashboardId}`, {
     method: "post",
     body: JSON.stringify(body)
@@ -50,7 +48,6 @@ export const updateColumnIndex = (dashboardId, columnOrder, columnId) => {
     dashboardId,
     columnOrder
   };
-  console.log(dashboardId);
 
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}/columnOrder`, {
     method: "put",
