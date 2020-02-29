@@ -29,8 +29,8 @@ const TaskCard = ({ index, task, props, columnId }) => {
           }}
         >
           <CardContent>
-            <Tag color="green" />
-            <Typography>{task.content}</Typography>
+            <Tag />
+            <Typography>{task.title}</Typography>
           </CardContent>
         </Card>
       )}

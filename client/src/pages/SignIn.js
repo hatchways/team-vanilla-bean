@@ -10,6 +10,8 @@ const SignIn = props => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  console.log(props);
+
   const redirect = () => {
     loggedIn() && props.history.push("/dashboard");
   };

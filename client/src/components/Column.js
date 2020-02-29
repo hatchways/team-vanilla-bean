@@ -19,9 +19,12 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 const Column = props => {
   const classes = useStyles(props);
   const { column, tasks, index } = props;
+<<<<<<< HEAD
 
   const card = useContext(CardContext);
   const { handleCurrentTask } = card;
+=======
+>>>>>>> f28c746a8940683a9c600b770ba6135267076610
 
   const deleteColumn = e => {
     e.preventDefault();
