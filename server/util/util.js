@@ -1,5 +1,5 @@
-const updateData = async (Model, dashBoardId, updateCond) => {
-  const result = await Model.findOneAndUpdate({ _id: dashBoardId }, updateCond, { new: true });
+const updateData = async (Model, itemId, updateCond) => {
+  const result = await Model.findOneAndUpdate({ _id: itemId }, updateCond, { new: true });
   return result;
 };
 
