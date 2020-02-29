@@ -9,7 +9,9 @@ import { makeStyles } from "@material-ui/core/styles";
 const CreateColumnButton = props => {
   const classes = useStyles(props);
   const [open, setOpen] = useState(false);
-  const { position } = props;
+  const { position, isDraggingOver } = props;
+
+  console.log(isDraggingOver);
 
   const handleClose = () => {
     setOpen(false);
@@ -21,7 +23,9 @@ const CreateColumnButton = props => {
 
   return (
     <div>
-      <Card className={classes.addColumn} onClick={handleClickOpen}>
+      <Card
+        className={isDraggingOver ? classes.isDraggingOver : classes.addColumn}
+        onClick={handleClickOpen}>
         <CardContent>
           <ControlPoint className={classes.plusIcon} />
         </CardContent>
@@ -51,6 +55,10 @@ const useStyles = makeStyles({
       opacity: 1,
       color: "white"
     }
+  },
+  isDraggingOver: {
+    backgroundColor: "red",
+    opacity: 0
   },
   plusIcon: {
     fontSize: 50

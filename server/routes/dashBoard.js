@@ -6,7 +6,7 @@ const checkToken = require("../auth/validateToken");
 // Models;
 const { Task, Column, Dashboard } = require("../models/Dashboard");
 
-router.get("/:dashboardId", checkToken, async (req, res) => {
+router.post("/:dashboardId", checkToken, async (req, res) => {
   let userId = req.decoded.id;
   let id = req.params.dashboardId;
 

@@ -19,7 +19,7 @@ export const getDashboard = (dashboardId, cb) => {
 
 export const updateTaskIndexInColumn = async (dashboardId, columnId, taskOrder) => {
   let body = { dashboardId, columnId, taskOrder };
-  authFetch(`/dashboards/${dashboardId}/columns/${columnId}ß/taskOrder`, {
+  authFetch(`/dashboards/${dashboardId}/columns/${columnId}/taskOrder`, {
     method: "put",
     body: JSON.stringify(body)
   }).catch(err => handleError(err));

@@ -10,7 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
-import CancelIcon from "@material-ui/icons/Cancel";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 
 //Drag and Drop
 import { Droppable, Draggable } from "react-beautiful-dnd";
@@ -38,9 +38,9 @@ const Column = props => {
               <Typography variant='h5' className={classes.title}>
                 {column.title}
               </Typography>
-              <CancelIcon className={classes.cancel} onClick={e => deleteColumn(e)} />
+              <MoreHorizIcon className={classes.cancel} onClick={e => deleteColumn(e)} />
             </Grid>
-            <Droppable droppableId={column._id} type='card'>
+            <Droppable droppableId={column._id} type='card' {...provided.dragHandleProps}>
               {provided => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   {tasks.map((task, index) => (

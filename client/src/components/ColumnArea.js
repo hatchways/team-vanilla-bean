@@ -147,9 +147,17 @@ const ColumnArea = props => {
     return (
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
-          {provided => (
-            <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
-              <CreateColumnButton position='left' />
+          {(provided, snapshot) => (
+            <div
+              className={classes.root}
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              isDroppable={snapshot.isDroppable}>
+              <CreateColumnButton
+                position='left'
+                className={classes.bbb}
+                isDraggingOver={snapshot.isDraggingOver}
+              />
               {taskState ? (
                 taskState.columnOrder.map((columnId, index) => {
                   const column = taskState.columns[columnId];
@@ -165,9 +173,9 @@ const ColumnArea = props => {
                   );
                 })
               ) : (
-                <CreateColumnButton position='right' />
+                <CreateColumnButton position='right' isDraggingOver={snapshot.isDraggingOver} />
               )}
-              <CreateColumnButton position='right' />
+              <CreateColumnButton position='right' isDraggingOver={snapshot.isDraggingOver} />
               {provided.placeholder}
             </div>
           )}
@@ -192,6 +200,9 @@ const useStyles = makeStyles(theme => ({
     userSelect: "none",
     padding: " 4 * 2"
     // margin: "0 7px 0 0"
+  },
+  bbb: {
+    backgroundColor: "red"
   }
 }));
 
