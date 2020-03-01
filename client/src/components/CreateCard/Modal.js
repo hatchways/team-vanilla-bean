@@ -8,6 +8,7 @@ import ButtonList from "./ButtonList";
 import { CardContext } from "./cardContext";
 import { authFetch } from "../../AuthService";
 import { useParams, useHistory } from "react-router";
+import { handleError } from "../../utils/handleAlerts";
 
 const CardModal = () => {
   const card = useContext(CardContext);
@@ -20,13 +21,24 @@ const CardModal = () => {
       const fetchUrlCard = async () => {
         try {
           const res = await authFetch("/dashboards");
-          if (res.result._id !== dashboardId) {
+
+          const column = res.result.columns[columnId]._id;
+          const task = res.result.columns[columnId].tasks[taskId]._id;
+          const dashboard = res.result._id;
+
+          if (
+            column !== columnId ||
+            task !== taskId ||
+            dashboard !== dashboardId
+          ) {
             history.push("/dashboards");
+            handleError("cannot access");
           } else {
             fetchCard(taskId, columnId, res.result);
           }
         } catch (e) {
           history.push("/dashboards");
+          handleError("cannot access");
         }
       };
       fetchUrlCard();
