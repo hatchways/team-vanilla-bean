@@ -3,6 +3,7 @@ import moment from "moment";
 import { authFetch } from "../../AuthService";
 import { UserContext } from "../../userContext";
 import { handleError, handleSuccess } from "../../utils/handleAlerts";
+import { useLocation } from "react-router";
 
 const CardContext = createContext();
 
@@ -25,7 +26,7 @@ const CardProvider = props => {
   const [dashboard, setDashboard] = value1;
   const dashboardId = dashboard && dashboard._id;
 
-  const handleCurrentTask = (taskId, columnId) => {
+  const handleCurrentTask = (taskId, columnId, hist) => {
     const columnName = dashboard.columns[columnId].title;
     if (!taskId) {
       setTitle("");
@@ -33,19 +34,30 @@ const CardProvider = props => {
       setDeadline("");
       setTag("");
       setTask("");
+      handleOpenCard();
     }
     if (taskId) {
       setTask(taskId);
-      fetchCard(taskId, columnId);
+      fetchCard(taskId, columnId, dashboard);
     }
+    routeChange(taskId, columnId, dashboardId, hist);
     setColumnId(columnId);
     setColumnName(columnName);
-    handleOpenCard();
   };
 
-  const fetchCard = (taskId, columnId) => {
+  const routeChange = (taskId, columnId, dashboardId, hist) => {
+    if (!taskId) {
+      hist.push("/dashboards");
+    } else {
+      let path = `/dashboards/${dashboardId}/columns/${columnId}/tasks/${taskId}`;
+      hist.push(path);
+    }
+  };
+
+  const fetchCard = (taskId, columnId, dashboard) => {
     const task = dashboard.columns[columnId].tasks[taskId];
     setTitle(task.title);
+    handleOpenCard();
     setDescription(task.description);
     setTag(task.tag);
     setDeadline(task.deadline);
@@ -80,13 +92,10 @@ const CardProvider = props => {
           description,
           tag
         };
-        authFetch(
-          `dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`,
-          {
-            method: "PUT",
-            body: JSON.stringify(updatedTask)
-          }
-        )
+        authFetch("", {
+          method: "PUT",
+          body: JSON.stringify(updatedTask)
+        })
           .then(res => updateUser(res))
           .then(() => handleCloseCard())
           .then(() => handleSuccess(`${title} has been updated!`))
@@ -169,7 +178,8 @@ const CardProvider = props => {
         deadline,
         handleDeadlineChange,
         handleOpenDeadline,
-        openDeadline
+        openDeadline,
+        fetchCard
       }}
     >
       {props.children}

@@ -12,6 +12,7 @@ import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import CancelIcon from "@material-ui/icons/Cancel";
+import { useHistory } from "react-router-dom";
 
 //Drag and Drop
 import { Droppable, Draggable } from "react-beautiful-dnd";
@@ -22,6 +23,7 @@ const Column = props => {
 
   const card = useContext(CardContext);
   const { handleCurrentTask } = card;
+  const history = useHistory();
 
   const deleteColumn = e => {
     e.preventDefault();
@@ -66,7 +68,7 @@ const Column = props => {
                   {provided.placeholder}
                   <Button
                     mini
-                    onClick={() => handleCurrentTask(null, column._id)}
+                    onClick={() => handleCurrentTask(null, column._id, history)}
                   >
                     Add a Card
                   </Button>
