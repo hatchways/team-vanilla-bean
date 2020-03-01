@@ -25,20 +25,6 @@ router.get("/", checkToken, async (req, res) => {
   }
 });
 
-//to get SpecificBoard @ need update
-router.post("/:dashboardId", checkToken, async (req, res) => {
-  let userId = req.decoded.id;
-  let id = req.params.dashboardId;
-
-  try {
-    let result = await Dashboard.findOne({ user: userId, _id: id });
-    res.status(200).json({ result });
-  } catch (err) {
-    console.log(err);
-    res.status(404).json({ error: "Dashboard does not exist" });
-  }
-});
-
 //Add Dashboard @Done
 
 router.post("/", checkToken, async (req, res) => {
@@ -50,19 +36,10 @@ router.post("/", checkToken, async (req, res) => {
   }
 
   try {
-    // Initial states
-    const task1 = new Task({
-      title: "This is Your Task!",
-      description: "",
-      deadline: "",
-      comments: [],
-      tag: {},
-      action: {}
-    });
     const column1 = new Column({
       title: "in progress",
-      taskOrder: [task1.id],
-      tasks: { [task1._id]: task1 }
+      taskOrder: [],
+      tasks: {}
     });
     const column2 = new Column({
       title: "completed",
@@ -160,14 +137,17 @@ router.post(
   "/:dashboardId/columns/:columnId/tasks",
   checkToken,
   async (req, res) => {
-    const { title, description, tag, action } = req.body;
+    const { title, description, deadline, tag, actions, comments } = req.body;
     const { dashboardId, columnId } = req.params;
+
     try {
       const newTask = new Task({
         title,
         description,
         tag,
-        action
+        deadline,
+        actions,
+        comments
       });
 
       if (!title) {
@@ -204,12 +184,50 @@ router.post(
   }
 );
 
+//Update card Data
+router.put(
+  "/:dashboardId/columns/:columnId/tasks/:taskId",
+  checkToken,
+  async (req, res) => {
+    try {
+      const { title, description, deadline, comments, tag, action } = req.body;
+      const { dashboardId, columnId, taskId } = req.params;
+
+      if (!title) {
+        return res.status(401).json({ error: "Please Enter task title" });
+      }
+
+      let newTask = {
+        title,
+        description,
+        deadline,
+        comments,
+        tag,
+        action,
+        _id: taskId
+      };
+
+      let updateCond = {};
+      updateCond["$set"] = {};
+      updateCond["$set"]["columns." + columnId + ".tasks." + taskId] = newTask;
+
+      const result = await updateData(Dashboard, dashboardId, updateCond);
+      res.status(200).json({ result });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ error: "Failed to update task" });
+    }
+  }
+);
+
 //delete card @done
 router.delete(
   "/:dashboardId/columns/:columnId/tasks/:taskId",
   checkToken,
   async (req, res) => {
+    const { taskId } = req.body;
     const { dashboardId, columnId, taskId } = req.params;
+
     try {
       //data manipulation
       let updateCond = {};
@@ -227,13 +245,36 @@ router.delete(
     }
   }
 );
+
+//update ColumnTitle
+router.put("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
+  try {
+    const { title } = req.body;
+    const { dashboardId, columnId } = req.params;
+
+    if (!title) {
+      return res.status(401).json({ error: "Please Enter column title" });
+    }
+
+    let updateCond = {};
+    updateCond["$set"] = {};
+    updateCond["$set"]["columns." + columnId + ".title"] = title;
+
+    const result = await updateData(Dashboard, dashboardId, updateCond);
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: "Failed to update task" });
+  }
+});
+
 //Update column index @Done
 router.put(
   "/:dashboardId/columns/:columnId/columnOrder",
   checkToken,
   async (req, res) => {
     try {
-      const { dashboardId } = req.params;
+      const dashboardId = req.params.dashboardId;
       const { columnOrder } = req.body;
 
       //data manipulation
