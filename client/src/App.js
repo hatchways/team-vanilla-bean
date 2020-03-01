@@ -4,6 +4,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 
 import { theme } from "./themes/theme";
 import DashBoard from "./pages/DashBoard";
+import Calendar from "./pages/Calendar";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import PrivateRoute from "./utils/routes";
@@ -17,6 +18,7 @@ function App() {
         <PrivateRoute path="/dashboards" component={DashBoard} />
         <Route path="/signin" component={SignIn} />
         <Route path="/signup" component={SignUp} />
+        <Route path="/calendar" component={Calendar} />
       </BrowserRouter>
     </MuiThemeProvider>
   );
