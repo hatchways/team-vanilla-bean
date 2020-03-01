@@ -8,7 +8,7 @@ export const updateTaskIndexInColumn = async (
   columnId,
   taskOrder
 ) => {
-  let body = { dashboardId, columnId, taskOrder };
+  let body = { taskOrder };
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}/taskOrder`, {
     method: "put",
     body: JSON.stringify(body)
