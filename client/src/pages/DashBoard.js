@@ -1,26 +1,18 @@
-import React, { Fragment } from "react";
+import React from "react";
 import ColumnArea from "../components/ColumnArea";
 import BlueNav from "../components/BlueNav";
 import CardModal from "../components/CreateCard/Modal";
 import TopNav from "../components/TopNav";
-import { makeStyles } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
 
 const DashBoard = () => {
-  const useStyles = makeStyles(theme => ({
-    root: {
-      margin: 0,
-      padding: 0
-    }
-  }));
-  const classes = useStyles();
-
   return (
-    <div className={classes.root}>
+    <CssBaseline>
       <TopNav />
       <BlueNav />
       <CardModal />
       <ColumnArea />
-    </div>
+    </CssBaseline>
   );
 };
 

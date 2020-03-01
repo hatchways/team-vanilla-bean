@@ -15,7 +15,6 @@ import TitleInputModal from "../components/TitleInputModal";
 
 const TopNav = () => {
   const { value1 } = useContext(UserContext);
-  let [taskState] = value1;
   const [open, setOpen] = useState(false);
 
   const handleClose = () => {
@@ -34,11 +33,6 @@ const TopNav = () => {
     //To do Redirect to calender
   };
 
-  const addNewBoard = () => {
-    //To create new dashboard.
-    // redirect to it.
-  };
-
   const useStyles = makeStyles(theme => ({
     root: {
       flexGrow: 1,
@@ -52,7 +46,10 @@ const TopNav = () => {
       color: "#D3D3D3",
       display: "flex",
       marginRight: 30,
-      marginLeft: 30
+      marginLeft: 30,
+      "&:hover": {
+        cursor: "pointer"
+      }
     },
     wrapper: {
       display: "flex"
@@ -85,17 +82,17 @@ const TopNav = () => {
             justify='space-between'
             className={classes.root}>
             <img src={logo} />
-            <div className={classes.item}>
-              <div className={classes.item}>
+            <div className={classes.wrapper}>
+              <div className={classes.item} onClick={dashboardTrigger}>
                 <WebOutlinedIcon className={classes.icon} />
                 <Typography>Dashboard</Typography>
               </div>
-              <div className={classes.item}>
+              <div className={classes.item} onClick={calenderTrigger}>
                 <CalendarTodayIcon className={classes.icon} />
                 <Typography>Calender</Typography>
               </div>
             </div>
-            <div className={classes.item}>
+            <div className={classes.wrapper}>
               <BlueButton mini className={classes.btn} onClick={handleClickOpen}>
                 <AddIcon />
                 <Typography>Create board</Typography>
