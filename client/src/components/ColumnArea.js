@@ -169,7 +169,7 @@ const ColumnArea = props => {
                 return (
                   <div className={classes.columns}>
                     <Column
-                      key={column._id}
+                      key={columnId}
                       column={column}
                       tasks={tasks}
                       index={index}
