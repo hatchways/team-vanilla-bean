@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -6,51 +6,64 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Typography from "@material-ui/core/Typography";
 import { UserContext } from "../userContext";
 import { deleteColumn } from "../utils/handleUpdateTasks";
+import { logout } from "../AuthService";
 
-const ITEM_HEIGHT = 48;
+import TitleInputModal from "../components/TitleInputModal";
 
 export default function DropDownMenu(props) {
+  const ITEM_HEIGHT = 48;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [openModal, setOpenModal] = useState(false);
   const { value1 } = useContext(UserContext);
-  // let [taskState, setTaskState] = value1;
-  // console.log(taskState);
+  let [, setTaskState] = value1;
 
-  const dashboardId = "5e5b0b02be359a032d03ce2c";
-  const { column, blueNav, columnId } = props;
+  const { column, blueNav, columnId, dashboardId, title } = props;
   let options = [];
+
   if (column) {
     options = ["Rename", "Delete"];
   }
   if (blueNav) {
     options = ["Logout"];
   }
-  const handleClick = event => {
+  const handleClickDropDown = event => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleCloseDropDown = () => {
     setAnchorEl(null);
   };
 
   const deleteColumnTrigger = () => {
     deleteColumn(dashboardId, columnId, res => {
-      // setTaskState(res);
+      setTaskState(res);
     });
-    handleClose();
+    handleCloseDropDown();
   };
 
-  const renameColumn = () => {
-    console.log("rename");
-
-    handleClose();
+  const renameTrigger = () => {
+    handleClickOpen();
+    handleCloseDropDown();
   };
 
-  const logout = () => {
-    console.log("logout");
+  const logoutTrigger = e => {
+    logout();
   };
 
-  const onClickObject = { Rename: renameColumn, Delete: deleteColumnTrigger, Logout: logout };
+  const handleClose = () => {
+    setOpenModal(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpenModal(true);
+  };
+
+  const onClickObject = {
+    Rename: renameTrigger,
+    Delete: deleteColumnTrigger,
+    Logout: logoutTrigger
+  };
 
   return (
     <div>
@@ -58,7 +71,7 @@ export default function DropDownMenu(props) {
         aria-label='more'
         aria-controls='long-menu'
         aria-haspopup='true'
-        onClick={handleClick}>
+        onClick={handleClickDropDown}>
         <MoreVertIcon />
       </IconButton>
       <Menu
@@ -66,7 +79,7 @@ export default function DropDownMenu(props) {
         anchorEl={anchorEl}
         keepMounted
         open={open}
-        onClose={handleClose}
+        onClose={handleCloseDropDown}
         PaperProps={{
           style: {
             maxHeight: ITEM_HEIGHT * 4.5,
@@ -75,14 +88,20 @@ export default function DropDownMenu(props) {
         }}>
         {options.map(option => {
           let onClick = onClickObject[option];
-          console.log(onClick);
           return (
-            <MenuItem key={option} selected={option === "Pyxis"} onClick={onClick}>
+            <MenuItem key={option} selected={option === "Pyxis"} onClick={e => onClick(e)}>
               <Typography>{option}</Typography>
             </MenuItem>
           );
         })}
       </Menu>
+      <TitleInputModal
+        open={openModal}
+        handleClose={handleClose}
+        columnId={columnId}
+        columnTitle={title}
+        column
+      />
     </div>
   );
 }

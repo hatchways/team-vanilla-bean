@@ -6,6 +6,26 @@ const checkToken = require("../auth/validateToken");
 // Models;
 const { Task, Column, Dashboard } = require("../models/Dashboard");
 
+//@CreateBoard
+router.get("/", checkToken, async (req, res) => {
+  let userId = req.decoded.id;
+
+  try {
+    let result = await Dashboard.findOne({ user: userId });
+
+    if (result) {
+      res.status(200).json({ result });
+    } else {
+      res.status(404).json({ error: "no dashboard" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ error: "Failed to get dashboard" });
+  }
+});
+
+//to get SpecificBoard @ need update
+
 router.post("/:dashboardId", checkToken, async (req, res) => {
   let userId = req.decoded.id;
   let id = req.params.dashboardId;
@@ -67,7 +87,7 @@ router.post("/", checkToken, async (req, res) => {
 
 //delete dashboard @done
 router.delete("/:dashboardId", checkToken, async (req, res) => {
-  const { dashboardId } = req.body;
+  const { dashboardId } = req.params;
   Dashboard.remove({ _id: dashboardId }, function(err) {
     if (!err) {
       res.status(200).json({ result: "Dashboard deleted" });
@@ -81,7 +101,8 @@ router.delete("/:dashboardId", checkToken, async (req, res) => {
 // Add a column @Done
 
 router.post("/:dashboardId/columns", checkToken, async (req, res) => {
-  const { dashboardId, title, position } = req.body;
+  const { title, position } = req.body;
+  const { dashboardId } = req.params;
   try {
     if (!title) {
       return res.status(401).json({ error: "Please Enter column title" });
@@ -112,7 +133,7 @@ router.post("/:dashboardId/columns", checkToken, async (req, res) => {
 
 //delete column @done
 router.delete("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
-  const { dashboardId, columnId } = req.body;
+  const { dashboardId, columnId } = req.params;
   try {
     //data manipulation
     let updateCond = {};
@@ -132,7 +153,8 @@ router.delete("/:dashboardId/columns/:columnId", checkToken, async (req, res) =>
 
 // Add a task @Done
 router.post("/:dashboardId/columns/:columnId/tasks", checkToken, async (req, res) => {
-  const { dashboardId, columnId, title, description, tag, action } = req.body;
+  const { title, description, tag, action } = req.body;
+  const { dashboardId, columnId } = req.params;
   try {
     const newTask = new Task({
       title,
@@ -176,7 +198,7 @@ router.post("/:dashboardId/columns/:columnId/tasks", checkToken, async (req, res
 
 //delete card @done
 router.delete("/:dashboardId/columns/:columnId/tasks/:taskId", checkToken, async (req, res) => {
-  const { dashboardId, columnId, taskId } = req.body;
+  const { dashboardId, columnId, taskId } = req.params;
   try {
     //data manipulation
     let updateCond = {};
@@ -250,11 +272,9 @@ router.put("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
 //Update column index @Done
 router.put("/:dashboardId/columns/:columnId/columnOrder", checkToken, async (req, res) => {
   try {
-    const dashboardId = req.params.dashboardId;
+    const { dashboardId } = req.params;
     const { columnOrder } = req.body;
 
-    // const
-    // const { dashboardId, columnOrder } = req.body;
     //data manipulation
     let updateCond = {};
     updateCond["$set"] = {};
@@ -272,7 +292,8 @@ router.put("/:dashboardId/columns/:columnId/columnOrder", checkToken, async (req
 //Update task index within same column @Done
 router.put("/:dashboardId/columns/:columnId/taskOrder", checkToken, async (req, res) => {
   try {
-    const { dashboardId, columnId, taskOrder } = req.body;
+    const { taskOrder } = req.body;
+    const { dashboardId, columnId } = req.params;
 
     //data manipulation
     let updateCond = {};
@@ -290,20 +311,20 @@ router.put("/:dashboardId/columns/:columnId/taskOrder", checkToken, async (req, 
 //Update task index between Column @Done
 router.put("/:dashboardId/columns/:columnId/taskColumnOrder", checkToken, async (req, res) => {
   const {
-    columnSourceId,
     columnSourceTasks,
     columnSourceTaskOrder,
     columnToSourceId,
     columnToTasks,
-    columnToTaskOrder,
-    dashboardId
+    columnToTaskOrder
   } = req.body;
+
+  const { dashboardId, columnId } = req.params;
 
   try {
     let updateCond = {};
     updateCond["$set"] = {};
-    updateCond["$set"]["columns." + columnSourceId + ".tasks"] = columnSourceTasks;
-    updateCond["$set"]["columns." + columnSourceId + ".taskOrder"] = columnSourceTaskOrder;
+    updateCond["$set"]["columns." + columnId + ".tasks"] = columnSourceTasks;
+    updateCond["$set"]["columns." + columnId + ".taskOrder"] = columnSourceTaskOrder;
     updateCond["$set"]["columns." + columnToSourceId + ".tasks"] = columnToTasks;
     updateCond["$set"]["columns." + columnToSourceId + ".taskOrder"] = columnToTaskOrder;
 

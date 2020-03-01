@@ -3,8 +3,8 @@ import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { getDashboard } from "../utils/handleUpdateTasks";
 import { withRouter } from "react-router";
+import { authFetch } from "../AuthService";
 
 import {
   updateTaskIndexInColumn,
@@ -14,7 +14,7 @@ import {
 
 //Component
 import CreateColumnButton from "../components/CreateColumnButton";
-import CreateBoardColumn from "../components/CreateBoardColumn";
+import CreateBoardColumn from "./TitleInputModal";
 
 //materia-ui
 
@@ -22,19 +22,26 @@ const ColumnArea = props => {
   const classes = useStyles(props);
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
-  let dashboardId = taskState._id;
+
+  const [open, setOpen] = useState(false);
+
+  let dashboardId = taskState && taskState._id;
+
   useEffect(() => {
-    if (!taskState) {
-      getDashboard(dashboardId, res => {
-        if (res !== null) {
-          setTaskState(res);
+    authFetch(`/dashboards`)
+      .then(res => {
+        if (res.result) {
+          setTaskState(res.result);
         }
+      })
+      .catch(() => {
+        setOpen(true);
       });
-    }
-  }, []);
+  }, [setTaskState]);
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
+
     if (!destination) {
       return;
     }
@@ -131,14 +138,8 @@ const ColumnArea = props => {
     moveTasksToOther(dashboardId, newStart, newFinish);
   };
 
-  const [open, setOpen] = useState(true);
-
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
   };
 
   if (!taskState) {
@@ -167,7 +168,13 @@ const ColumnArea = props => {
 
                 return (
                   <div className={classes.columns}>
-                    <Column key={column._id} columnId={column._id} tasks={tasks} index={index} />
+                    <Column
+                      key={column._id}
+                      column={column}
+                      tasks={tasks}
+                      index={index}
+                      dashboardId={taskState._id}
+                    />
                   </div>
                 );
               })}
@@ -181,13 +188,8 @@ const ColumnArea = props => {
   }
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   root: {
-    // display: "flex",
-    // width: 2500,
-    // flexGrow: 1
-    // display: "flex",
-    // justifyContent: "center"
     display: "flex",
     overflow: "auto",
     minHeight: "100vh"
@@ -195,10 +197,6 @@ const useStyles = makeStyles(theme => ({
   columns: {
     userSelect: "none",
     padding: " 4 * 2"
-    // margin: "0 7px 0 0"
-  },
-  bbb: {
-    backgroundColor: "red"
   }
 }));
 

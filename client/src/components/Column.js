@@ -28,7 +28,12 @@ const Column = props => {
               <Typography variant='h5' className={classes.title} {...provided.dragHandleProps}>
                 {column.title}
               </Typography>
-              <DropDownMenu column columnId={column._id} dashboardId={dashboardId} />
+              <DropDownMenu
+                column
+                columnId={column._id}
+                dashboardId={dashboardId}
+                title={column.title}
+              />
             </Grid>
             <Droppable droppableId={column._id} type='card'>
               {provided => (
