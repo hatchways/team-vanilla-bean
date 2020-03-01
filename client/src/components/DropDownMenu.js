@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import Typography from "@material-ui/core/Typography";
 import { UserContext } from "../userContext";
 import { deleteColumn } from "../utils/handleUpdateTasks";
@@ -72,7 +72,7 @@ export default function DropDownMenu(props) {
         aria-controls='long-menu'
         aria-haspopup='true'
         onClick={handleClickDropDown}>
-        <MoreVertIcon />
+        <MoreHorizIcon />
       </IconButton>
       <Menu
         id='long-menu'
