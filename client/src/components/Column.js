@@ -4,6 +4,7 @@ import { CardContext } from "./CreateCard/cardContext";
 
 import TaskCard from "./TaskCard";
 import Button from "./BlueButton";
+import DropDownMenu from "../components/DropDownMenu";
 //check how to use Cards in column data
 
 //materialUi
@@ -11,63 +12,41 @@ import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
-import CancelIcon from "@material-ui/icons/Cancel";
 
 //Drag and Drop
 import { Droppable, Draggable } from "react-beautiful-dnd";
 
 const Column = props => {
   const classes = useStyles(props);
-  const { column, tasks, index } = props;
+  const { column, tasks, index, dashboardId } = props;
 
   const card = useContext(CardContext);
   const { handleCurrentTask } = card;
 
-  const deleteColumn = e => {
-    e.preventDefault();
-    //Todo create delete column function
-  };
-
   return (
     <Draggable draggableId={column._id} index={index}>
       {provided => (
-        <Card
-          {...provided.draggableProps}
-          ref={provided.innerRef}
-          className={classes.root}
-        >
+        <Card {...provided.draggableProps} ref={provided.innerRef} className={classes.root}>
           <CardContent>
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="flex-start"
-              {...provided.dragHandleProps}
-            >
-              <Typography variant="h5" className={classes.title}>
+            <Grid container direction='row' justify='space-between' alignItems='flex-start'>
+              <Typography variant='h5' className={classes.title} {...provided.dragHandleProps}>
                 {column.title}
               </Typography>
-              <CancelIcon
-                className={classes.cancel}
-                onClick={e => deleteColumn(e)}
+              <DropDownMenu
+                column
+                columnId={column._id}
+                dashboardId={dashboardId}
+                title={column.title}
               />
             </Grid>
-            <Droppable droppableId={column._id} type="card">
+            <Droppable droppableId={column._id} type='card'>
               {provided => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   {tasks.map((task, index) => (
-                    <TaskCard
-                      key={task._id}
-                      task={task}
-                      index={index}
-                      columnId={column._id}
-                    />
+                    <TaskCard key={task._id} task={task} index={index} columnId={column._id} />
                   ))}
                   {provided.placeholder}
-                  <Button
-                    mini
-                    onClick={() => handleCurrentTask(null, column._id)}
-                  >
+                  <Button mini onClick={() => handleCurrentTask(null, column._id)}>
                     Add a Card
                   </Button>
                 </div>

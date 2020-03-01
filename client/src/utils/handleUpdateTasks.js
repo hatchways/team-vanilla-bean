@@ -3,13 +3,22 @@ import { authFetch } from "../AuthService";
 
 //ToDo remove this after implementing create board function
 
-export const updateTaskIndexInColumn = async (
-  dashboardId,
-  columnId,
-  taskOrder
-) => {
-  let body = { taskOrder };
-  authFetch(`/dashboards/${dashboardId}/columns/${columnId}ß/taskOrder`, {
+export const getDashboard = (dashboardId, cb) => {
+  let body = { dashboardId };
+
+  authFetch(`/dashboards/${dashboardId}`, {
+    method: "post",
+    body: JSON.stringify(body)
+  })
+    .then(res => {
+      cb(res.result);
+    })
+    .catch(err => handleError(err));
+};
+
+export const updateTaskIndexInColumn = async (dashboardId, columnId, taskOrder) => {
+  let body = { dashboardId, columnId, taskOrder };
+  authFetch(`/dashboards/${dashboardId}/columns/${columnId}/taskOrder`, {
     method: "put",
     body: JSON.stringify(body)
   }).catch(err => handleError(err));
@@ -76,6 +85,34 @@ export const addDashboard = (title, cb) => {
     })
     .catch(err => {
       console.log(err);
+      handleError(err);
+    });
+};
+
+export const deleteColumn = (dashboardId, columnId, cb) => {
+  authFetch(`/dashboards/${dashboardId}/columns/${columnId}`, {
+    method: "delete"
+  })
+    .then(res => {
+      cb(res.result);
+    })
+    .catch(err => {
+      handleError(err);
+    });
+};
+
+export const updateColumnName = (dashboardId, columnId, title, cb) => {
+  let body = {
+    title
+  };
+  authFetch(`/dashboards/${dashboardId}/columns/${columnId}`, {
+    method: "put",
+    body: JSON.stringify(body)
+  })
+    .then(res => {
+      cb(res.result);
+    })
+    .catch(err => {
       handleError(err);
     });
 };
