@@ -55,12 +55,18 @@ const CardProvider = props => {
 
   const fetchCard = (taskId, columnId, dashboard) => {
     const task = dashboard.columns[columnId].tasks[taskId];
-    setTitle(task.title);
-    handleOpenCard();
-    setDescription(task.description);
-    setTag(task.tag);
-    setDeadline(task.deadline);
-    task.deadline && setOpenDeadline(true);
+    const columnName = dashboard.columns[columnId].title;
+    if (task) {
+      handleOpenCard();
+      setTask(taskId);
+      setTitle(task.title);
+      setDescription(task.description);
+      setTag(task.tag);
+      setDeadline(task.deadline);
+      setColumnName(columnName);
+
+      task.deadline && setOpenDeadline(true);
+    }
   };
 
   const handleSubmit = () => {

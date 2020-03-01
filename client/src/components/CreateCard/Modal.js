@@ -20,14 +20,18 @@ const CardModal = () => {
       const fetchUrlCard = async () => {
         try {
           const res = await authFetch("/dashboards");
-          fetchCard(taskId, columnId, res.result);
+          if (res.result._id !== dashboardId) {
+            history.push("/dashboards");
+          } else {
+            fetchCard(taskId, columnId, res.result);
+          }
         } catch (e) {
-          console.log(e);
+          history.push("/dashboards");
         }
       };
       fetchUrlCard();
     }
-  }, ["/dashboards"]);
+  }, []);
 
   const handleClose = () => {
     history.push("/dashboards");
