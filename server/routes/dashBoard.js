@@ -145,7 +145,9 @@ router.post(
   "/:dashboardId/columns/:columnId/tasks",
   checkToken,
   async (req, res) => {
-    const { dashboardId, columnId, title, description, tag, action } = req.body;
+    const { title, description, tag, action } = req.body;
+    const { dashboardId, columnId } = req.params;
+
     try {
       const newTask = new Task({
         title,
@@ -193,7 +195,9 @@ router.delete(
   "/:dashboardId/columns/:columnId/tasks/:taskId",
   checkToken,
   async (req, res) => {
-    const { dashboardId, columnId, taskId } = req.body;
+    const { taskId } = req.body;
+    const { dashboardId, columnId } = req.params;
+
     try {
       //data manipulation
       let updateCond = {};
