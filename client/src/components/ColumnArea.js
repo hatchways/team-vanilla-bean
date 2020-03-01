@@ -149,11 +149,7 @@ const ColumnArea = props => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
           {(provided, snapshot) => (
-            <div
-              className={classes.root}
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              isDroppable={snapshot.isDroppable}>
+            <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
               <CreateColumnButton
                 position='left'
                 className={classes.bbb}

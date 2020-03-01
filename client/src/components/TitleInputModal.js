@@ -113,7 +113,6 @@ const TitleInputModal = props => {
               variant='outlined'
               margin='normal'
               value={title}
-              defaultValue={columnTitle || ""}
               onChange={e => setTitle(e.target.value)}
               autoFocus
               fullWidth></TextField>
