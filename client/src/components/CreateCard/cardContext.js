@@ -46,8 +46,6 @@ const CardProvider = props => {
   };
 
   const fetchCard = (taskId, columnId) => {
-    columnId = "column-1";
-    taskId = "task-1";
     const task = dashboard.columns[columnId].tasks[taskId];
     setTitle(task.title);
     setDescription(task.description);
