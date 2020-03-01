@@ -14,9 +14,9 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <PrivateRoute path='/dashboards/:dashboardId' component={DashBoard} />
-        <Route path='/signin' component={SignIn} />
-        <Route path='/signup' component={SignUp} />
+        <PrivateRoute path="/dashboards" component={DashBoard} />
+        <Route path="/signin" component={SignIn} />
+        <Route path="/signup" component={SignUp} />
       </BrowserRouter>
     </MuiThemeProvider>
   );

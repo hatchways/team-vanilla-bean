@@ -27,12 +27,17 @@ const BlueNav = () => {
   }));
   const classes = useStyles();
   return (
-    <AppBar position='static' className={classes.root}>
+    <AppBar position="static" className={classes.root}>
       <Toolbar>
-        <Typography variant='h6' className={classes.title}>
-          {taskState ? taskState.title : null}
+        <Typography variant="h6" className={classes.title}>
+          {taskState ? taskState.title : "My Board"}
         </Typography>
-        <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu'>
+        <IconButton
+          edge="start"
+          className={classes.menuButton}
+          color="inherit"
+          aria-label="menu"
+        >
           <MenuIcon />
         </IconButton>
       </Toolbar>
