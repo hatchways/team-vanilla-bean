@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { CardContext } from "./CreateCard/cardContext";
 
 import TaskCard from "./TaskCard";
-import BlueButton from "../components/BlueButton";
+import Button from "./BlueButton";
 //check how to use Cards in column data
 
 //materialUi
@@ -19,6 +20,9 @@ const Column = props => {
   const classes = useStyles(props);
   const { column, tasks, index } = props;
 
+  const card = useContext(CardContext);
+  const { handleCurrentTask } = card;
+
   const deleteColumn = e => {
     e.preventDefault();
     //Todo create delete column function
@@ -27,29 +31,45 @@ const Column = props => {
   return (
     <Draggable draggableId={column._id} index={index}>
       {provided => (
-        <Card {...provided.draggableProps} ref={provided.innerRef} className={classes.root}>
+        <Card
+          {...provided.draggableProps}
+          ref={provided.innerRef}
+          className={classes.root}
+        >
           <CardContent>
             <Grid
               container
-              direction='row'
-              justify='space-between'
-              alignItems='flex-start'
-              {...provided.dragHandleProps}>
-              <Typography variant='h5' className={classes.title}>
+              direction="row"
+              justify="space-between"
+              alignItems="flex-start"
+              {...provided.dragHandleProps}
+            >
+              <Typography variant="h5" className={classes.title}>
                 {column.title}
               </Typography>
-              <CancelIcon className={classes.cancel} onClick={e => deleteColumn(e)} />
+              <CancelIcon
+                className={classes.cancel}
+                onClick={e => deleteColumn(e)}
+              />
             </Grid>
-            <Droppable droppableId={column._id} type='card'>
+            <Droppable droppableId={column._id} type="card">
               {provided => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   {tasks.map((task, index) => (
-                    <TaskCard key={task._id} task={task} index={index} />
+                    <TaskCard
+                      key={task._id}
+                      task={task}
+                      index={index}
+                      columnId={column._id}
+                    />
                   ))}
                   {provided.placeholder}
-                  <BlueButton className={classes.btn} variant='contained' color='primary'>
+                  <Button
+                    mini
+                    onClick={() => handleCurrentTask(null, column._id)}
+                  >
                     Add a Card
-                  </BlueButton>
+                  </Button>
                 </div>
               )}
             </Droppable>
@@ -76,11 +96,6 @@ const useStyles = makeStyles({
   title: {
     textAlign: "left",
     marginBottom: 15
-  },
-  btn: {
-    marginTop: 20,
-    marginBottom: 10,
-    color: "white"
   },
   addColumn: {
     backgroundColor: "#F4F6FF",

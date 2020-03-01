@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Button,
-  TextField,
-  Grid,
-  Typography
-} from "@material-ui/core";
+import { Container, TextField, Grid, Typography } from "@material-ui/core";
+import Button from "../components/BlueButton";
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
 import { login, loggedIn } from "../AuthService";
@@ -15,8 +10,6 @@ const SignIn = props => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  console.log(props);
-
   const redirect = () => {
     loggedIn() && props.history.push("/dashboards");
   };
@@ -56,12 +49,6 @@ const SignIn = props => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                InputLabelProps={{
-                  classes: {
-                    root: classes.inputLabel,
-                    shrink: classes.shrink
-                  }
-                }}
                 InputProps={{
                   classes: {
                     root: classes.input,
@@ -82,12 +69,6 @@ const SignIn = props => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                InputLabelProps={{
-                  classes: {
-                    root: classes.inputLabel,
-                    shrink: classes.shrink
-                  }
-                }}
                 InputProps={{
                   classes: {
                     root: classes.input,
@@ -101,25 +82,17 @@ const SignIn = props => {
                   }
                 }}
               />
-              <Button
-                className={classes.button}
-                type="submit"
-                variant="contained"
-                color="primary"
-                size="large"
-              >
-                Login
-              </Button>
+              <Button>Login</Button>
             </form>
           </div>
         </Container>
 
         <Container className={classes.footer}>
-          <Typography paragraph variant="h2">
+          <Typography paragraph variant="h3">
             Don't have an account?
           </Typography>
 
-          <Typography variant="h2">
+          <Typography variant="h3">
             <Link to="/signup">Create</Link>
           </Typography>
         </Container>
