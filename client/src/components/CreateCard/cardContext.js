@@ -60,18 +60,15 @@ const CardProvider = props => {
     } else {
       if (!taskId) {
         const createTask = {
-          columnId,
-          dashboardId,
           deadline,
           title,
           description,
           tag
         };
-        authFetch("/dashboards/task", {
+        authFetch(`dashboards/${dashboardId}/columns/${columnId}/tasks`, {
           method: "POST",
           body: JSON.stringify(createTask)
         })
-          .then(res => handleUpdateContext(res))
           .then(handleCloseCard())
           .then(() => handleSuccess(`${title} has been saved!`))
           .catch(err => {
@@ -98,10 +95,6 @@ const CardProvider = props => {
           });
       }
     }
-  };
-
-  const handleUpdateContext = res => {
-    console.log(res);
   };
 
   const handleOpenCard = () => {

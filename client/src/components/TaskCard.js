@@ -29,7 +29,7 @@ const TaskCard = ({ index, task, props, columnId }) => {
           }}
         >
           <CardContent>
-            <Tag />
+            {task.tag && <Tag />}
             <Typography>{task.title}</Typography>
           </CardContent>
         </Card>
