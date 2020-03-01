@@ -17,15 +17,13 @@ const CardProvider = props => {
   const [deadline, setDeadline] = useState("");
   const [columnName, setColumnName] = useState("");
   const [error, setError] = useState("");
-  const [taskId, setTaskId] = useState("");
+  const [task, setTask] = useState("");
   const [columnId, setColumnId] = useState("");
 
   //get dashboard values from user context
   const { value1 } = useContext(UserContext);
-  const [dashboard] = value1;
+  const [dashboard, setDashboard] = value1;
   const dashboardId = dashboard && dashboard._id;
-
-  console.log(dashboardId);
 
   const handleCurrentTask = (taskId, columnId) => {
     const columnName = dashboard.columns[columnId].title;
@@ -34,10 +32,10 @@ const CardProvider = props => {
       setDescription("");
       setDeadline("");
       setTag("");
-      setTaskId("");
+      setTask("");
     }
     if (taskId) {
-      setTaskId(taskId);
+      setTask(taskId);
       fetchCard(taskId, columnId);
     }
     setColumnId(columnId);
@@ -58,7 +56,7 @@ const CardProvider = props => {
     if (!title) {
       setError(true);
     } else {
-      if (!taskId) {
+      if (!task) {
         const createTask = {
           deadline,
           title,
@@ -69,6 +67,7 @@ const CardProvider = props => {
           method: "POST",
           body: JSON.stringify(createTask)
         })
+          .then(res => updateUser(res))
           .then(handleCloseCard())
           .then(() => handleSuccess(`${title} has been saved!`))
           .catch(err => {
@@ -76,18 +75,19 @@ const CardProvider = props => {
           });
       } else {
         const updatedTask = {
-          columnId,
-          dashboardId,
-          taskId,
           deadline,
           title,
           description,
           tag
         };
-        authFetch("/dashboards/task", {
-          method: "PUT",
-          body: JSON.stringify(updatedTask)
-        })
+        authFetch(
+          `dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`,
+          {
+            method: "PUT",
+            body: JSON.stringify(updatedTask)
+          }
+        )
+          .then(res => updateUser(res))
           .then(() => handleCloseCard())
           .then(() => handleSuccess(`${title} has been updated!`))
           .catch(err => {
@@ -95,6 +95,10 @@ const CardProvider = props => {
           });
       }
     }
+  };
+
+  const updateUser = res => {
+    setDashboard(res.result);
   };
 
   const handleOpenCard = () => {

@@ -36,19 +36,10 @@ router.post("/", checkToken, async (req, res) => {
   }
 
   try {
-    // Initial states
-    const task1 = new Task({
-      title: "This is Your Task!",
-      description: "",
-      deadline: "",
-      comments: [],
-      tag: {},
-      action: {}
-    });
     const column1 = new Column({
       title: "in progress",
-      taskOrder: [task1.id],
-      tasks: { [task1._id]: task1 }
+      taskOrder: [],
+      tasks: {}
     });
     const column2 = new Column({
       title: "completed",
@@ -145,7 +136,7 @@ router.post(
   "/:dashboardId/columns/:columnId/tasks",
   checkToken,
   async (req, res) => {
-    const { title, description, tag, action } = req.body;
+    const { title, description, deadline, tag } = req.body;
     const { dashboardId, columnId } = req.params;
 
     try {
@@ -153,7 +144,7 @@ router.post(
         title,
         description,
         tag,
-        action
+        deadline
       });
 
       if (!title) {
@@ -186,6 +177,42 @@ router.post(
     } catch (err) {
       console.log(err);
       res.status(400).json({ error: "Failed to add task" });
+    }
+  }
+);
+
+//Update card Data
+router.put(
+  "/:dashboardId/columns/:columnId/tasks/:taskId",
+  checkToken,
+  async (req, res) => {
+    try {
+      const { title, description, deadline, comments, tag, action } = req.body;
+      const { dashboardId, columnId, taskId } = req.params;
+
+      if (!title) {
+        return res.status(401).json({ error: "Please Enter task title" });
+      }
+
+      let newTask = {
+        title,
+        description,
+        deadline,
+        comments,
+        tag,
+        action,
+        _id: taskId
+      };
+
+      let updateCond = {};
+      updateCond["$set"] = {};
+      updateCond["$set"]["columns." + columnId + ".tasks." + taskId] = newTask;
+
+      const result = await updateData(Dashboard, dashboardId, updateCond);
+      res.status(200).json({ result });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ error: "Failed to update task" });
     }
   }
 );
@@ -224,8 +251,6 @@ router.put(
       const dashboardId = req.params.dashboardId;
       const { columnOrder } = req.body;
 
-      // const
-      // const { dashboardId, columnOrder } = req.body;
       //data manipulation
       let updateCond = {};
       updateCond["$set"] = {};

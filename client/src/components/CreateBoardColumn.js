@@ -33,8 +33,6 @@ const FormDialog = props => {
         setTitle("");
         handleClose(false);
         console.log(res);
-
-        props.history.push(`/dashboards/${res._id}`);
       });
     } else {
       try {
