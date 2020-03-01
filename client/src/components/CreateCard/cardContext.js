@@ -23,7 +23,7 @@ const CardProvider = props => {
   //get dashboard values from user context
   const { value1 } = useContext(UserContext);
   const [dashboard] = value1;
-  const dashboardId = dashboard._id;
+  const dashboardId = dashboard && dashboard._id;
 
   console.log(dashboardId);
 
