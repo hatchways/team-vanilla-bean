@@ -19,15 +19,14 @@ const TaskCard = ({ index, task, props, columnId }) => {
     <Draggable draggableId={task._id} index={index}>
       {(provided, snapshot) => (
         <Card
-          className={snapshot.isdragging ? classes.dragged : classes.root}
+          className={snapshot.isDragging ? classes.dragged : classes.root}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          isdragging={snapshot.isdragging}
+          isDragging={snapshot.isDragging}
           onClick={() => {
             handleCurrentTask(task._id, columnId);
-          }}
-        >
+          }}>
           <CardContent>
             {task.tag && <Tag color={task.tag} />}
             <Typography>{task.title}</Typography>
