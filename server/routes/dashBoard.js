@@ -78,7 +78,7 @@ router.delete("/:dashboardId", checkToken, async (req, res) => {
 // Add a column @Done
 
 router.post("/:dashboardId/columns", checkToken, async (req, res) => {
-  const { dashboardId, title, position } = req.body;
+  const { title, position } = req.body;
   const { dashboardId } = req.params;
   try {
     if (!title) {
@@ -359,8 +359,7 @@ router.put(
       columnSourceTaskOrder,
       columnToSourceId,
       columnToTasks,
-      columnToTaskOrder,
-      dashboardId
+      columnToTaskOrder
     } = req.body;
 
     const { dashboardId, columnId } = req.params;
