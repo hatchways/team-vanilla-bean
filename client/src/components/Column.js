@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { CardContext } from "./CreateCard/cardContext";
 
 import TaskCard from "./TaskCard";
-import Button from "./BlueButton";
+import BlueButton from "./BlueButton";
 import DropDownMenu from "../components/DropDownMenu";
 //check how to use Cards in column data
 
@@ -46,9 +46,9 @@ const Column = props => {
                     <TaskCard key={task._id} task={task} index={index} columnId={column._id} />
                   ))}
                   {provided.placeholder}
-                  <Button mini onClick={() => handleCurrentTask(null, column._id)}>
+                  <BlueButton mini onClick={() => handleCurrentTask(null, column._id)}>
                     Add a Card
-                  </Button>
+                  </BlueButton>
                 </div>
               )}
             </Droppable>

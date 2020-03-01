@@ -3,18 +3,24 @@ import ColumnArea from "../components/ColumnArea";
 import BlueNav from "../components/BlueNav";
 import CardModal from "../components/CreateCard/Modal";
 import TopNav from "../components/TopNav";
-import Container from "@material-ui/core/Container";
+import { makeStyles } from "@material-ui/core/styles";
 
 const DashBoard = () => {
+  const useStyles = makeStyles(theme => ({
+    root: {
+      margin: 0,
+      padding: 0
+    }
+  }));
+  const classes = useStyles();
+
   return (
-    <Fragment>
+    <div className={classes.root}>
       <TopNav />
       <BlueNav />
       <CardModal />
-      <Container maxWidth='xl'>
-        <ColumnArea />
-      </Container>
-    </Fragment>
+      <ColumnArea />
+    </div>
   );
 };
 
