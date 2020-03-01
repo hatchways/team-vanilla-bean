@@ -8,7 +8,7 @@ export const updateTaskIndexInColumn = async (
   columnId,
   taskOrder
 ) => {
-  let body = { dashboardId, columnId, taskOrder };
+  let body = { taskOrder };
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}ß/taskOrder`, {
     method: "put",
     body: JSON.stringify(body)
@@ -19,13 +19,11 @@ export const moveTasksToOther = async (dashboardId, newStart, newFinish) => {
   const columnId = newStart._id;
 
   let body = {
-    columnSourceId: newStart._id,
     columnSourceTasks: newStart.tasks,
     columnSourceTaskOrder: newStart.taskOrder,
     columnToSourceId: newFinish._id,
     columnToTasks: newFinish.tasks,
-    columnToTaskOrder: newFinish.taskOrder,
-    dashboardId
+    columnToTaskOrder: newFinish.taskOrder
   };
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}/taskColumnOrder`, {
     method: "put",
@@ -35,7 +33,6 @@ export const moveTasksToOther = async (dashboardId, newStart, newFinish) => {
 
 export const updateColumnIndex = (dashboardId, columnOrder, columnId) => {
   let body = {
-    dashboardId,
     columnOrder
   };
 
@@ -48,7 +45,6 @@ export const updateColumnIndex = (dashboardId, columnOrder, columnId) => {
 //done
 export const addColumn = (dashboardId, title, position, cb) => {
   let body = {
-    dashboardId,
     title,
     position
   };
