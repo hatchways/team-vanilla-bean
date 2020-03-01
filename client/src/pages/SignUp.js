@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Button,
-  TextField,
-  Grid,
-  Typography
-} from "@material-ui/core";
+import { Container, TextField, Grid, Typography } from "@material-ui/core";
+import Button from "../components/BlueButton";
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
 import { login, loggedIn } from "../AuthService";
@@ -54,12 +49,6 @@ const SignUp = props => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                InputLabelProps={{
-                  classes: {
-                    root: classes.inputLabel,
-                    shrink: classes.shrink
-                  }
-                }}
                 InputProps={{
                   classes: {
                     root: classes.input,
@@ -80,12 +69,6 @@ const SignUp = props => {
                 variant="outlined"
                 margin="normal"
                 fullWidth
-                InputLabelProps={{
-                  classes: {
-                    root: classes.inputLabel,
-                    shrink: classes.shrink
-                  }
-                }}
                 InputProps={{
                   classes: {
                     root: classes.input,
@@ -100,25 +83,17 @@ const SignUp = props => {
                 }}
               />
 
-              <Button
-                className={classes.button}
-                type="submit"
-                variant="contained"
-                color="primary"
-                size="large"
-              >
-                Sign up
-              </Button>
+              <Button>Sign up</Button>
             </form>
           </div>
         </Container>
 
         <Container className={classes.footer}>
-          <Typography paragraph variant="h2">
+          <Typography paragraph variant="h3">
             Already have an account?
           </Typography>
 
-          <Typography variant="h2">
+          <Typography variant="h3">
             <Link to="/signin">Login</Link>
           </Typography>
         </Container>

@@ -24,21 +24,6 @@ router.get("/", checkToken, async (req, res) => {
   }
 });
 
-//to get SpecificBoard @ need update
-
-router.post("/:dashboardId", checkToken, async (req, res) => {
-  let userId = req.decoded.id;
-  let id = req.params.dashboardId;
-
-  try {
-    let result = await Dashboard.findOne({ user: userId, _id: id });
-    res.status(200).json({ result });
-  } catch (err) {
-    console.log(err);
-    res.status(404).json({ error: "Dashboard does not exist" });
-  }
-});
-
 //Add Dashboard @Done
 
 router.post("/", checkToken, async (req, res) => {
@@ -50,19 +35,10 @@ router.post("/", checkToken, async (req, res) => {
   }
 
   try {
-    // Initial states
-    const task1 = new Task({
-      title: "This is Your Task!",
-      description: "",
-      deadline: "",
-      comments: [],
-      tag: {},
-      action: {}
-    });
     const column1 = new Column({
       title: "in progress",
-      taskOrder: [task1.id],
-      tasks: { [task1._id]: task1 }
+      taskOrder: [],
+      tasks: {}
     });
     const column2 = new Column({
       title: "completed",
@@ -132,121 +108,141 @@ router.post("/:dashboardId/columns", checkToken, async (req, res) => {
 });
 
 //delete column @done
-router.delete("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
-  const { dashboardId, columnId } = req.params;
-  try {
-    //data manipulation
-    let updateCond = {};
+router.delete(
+  "/:dashboardId/columns/:columnId",
+  checkToken,
+  async (req, res) => {
+    const { dashboardId, columnId } = req.params;
+    try {
+      //data manipulation
+      let updateCond = {};
 
-    updateCond["$unset"] = {};
-    updateCond["$unset"]["columns." + columnId] = "";
-    updateCond["$pull"] = {};
-    updateCond["$pull"]["columnOrder"] = columnId;
+      updateCond["$unset"] = {};
+      updateCond["$unset"]["columns." + columnId] = "";
+      updateCond["$pull"] = {};
+      updateCond["$pull"]["columnOrder"] = columnId;
 
-    const result = await updateData(Dashboard, dashboardId, updateCond);
-    res.status(200).json({ result });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ error: "Failed to delete column" });
+      const result = await updateData(Dashboard, dashboardId, updateCond);
+      res.status(200).json({ result });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ error: "Failed to delete column" });
+    }
   }
-});
+);
 
 // Add a task @Done
-router.post("/:dashboardId/columns/:columnId/tasks", checkToken, async (req, res) => {
-  const { title, description, tag, action } = req.body;
-  const { dashboardId, columnId } = req.params;
-  try {
-    const newTask = new Task({
-      title,
-      description,
-      tag,
-      action
-    });
+router.post(
+  "/:dashboardId/columns/:columnId/tasks",
+  checkToken,
+  async (req, res) => {
+    const { title, description, deadline, tag, actions, comments } = req.body;
+    const { dashboardId, columnId } = req.params;
 
-    if (!title) {
-      return res.status(401).json({ error: "Please Enter task title" });
+    try {
+      const newTask = new Task({
+        title,
+        description,
+        tag,
+        deadline,
+        actions,
+        comments
+      });
+
+      if (!title) {
+        return res.status(401).json({ error: "Please Enter task title" });
+      }
+
+      let newTasks = {};
+      let board = await Dashboard.findOne({ _id: dashboardId });
+      let Column = await board.columns.get(columnId);
+
+      for (const key of Column.tasks.keys()) {
+        let item = Column.tasks.get(key);
+        newTasks[item.id] = item;
+      }
+
+      newTasks = {
+        ...newTasks,
+        [newTask._id]: newTask
+      };
+
+      //data manipulation
+      let updateCond = {};
+      updateCond["$set"] = {};
+      updateCond["$set"]["columns." + columnId + ".tasks"] = newTasks;
+      updateCond["$push"] = {};
+      updateCond["$push"]["columns." + columnId + ".taskOrder"] = newTask._id;
+
+      const result = await updateData(Dashboard, dashboardId, updateCond);
+      res.status(200).json({ result });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ error: "Failed to add task" });
     }
-
-    let newTasks = {};
-    let board = await Dashboard.findOne({ _id: dashboardId });
-    let Column = await board.columns.get(columnId);
-
-    for (const key of Column.tasks.keys()) {
-      let item = Column.tasks.get(key);
-      newTasks[item.id] = item;
-    }
-
-    newTasks = {
-      ...newTasks,
-      [newTask._id]: newTask
-    };
-
-    //data manipulation
-    let updateCond = {};
-    updateCond["$set"] = {};
-    updateCond["$set"]["columns." + columnId + ".tasks"] = newTasks;
-    updateCond["$push"] = {};
-    updateCond["$push"]["columns." + columnId + ".taskOrder"] = newTask._id;
-
-    const result = await updateData(Dashboard, dashboardId, updateCond);
-    res.status(200).json({ result });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ error: "Failed to add task" });
   }
-});
-
-//delete card @done
-router.delete("/:dashboardId/columns/:columnId/tasks/:taskId", checkToken, async (req, res) => {
-  const { dashboardId, columnId, taskId } = req.params;
-  try {
-    //data manipulation
-    let updateCond = {};
-    updateCond["$unset"] = {};
-    updateCond["$unset"]["columns." + columnId + ".tasks." + taskId] = "";
-    updateCond["$pull"] = {};
-    updateCond["$pull"]["columns." + columnId + ".taskOrder"] = taskId;
-
-    const result = await updateData(Dashboard, dashboardId, updateCond);
-
-    res.status(200).json({ result });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ error: "Failed to delete task" });
-  }
-});
+);
 
 //Update card Data
-router.put("/:dashboardId/columns/:columnId/tasks/:taskId", checkToken, async (req, res) => {
-  try {
-    const { title, description, deadline, comments, tag, action } = req.body;
+router.put(
+  "/:dashboardId/columns/:columnId/tasks/:taskId",
+  checkToken,
+  async (req, res) => {
+    try {
+      const { title, description, deadline, comments, tag, action } = req.body;
+      const { dashboardId, columnId, taskId } = req.params;
+
+      if (!title) {
+        return res.status(401).json({ error: "Please Enter task title" });
+      }
+
+      let newTask = {
+        title,
+        description,
+        deadline,
+        comments,
+        tag,
+        action,
+        _id: taskId
+      };
+
+      let updateCond = {};
+      updateCond["$set"] = {};
+      updateCond["$set"]["columns." + columnId + ".tasks." + taskId] = newTask;
+
+      const result = await updateData(Dashboard, dashboardId, updateCond);
+      res.status(200).json({ result });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ error: "Failed to update task" });
+    }
+  }
+);
+
+//delete card @done
+router.delete(
+  "/:dashboardId/columns/:columnId/tasks/:taskId",
+  checkToken,
+  async (req, res) => {
     const { dashboardId, columnId, taskId } = req.params;
 
-    if (!title) {
-      return res.status(401).json({ error: "Please Enter task title" });
+    try {
+      //data manipulation
+      let updateCond = {};
+      updateCond["$unset"] = {};
+      updateCond["$unset"]["columns." + columnId + ".tasks." + taskId] = "";
+      updateCond["$pull"] = {};
+      updateCond["$pull"]["columns." + columnId + ".taskOrder"] = taskId;
+
+      const result = await updateData(Dashboard, dashboardId, updateCond);
+
+      res.status(200).json({ result });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ error: "Failed to delete task" });
     }
-
-    let newTask = {
-      title,
-      description,
-      deadline,
-      comments,
-      tag,
-      action
-    };
-
-    let updateCond = {};
-    updateCond["$set"] = {};
-    updateCond["$set"]["columns." + columnId + ".tasks." + taskId] = newTask;
-
-    const result = await updateData(Dashboard, dashboardId, updateCond);
-    res.status(200).json({ result });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ error: "Failed to update task" });
   }
-});
-
+);
 //update ColumnTitle
 router.put("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
   try {
@@ -270,71 +266,89 @@ router.put("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
 });
 
 //Update column index @Done
-router.put("/:dashboardId/columns/:columnId/columnOrder", checkToken, async (req, res) => {
-  try {
-    const { dashboardId } = req.params;
-    const { columnOrder } = req.body;
+router.put(
+  "/:dashboardId/columns/:columnId/columnOrder",
+  checkToken,
+  async (req, res) => {
+    try {
+      const { dashboardId } = req.params;
+      const { columnOrder } = req.body;
 
-    //data manipulation
-    let updateCond = {};
-    updateCond["$set"] = {};
-    updateCond["$set"]["columnOrder"] = columnOrder;
+      //data manipulation
+      let updateCond = {};
+      updateCond["$set"] = {};
+      updateCond["$set"]["columnOrder"] = columnOrder;
 
-    const result = await updateData(Dashboard, dashboardId, updateCond);
+      const result = await updateData(Dashboard, dashboardId, updateCond);
 
-    res.status(200).json({ result });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ error: "Failed to delete column" });
+      res.status(200).json({ result });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ error: "Failed to delete column" });
+    }
   }
-});
+);
 
 //Update task index within same column @Done
-router.put("/:dashboardId/columns/:columnId/taskOrder", checkToken, async (req, res) => {
-  try {
-    const { taskOrder } = req.body;
-    const { dashboardId, columnId } = req.params;
+router.put(
+  "/:dashboardId/columns/:columnId/taskOrder",
+  checkToken,
+  async (req, res) => {
+    try {
+      const { taskOrder } = req.body;
+      const { dashboardId, columnId } = req.params;
 
-    //data manipulation
-    let updateCond = {};
-    updateCond["$set"] = {};
-    updateCond["$set"]["columns." + columnId + ".taskOrder"] = taskOrder;
+      //data manipulation
+      let updateCond = {};
+      updateCond["$set"] = {};
+      updateCond["$set"]["columns." + columnId + ".taskOrder"] = taskOrder;
 
-    const result = await updateData(Dashboard, dashboardId, updateCond);
-    res.status(200).json({ result });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ error: "Failed to move task" });
+      const result = await updateData(Dashboard, dashboardId, updateCond);
+      res.status(200).json({ result });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ error: "Failed to move task" });
+    }
   }
-});
+);
 
 //Update task index between Column @Done
-router.put("/:dashboardId/columns/:columnId/taskColumnOrder", checkToken, async (req, res) => {
-  const {
-    columnSourceTasks,
-    columnSourceTaskOrder,
-    columnToSourceId,
-    columnToTasks,
-    columnToTaskOrder
-  } = req.body;
+router.put(
+  "/:dashboardId/columns/:columnId/taskColumnOrder",
+  checkToken,
+  async (req, res) => {
+    const {
+      columnSourceTasks,
+      columnSourceTaskOrder,
+      columnToSourceId,
+      columnToTasks,
+      columnToTaskOrder
+    } = req.body;
 
-  const { dashboardId, columnId } = req.params;
+    const { dashboardId, columnId } = req.params;
 
-  try {
-    let updateCond = {};
-    updateCond["$set"] = {};
-    updateCond["$set"]["columns." + columnId + ".tasks"] = columnSourceTasks;
-    updateCond["$set"]["columns." + columnId + ".taskOrder"] = columnSourceTaskOrder;
-    updateCond["$set"]["columns." + columnToSourceId + ".tasks"] = columnToTasks;
-    updateCond["$set"]["columns." + columnToSourceId + ".taskOrder"] = columnToTaskOrder;
+    try {
+      let updateCond = {};
+      updateCond["$set"] = {};
+      updateCond["$set"]["columns." + columnId + ".tasks"] = columnSourceTasks;
+      updateCond["$set"][
+        "columns." + columnId + ".taskOrder"
+      ] = columnSourceTaskOrder;
+      updateCond["$set"][
+        "columns." + columnToSourceId + ".tasks"
+      ] = columnToTasks;
+      updateCond["$set"][
+        "columns." + columnToSourceId + ".taskOrder"
+      ] = columnToTaskOrder;
 
-    const result = await updateData(Dashboard, dashboardId, updateCond);
+      const result = await updateData(Dashboard, dashboardId, updateCond);
 
-    res.status(200).json({ result });
-  } catch (err) {
-    console.log(err);
-    res.status(400).json({ error: "Failed to move task to the column" });
+      res.status(200).json({ result });
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ error: "Failed to move task to the column" });
+    }
   }
-});
+);
 
 module.exports = router;

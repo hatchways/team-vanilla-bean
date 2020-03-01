@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { CardContext } from "./CreateCard/cardContext";
 
 import TaskCard from "./TaskCard";
-import BlueButton from "../components/BlueButton";
+import Button from "../components/BlueButton";
 import DropDownMenu from "../components/DropDownMenu";
 //check how to use Cards in column data
 
@@ -19,13 +20,29 @@ const Column = props => {
   const classes = useStyles(props);
   const { column, tasks, index, dashboardId } = props;
 
+  const card = useContext(CardContext);
+  const { handleCurrentTask } = card;
+
   return (
     <Draggable draggableId={column._id} index={index}>
       {provided => (
-        <Card {...provided.draggableProps} ref={provided.innerRef} className={classes.root}>
+        <Card
+          {...provided.draggableProps}
+          ref={provided.innerRef}
+          className={classes.root}
+        >
           <CardContent>
-            <Grid container direction='row' justify='space-between' alignItems='flex-start'>
-              <Typography variant='h5' className={classes.title} {...provided.dragHandleProps}>
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="flex-start"
+            >
+              <Typography
+                variant="h5"
+                className={classes.title}
+                {...provided.dragHandleProps}
+              >
                 {column.title}
               </Typography>
               <DropDownMenu
@@ -35,16 +52,26 @@ const Column = props => {
                 title={column.title}
               />
             </Grid>
-            <Droppable droppableId={column._id} type='card'>
+            <Droppable droppableId={column._id} type="card">
               {provided => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   {tasks.map((task, index) => {
-                    return <TaskCard key={task._id} task={task} index={index} />;
+                    return (
+                      <TaskCard
+                        key={task._id}
+                        task={task}
+                        index={index}
+                        columnId={column._id}
+                      />
+                    );
                   })}
                   {provided.placeholder}
-                  <BlueButton className={classes.btn} variant='contained' color='primary'>
+                  <Button
+                    mini
+                    onClick={() => handleCurrentTask(null, column._id)}
+                  >
                     Add a Card
-                  </BlueButton>
+                  </Button>
                 </div>
               )}
             </Droppable>
@@ -71,11 +98,6 @@ const useStyles = makeStyles({
   title: {
     textAlign: "left",
     marginBottom: 15
-  },
-  btn: {
-    marginTop: 20,
-    marginBottom: 10,
-    color: "white"
   },
   addColumn: {
     backgroundColor: "#F4F6FF",
