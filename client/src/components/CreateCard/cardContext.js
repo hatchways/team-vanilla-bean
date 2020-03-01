@@ -19,6 +19,7 @@ const CardProvider = props => {
   const [error, setError] = useState("");
   const [task, setTask] = useState("");
   const [columnId, setColumnId] = useState("");
+  const [openDelete, setOpenDelete] = useState("");
 
   //get dashboard values from user context
   const { value1 } = useContext(UserContext);
@@ -64,7 +65,7 @@ const CardProvider = props => {
       setTag(task.tag);
       setDeadline(task.deadline);
       setColumnName(columnName);
-
+      setColumnId(columnId);
       task.deadline && setOpenDeadline(true);
     }
   };
@@ -123,6 +124,7 @@ const CardProvider = props => {
     setOpenCard(false);
     setOpenTag(false);
     setOpenDeadline(false);
+    setOpenDelete(false);
     setError(false);
   };
 
@@ -162,10 +164,31 @@ const CardProvider = props => {
     }
   };
 
+  const handleOpenDelete = () => {
+    setOpenDelete(true);
+  };
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
+
+  const handleDelete = history => {
+    authFetch("", {
+      method: "DELETE"
+    })
+      .then(res => updateUser(res))
+      .then(history.push("/dashboards"))
+      .then(() => handleCloseCard())
+      .then(() => handleSuccess(`Task has been deleted`))
+      .catch(err => {
+        handleError(err);
+      });
+  };
+
   return (
     <CardContext.Provider
       value={{
         title,
+        task,
         handleTitleChange,
         handleCurrentTask,
         handleCloseCard,
@@ -184,7 +207,11 @@ const CardProvider = props => {
         handleDeadlineChange,
         handleOpenDeadline,
         openDeadline,
-        fetchCard
+        fetchCard,
+        handleOpenDelete,
+        handleCloseDelete,
+        handleDelete,
+        openDelete
       }}
     >
       {props.children}

@@ -9,6 +9,7 @@ import { CardContext } from "./cardContext";
 import { authFetch } from "../../AuthService";
 import { useParams, useHistory } from "react-router";
 import { handleError } from "../../utils/handleAlerts";
+import DeleteModal from "./DeleteModal";
 
 const CardModal = () => {
   const card = useContext(CardContext);
@@ -64,6 +65,7 @@ const CardModal = () => {
           <Header />
           <Grid item xs={10} container spacing={4}>
             <Description />
+            <DeleteModal />
             <Deadline />
             <Comment />
           </Grid>
