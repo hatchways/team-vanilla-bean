@@ -12,24 +12,71 @@ import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import BlueButton from "./BlueButton";
 
-import { addColumn, addDashboard } from "../utils/handleUpdateTasks";
+import {
+  addColumn,
+  addDashboard,
+  updateColumnName
+} from "../utils/handleUpdateTasks";
 import { UserContext } from "../userContext";
 import { handleError } from "../utils/handleAlerts";
 
 import { withRouter } from "react-router-dom";
 
-const FormDialog = props => {
-  const { open, handleClose, position, dashboard } = props;
-  const [title, setTitle] = useState("");
+const TitleInputModal = props => {
+  const {
+    open,
+    handleClose,
+    position,
+    dashboard,
+    column,
+    columnId,
+    columnTitle
+  } = props;
+  const [title, setTitle] = useState(columnTitle);
   const [error, setError] = useState(false);
+
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
   let dashboardId = taskState && taskState._id;
+  let btnText = "Create";
+  let titleText = "";
+
+  if (dashboard) {
+    titleText = "Create Board";
+  } else if (column) {
+    titleText = "Change title";
+    btnText = "change";
+  } else {
+    titleText = "Create Column";
+  }
 
   const handleSubmit = e => {
     e.preventDefault();
+
     if (!title) {
       setError(true);
+    } else if (dashboard) {
+      addDashboard(title, res => {
+        setTaskState(res);
+        setTitle("");
+        handleClose(false);
+      });
+    } else if (column) {
+      if (columnTitle === title) {
+        handleClose(false);
+        return;
+      }
+      if (!title) {
+        handleClose(false);
+        setTitle(columnTitle);
+        return;
+      }
+      updateColumnName(dashboardId, columnId, title, res => {
+        setTaskState(res);
+        setTitle("");
+        handleClose(false);
+      });
+      handleClose(false);
     } else {
       if (dashboard) {
         addDashboard(title, res => {
@@ -76,7 +123,7 @@ const FormDialog = props => {
     <div>
       <Dialog
         open={open}
-        onClose={dashboard ? null : handleClose}
+        onClose={handleClose}
         aria-labelledby="form-dialog-title"
         PaperProps={{
           className: classes.root
@@ -92,9 +139,7 @@ const FormDialog = props => {
               <CloseIcon />
             </IconButton>
           )}
-          <Typography variant="h1">
-            {dashboard ? "Create Board" : "Create Column"}
-          </Typography>
+          <Typography variant="h1">{titleText}</Typography>
         </DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit}>
@@ -109,7 +154,7 @@ const FormDialog = props => {
               autoFocus
               fullWidth
             ></TextField>
-            <BlueButton type="submit">Create</BlueButton>
+            <BlueButton type="submit">{btnText}</BlueButton>
           </form>
         </DialogContent>
       </Dialog>
@@ -117,4 +162,4 @@ const FormDialog = props => {
   );
 };
 
-export default withRouter(FormDialog);
+export default withRouter(TitleInputModal);

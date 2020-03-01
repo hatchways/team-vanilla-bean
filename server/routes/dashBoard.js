@@ -7,7 +7,6 @@ const checkToken = require("../auth/validateToken");
 const { Task, Column, Dashboard } = require("../models/Dashboard");
 
 //@CreateBoard
-
 router.get("/", checkToken, async (req, res) => {
   let userId = req.decoded.id;
 
@@ -244,7 +243,6 @@ router.delete(
     }
   }
 );
-
 //update ColumnTitle
 router.put("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
   try {
@@ -273,7 +271,7 @@ router.put(
   checkToken,
   async (req, res) => {
     try {
-      const dashboardId = req.params.dashboardId;
+      const { dashboardId } = req.params;
       const { columnOrder } = req.body;
 
       //data manipulation
