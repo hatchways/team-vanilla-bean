@@ -8,7 +8,7 @@ const DashBoard = () => {
     <Fragment>
       <BlueNav />
       <CardModal />
-      <ColumnArea />;
+      <ColumnArea />
     </Fragment>
   );
 };
