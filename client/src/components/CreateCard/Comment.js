@@ -3,10 +3,18 @@ import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineO
 import { TextField, Grid, Typography } from "@material-ui/core";
 import BlueButton from "../BlueButton";
 import { CardContext } from "./cardContext";
+import { useHistory } from "react-router";
 
 const Comment = () => {
   const card = useContext(CardContext);
   const { handleSubmit } = card;
+
+  const history = useHistory();
+
+  const submitCard = () => {
+    handleSubmit();
+    history.push("/dashboards");
+  };
 
   return (
     <Grid item container>
@@ -26,7 +34,7 @@ const Comment = () => {
           fullWidth
           margin="normal"
         />
-        <BlueButton mini onClick={handleSubmit}>
+        <BlueButton mini onClick={submitCard}>
           Save
         </BlueButton>
       </Grid>

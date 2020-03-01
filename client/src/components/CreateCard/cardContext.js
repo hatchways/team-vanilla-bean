@@ -79,7 +79,7 @@ const CardProvider = props => {
           body: JSON.stringify(createTask)
         })
           .then(res => updateUser(res))
-          .then(handleCloseCard())
+          .then(() => handleCloseCard())
           .then(() => handleSuccess(`${title} has been saved!`))
           .catch(err => {
             handleError(err);
