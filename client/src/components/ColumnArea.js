@@ -14,7 +14,7 @@ import {
 
 //Component
 import CreateColumnButton from "../components/CreateColumnButton";
-import CreateBoardColumn from "../components/CreateBoardColumn";
+import CreateBoardColumn from "./TitleInputModal";
 
 //materia-ui
 
@@ -22,6 +22,7 @@ const ColumnArea = props => {
   const classes = useStyles(props);
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
+
   const [open, setOpen] = useState(false);
 
   let dashboardId = taskState && taskState._id;
@@ -45,10 +46,7 @@ const ColumnArea = props => {
       return;
     }
     //Check if it is dropped to same column and same index
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return;
     }
 
@@ -145,47 +143,38 @@ const ColumnArea = props => {
   };
 
   if (!taskState) {
-    return (
-      <CreateBoardColumn open={open} handleClose={handleClose} dashboard />
-    );
+    return <CreateBoardColumn open={open} handleClose={handleClose} dashboard />;
   } else {
     return (
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable
-          droppableId="all-columns"
-          direction='"horizontal'
-          type="column"
-        >
-          {provided => (
-            <div
-              className={classes.root}
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              <CreateColumnButton position="left" />
-              {taskState ? (
-                taskState.columnOrder.map((columnId, index) => {
-                  const column = taskState.columns[columnId];
-                  let taskOrder = taskState.columns[columnId].taskOrder || [];
-                  let tasks = taskOrder.map(task => {
-                    return column.tasks[task];
-                  });
+        <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
+          {(provided, snapshot) => (
+            <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
+              <CreateColumnButton
+                position='left'
+                className={classes.bbb}
+                isDraggingOver={snapshot.isDraggingOver}
+              />
+              {taskState.columnOrder.map((columnId, index) => {
+                const column = taskState.columns[columnId];
+                let taskOrder = taskState.columns[columnId].taskOrder || [];
+                let tasks = taskOrder.map(task => {
+                  return column.tasks[task];
+                });
 
-                  return (
-                    <div className={classes.columns}>
-                      <Column
-                        key={column._id}
-                        column={column}
-                        tasks={tasks}
-                        index={index}
-                      />
-                    </div>
-                  );
-                })
-              ) : (
-                <CreateColumnButton position="right" />
-              )}
-              <CreateColumnButton position="right" />
+                return (
+                  <div className={classes.columns}>
+                    <Column
+                      key={columnId}
+                      column={column}
+                      tasks={tasks}
+                      index={index}
+                      dashboardId={taskState._id}
+                    />
+                  </div>
+                );
+              })}
+              <CreateColumnButton position='right' isDraggingOver={snapshot.isDraggingOver} />
               {provided.placeholder}
             </div>
           )}

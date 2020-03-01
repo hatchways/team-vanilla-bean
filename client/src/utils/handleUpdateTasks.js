@@ -9,7 +9,7 @@ export const updateTaskIndexInColumn = async (
   taskOrder
 ) => {
   let body = { taskOrder };
-  authFetch(`/dashboards/${dashboardId}/columns/${columnId}ß/taskOrder`, {
+  authFetch(`/dashboards/${dashboardId}/columns/${columnId}/taskOrder`, {
     method: "put",
     body: JSON.stringify(body)
   }).catch(err => handleError(err));
@@ -76,6 +76,34 @@ export const addDashboard = (title, cb) => {
     })
     .catch(err => {
       console.log(err);
+      handleError(err);
+    });
+};
+
+export const deleteColumn = (dashboardId, columnId, cb) => {
+  authFetch(`/dashboards/${dashboardId}/columns/${columnId}`, {
+    method: "delete"
+  })
+    .then(res => {
+      cb(res.result);
+    })
+    .catch(err => {
+      handleError(err);
+    });
+};
+
+export const updateColumnName = (dashboardId, columnId, title, cb) => {
+  let body = {
+    title
+  };
+  authFetch(`/dashboards/${dashboardId}/columns/${columnId}`, {
+    method: "put",
+    body: JSON.stringify(body)
+  })
+    .then(res => {
+      cb(res.result);
+    })
+    .catch(err => {
       handleError(err);
     });
 };
