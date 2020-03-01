@@ -60,7 +60,6 @@ const TitleInputModal = props => {
         setTaskState(res);
         setTitle("");
         handleClose(false);
-        props.history.push(`/dashboards/${res._id}`);
       });
     } else if (column) {
       if (columnTitle === title) {
