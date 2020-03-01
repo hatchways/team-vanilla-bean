@@ -12,7 +12,6 @@ import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
-import CancelIcon from "@material-ui/icons/Cancel";
 import { useHistory } from "react-router-dom";
 
 //Drag and Drop

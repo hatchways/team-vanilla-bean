@@ -3,7 +3,6 @@ import moment from "moment";
 import { authFetch } from "../../AuthService";
 import { UserContext } from "../../userContext";
 import { handleError, handleSuccess } from "../../utils/handleAlerts";
-import { useLocation } from "react-router";
 
 const CardContext = createContext();
 
