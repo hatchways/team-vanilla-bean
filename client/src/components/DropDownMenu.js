@@ -1,48 +1,30 @@
-import React from "react";
-import { withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
+import React, { useContext } from "react";
+import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import DraftsIcon from "@material-ui/icons/Drafts";
-import SendIcon from "@material-ui/icons/Send";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import Typography from "@material-ui/core/Typography";
+import { UserContext } from "../userContext";
+import { deleteColumn } from "../utils/handleUpdateTasks";
 
-const StyledMenu = withStyles({
-  paper: {
-    border: "1px solid #d3d4d5"
-  }
-})(props => (
-  <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "center"
-    }}
-    transformOrigin={{
-      vertical: "top",
-      horizontal: "center"
-    }}
-    {...props}
-  />
-));
+const ITEM_HEIGHT = 48;
 
-const StyledMenuItem = withStyles(theme => ({
-  root: {
-    "&:focus": {
-      backgroundColor: theme.palette.primary.main,
-      "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
-        color: theme.palette.common.white
-      }
-    }
-  }
-}))(MenuItem);
-
-export default function CustomizedMenus() {
+export default function DropDownMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const { value1 } = useContext(UserContext);
+  // let [taskState, setTaskState] = value1;
+  // console.log(taskState);
 
+  const dashboardId = "5e5b0b02be359a032d03ce2c";
+  const { column, blueNav, columnId } = props;
+  let options = [];
+  if (column) {
+    options = ["Rename", "Delete"];
+  }
+  if (blueNav) {
+    options = ["Logout"];
+  }
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
@@ -51,41 +33,56 @@ export default function CustomizedMenus() {
     setAnchorEl(null);
   };
 
+  const deleteColumnTrigger = () => {
+    deleteColumn(dashboardId, columnId, res => {
+      // setTaskState(res);
+    });
+    handleClose();
+  };
+
+  const renameColumn = () => {
+    console.log("rename");
+
+    handleClose();
+  };
+
+  const logout = () => {
+    console.log("logout");
+  };
+
+  const onClickObject = { Rename: renameColumn, Delete: deleteColumnTrigger, Logout: logout };
+
   return (
     <div>
-      <Button
-        aria-controls='customized-menu'
+      <IconButton
+        aria-label='more'
+        aria-controls='long-menu'
         aria-haspopup='true'
-        variant='contained'
-        color='primary'
         onClick={handleClick}>
-        Open Menu
-      </Button>
-      <StyledMenu
-        id='customized-menu'
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        id='long-menu'
         anchorEl={anchorEl}
         keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}>
-        <StyledMenuItem>
-          <ListItemIcon>
-            <SendIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText primary='Sent mail' />
-        </StyledMenuItem>
-        <StyledMenuItem>
-          <ListItemIcon>
-            <DraftsIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText primary='Drafts' />
-        </StyledMenuItem>
-        <StyledMenuItem>
-          <ListItemIcon>
-            <InboxIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText primary='Inbox' />
-        </StyledMenuItem>
-      </StyledMenu>
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          style: {
+            maxHeight: ITEM_HEIGHT * 4.5,
+            width: 200
+          }
+        }}>
+        {options.map(option => {
+          let onClick = onClickObject[option];
+          console.log(onClick);
+          return (
+            <MenuItem key={option} selected={option === "Pyxis"} onClick={onClick}>
+              <Typography>{option}</Typography>
+            </MenuItem>
+          );
+        })}
+      </Menu>
     </div>
   );
 }

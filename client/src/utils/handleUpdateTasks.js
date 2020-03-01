@@ -92,3 +92,15 @@ export const addDashboard = (title, cb) => {
       handleError(err);
     });
 };
+
+export const deleteColumn = (dashboardId, columnId, cb) => {
+  authFetch(`/dashboards/${dashboardId}/columns/${columnId}`, {
+    method: "delete"
+  })
+    .then(res => {
+      cb(res.result);
+    })
+    .catch(err => {
+      handleError(err);
+    });
+};

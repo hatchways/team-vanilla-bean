@@ -11,8 +11,6 @@ const CreateColumnButton = props => {
   const [open, setOpen] = useState(false);
   const { position, isDraggingOver } = props;
 
-  console.log(isDraggingOver);
-
   const handleClose = () => {
     setOpen(false);
   };

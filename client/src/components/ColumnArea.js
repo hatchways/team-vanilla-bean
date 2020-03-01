@@ -22,7 +22,7 @@ const ColumnArea = props => {
   const classes = useStyles(props);
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
-  let dashboardId = props.match.params.dashboardId;
+  let dashboardId = taskState._id;
   useEffect(() => {
     if (!taskState) {
       getDashboard(dashboardId, res => {
@@ -158,23 +158,19 @@ const ColumnArea = props => {
                 className={classes.bbb}
                 isDraggingOver={snapshot.isDraggingOver}
               />
-              {taskState ? (
-                taskState.columnOrder.map((columnId, index) => {
-                  const column = taskState.columns[columnId];
-                  let taskOrder = taskState.columns[columnId].taskOrder || [];
-                  let tasks = taskOrder.map(task => {
-                    return column.tasks[task];
-                  });
+              {taskState.columnOrder.map((columnId, index) => {
+                const column = taskState.columns[columnId];
+                let taskOrder = taskState.columns[columnId].taskOrder || [];
+                let tasks = taskOrder.map(task => {
+                  return column.tasks[task];
+                });
 
-                  return (
-                    <div className={classes.columns}>
-                      <Column key={column._id} column={column} tasks={tasks} index={index} />
-                    </div>
-                  );
-                })
-              ) : (
-                <CreateColumnButton position='right' isDraggingOver={snapshot.isDraggingOver} />
-              )}
+                return (
+                  <div className={classes.columns}>
+                    <Column key={column._id} columnId={column._id} tasks={tasks} index={index} />
+                  </div>
+                );
+              })}
               <CreateColumnButton position='right' isDraggingOver={snapshot.isDraggingOver} />
               {provided.placeholder}
             </div>

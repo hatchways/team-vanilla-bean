@@ -7,6 +7,8 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import { UserContext } from "../userContext";
 
+import DropDownMenu from "../components/DropDownMenu";
+
 const BlueNav = () => {
   const { value1 } = useContext(UserContext);
   let [taskState] = value1;
@@ -32,9 +34,7 @@ const BlueNav = () => {
         <Typography variant='h6' className={classes.title}>
           {taskState ? taskState.title : null}
         </Typography>
-        <IconButton edge='start' className={classes.menuButton} color='inherit' aria-label='menu'>
-          <MenuIcon />
-        </IconButton>
+        <DropDownMenu blueNav />
       </Toolbar>
     </AppBar>
   );
