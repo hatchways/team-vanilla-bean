@@ -244,42 +244,6 @@ router.delete(
   }
 );
 
-//Update card Data
-router.put(
-  "/:dashboardId/columns/:columnId/tasks/:taskId",
-  checkToken,
-  async (req, res) => {
-    try {
-      const { title, description, deadline, comments, tag, action } = req.body;
-      const { dashboardId, columnId, taskId } = req.params;
-
-      if (!title) {
-        return res.status(401).json({ error: "Please Enter task title" });
-      }
-
-      let newTask = {
-        title,
-        description,
-        deadline,
-        comments,
-        tag,
-        action,
-        _id: taskId
-      };
-
-      let updateCond = {};
-      updateCond["$set"] = {};
-      updateCond["$set"]["columns." + columnId + ".tasks." + taskId] = newTask;
-
-      const result = await updateData(Dashboard, dashboardId, updateCond);
-      res.status(200).json({ result });
-    } catch (err) {
-      console.log(err);
-      res.status(400).json({ error: "Failed to update task" });
-    }
-  }
-);
-
 //update ColumnTitle
 router.put("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
   try {

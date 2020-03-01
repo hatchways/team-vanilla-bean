@@ -36,7 +36,7 @@ const ColumnArea = props => {
       .catch(() => {
         setOpen(true);
       });
-  }, []);
+  }, [setTaskState]);
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
