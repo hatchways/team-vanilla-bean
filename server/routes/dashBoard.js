@@ -225,7 +225,6 @@ router.delete(
   "/:dashboardId/columns/:columnId/tasks/:taskId",
   checkToken,
   async (req, res) => {
-    const { taskId } = req.body;
     const { dashboardId, columnId, taskId } = req.params;
 
     try {
