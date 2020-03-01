@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Container, TextField, Grid, Typography } from "@material-ui/core";
+import Button from "../components/BlueButton";
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
 import { login, loggedIn } from "../AuthService";
 import { handleError } from "../utils/handleAlerts";
-import Button from "../components/BlueButton";
 
 const SignUp = props => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const redirect = () => {
-    loggedIn() && props.history.push("/dashboard");
+    loggedIn() && props.history.push("/dashboards");
   };
 
   useEffect(() => {

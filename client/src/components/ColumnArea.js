@@ -3,8 +3,8 @@ import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { getDashboard } from "../utils/handleUpdateTasks";
 import { withRouter } from "react-router";
+import { authFetch } from "../AuthService";
 
 import {
   updateTaskIndexInColumn,
@@ -22,19 +22,25 @@ const ColumnArea = props => {
   const classes = useStyles(props);
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
-  let dashboardId = props.match.params.dashboardId;
+  const [open, setOpen] = useState(false);
+
+  let dashboardId = taskState && taskState._id;
+
   useEffect(() => {
-    if (!taskState) {
-      getDashboard(dashboardId, res => {
-        if (res !== null) {
-          setTaskState(res);
+    authFetch(`/dashboards`)
+      .then(res => {
+        if (res.result) {
+          setTaskState(res.result);
         }
+      })
+      .catch(() => {
+        setOpen(true);
       });
-    }
   }, []);
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
+
     if (!destination) {
       return;
     }
@@ -134,14 +140,8 @@ const ColumnArea = props => {
     moveTasksToOther(dashboardId, newStart, newFinish);
   };
 
-  const [open, setOpen] = useState(true);
-
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
   };
 
   if (!taskState) {

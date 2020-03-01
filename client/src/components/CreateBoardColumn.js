@@ -23,12 +23,14 @@ const FormDialog = props => {
   const [title, setTitle] = useState("");
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
-  let dashboardId = props.match.params.dashboardId;
+  let dashboardId = taskState && taskState._id;
+
   const handleSubmit = e => {
     e.preventDefault();
     if (dashboard) {
       addDashboard(title, res => {
         setTaskState(res);
+        setTitle("");
         handleClose(false);
         console.log(res);
 
@@ -38,6 +40,7 @@ const FormDialog = props => {
       try {
         addColumn(dashboardId, title, position, res => {
           setTaskState(res);
+          setTitle("");
           handleClose(false);
         });
       } catch (err) {
@@ -66,29 +69,37 @@ const FormDialog = props => {
       <Dialog
         open={open}
         onClose={dashboard ? null : handleClose}
-        aria-labelledby='form-dialog-title'
+        aria-labelledby="form-dialog-title"
         PaperProps={{
           className: classes.root
-        }}>
-        <DialogTitle disableTypography id='form-dialog-title'>
+        }}
+      >
+        <DialogTitle disableTypography id="form-dialog-title">
           {dashboard ? null : (
-            <IconButton onClose={handleClose} className={classes.closeButton} aria-label='close'>
+            <IconButton
+              onClose={handleClose}
+              className={classes.closeButton}
+              aria-label="close"
+            >
               <CloseIcon />
             </IconButton>
           )}
-          <Typography variant='h1'>{dashboard ? "Create Board" : "Create Column"}</Typography>
+          <Typography variant="h1">
+            {dashboard ? "Create Board" : "Create Column"}
+          </Typography>
         </DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit}>
             <TextField
-              label='Add Title'
-              variant='outlined'
-              margin='normal'
+              label="Add Title"
+              variant="outlined"
+              margin="normal"
               value={title}
               onChange={e => setTitle(e.target.value)}
               autoFocus
-              fullWidth></TextField>
-            <BlueButton type='submit'>Create</BlueButton>
+              fullWidth
+            ></TextField>
+            <BlueButton type="submit">Create</BlueButton>
           </form>
         </DialogContent>
       </Dialog>

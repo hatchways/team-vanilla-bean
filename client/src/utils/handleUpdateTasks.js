@@ -3,21 +3,11 @@ import { authFetch } from "../AuthService";
 
 //ToDo remove this after implementing create board function
 
-//done
-export const getDashboard = (dashboardId, cb) => {
-  let body = { dashboardId };
-
-  authFetch(`/dashboards/${dashboardId}`, {
-    method: "post",
-    body: JSON.stringify(body)
-  })
-    .then(res => {
-      cb(res.result);
-    })
-    .catch(err => handleError(err));
-};
-
-export const updateTaskIndexInColumn = async (dashboardId, columnId, taskOrder) => {
+export const updateTaskIndexInColumn = async (
+  dashboardId,
+  columnId,
+  taskOrder
+) => {
   let body = { dashboardId, columnId, taskOrder };
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}ß/taskOrder`, {
     method: "put",
@@ -89,6 +79,7 @@ export const addDashboard = (title, cb) => {
       cb(res.result);
     })
     .catch(err => {
+      console.log(err);
       handleError(err);
     });
 };
