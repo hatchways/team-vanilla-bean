@@ -5,7 +5,7 @@ import Tag from "../Tag";
 import AssignmentOutlinedIcon from "@material-ui/icons/AssignmentOutlined";
 import CloseIcon from "@material-ui/icons/Close";
 import SelectTag from "./SelectTag";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 import { CardContext } from "./cardContext";
 

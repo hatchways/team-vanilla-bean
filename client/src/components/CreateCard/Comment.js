@@ -3,7 +3,7 @@ import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineO
 import { TextField, Grid, Typography } from "@material-ui/core";
 import BlueButton from "../BlueButton";
 import { CardContext } from "./cardContext";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 const Comment = () => {
   const card = useContext(CardContext);

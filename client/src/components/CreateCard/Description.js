@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Grid, Typography, TextField } from "@material-ui/core";
 import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined";
 import BlueButton from "../BlueButton";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 import { CardContext } from "./cardContext";
 

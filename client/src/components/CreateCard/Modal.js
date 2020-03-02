@@ -7,7 +7,7 @@ import Comment from "./Comment";
 import ButtonList from "./ButtonList";
 import { CardContext } from "./cardContext";
 import { authFetch } from "../../AuthService";
-import { useParams, useHistory } from "react-router";
+import { useParams, useHistory } from "react-router-dom";
 import { handleError } from "../../utils/handleAlerts";
 import DeleteModal from "./DeleteModal";
 
