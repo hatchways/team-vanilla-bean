@@ -17,7 +17,7 @@ router.post("/signup", validationRules(), validate, async (req, res) => {
       res.status(400).json({ error: "Email already exists" });
     }
 
-    user = await User.create({ email, password });
+    user = await User.create({ email, password, dashboardIds: [] });
 
     //Save user
     const payload = {
