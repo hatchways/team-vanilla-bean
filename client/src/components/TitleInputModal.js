@@ -107,12 +107,11 @@ const TitleInputModal = props => {
   const handleCloseResetTitle = () => {
     if (column) {
       setTitle(columnTitle);
-      setError(false);
     } else {
       setTitle("");
-      setError(false);
     }
     handleClose(false);
+    setError(false);
   };
 
   const classes = useStyles();
