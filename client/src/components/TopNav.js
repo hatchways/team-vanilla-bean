@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -6,14 +6,16 @@ import Typography from "@material-ui/core/Typography";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import WebOutlinedIcon from "@material-ui/icons/WebOutlined";
 import logo from "../images/logo.png";
-import profPic from "../images/profPic.png";
 import BlueButton from "./BlueButton";
 import AppBar from "@material-ui/core/AppBar";
 import AddIcon from "@material-ui/icons/Add";
 import TitleInputModal from "../components/TitleInputModal";
-
+import { UserContext } from "../userContext";
+import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
 const TopNav = () => {
   const [open, setOpen] = useState(false);
+  const { topNavState } = useContext(UserContext);
+  let [isInDashboard] = topNavState;
 
   const handleClose = () => {
     setOpen(false);
@@ -35,14 +37,23 @@ const TopNav = () => {
     root: {
       flexGrow: 1,
       height: 100,
-      color: "#D3D3D3",
+      color: "#545454",
       backgroundColor: "white",
-      margin: 0,
-      padding: 0
+      padding: "0px 25px"
     },
-    item: {
-      color: "#D3D3D3",
+    itemActive: {
+      color: "#759CFC",
       display: "flex",
+      fontSize: " 20px",
+      marginRight: 30,
+      marginLeft: 30,
+      "&:hover": {
+        cursor: "pointer"
+      }
+    },
+    itemInactive: {
+      display: "flex",
+      fontSize: " 20px",
       marginRight: 30,
       marginLeft: 30,
       "&:hover": {
@@ -54,7 +65,8 @@ const TopNav = () => {
     },
     icon: {
       width: 18,
-      height: 18
+      height: 18,
+      marginRight: 10
     },
     btn: {
       color: "white",
@@ -81,21 +93,25 @@ const TopNav = () => {
             className={classes.root}>
             <img src={logo} alt='logo' />
             <div className={classes.wrapper}>
-              <div className={classes.item} onClick={dashboardTrigger}>
+              <div
+                className={isInDashboard ? classes.itemActive : classes.itemInactive}
+                onClick={dashboardTrigger}>
                 <WebOutlinedIcon className={classes.icon} />
                 <Typography>Dashboard</Typography>
               </div>
-              <div className={classes.item} onClick={calenderTrigger}>
+              <div
+                className={isInDashboard ? classes.itemInactive : classes.itemActive}
+                onClick={calenderTrigger}>
                 <CalendarTodayIcon className={classes.icon} />
                 <Typography>Calender</Typography>
               </div>
             </div>
             <div className={classes.wrapper}>
               <BlueButton mini className={classes.btn} onClick={handleClickOpen}>
-                <AddIcon />
+                <AddIcon className={classes.icon} />
                 <Typography>Create board</Typography>
               </BlueButton>
-              <img src={profPic} className={classes.profPic} alt='profPic' />
+              <AccountCircleOutlinedIcon className={classes.profPic} />
             </div>
           </Grid>
         </Toolbar>
