@@ -1,7 +1,7 @@
 import React from "react";
 
-const Calendar = () => {
-  return <h1> Calendar</h1>;
+const CardsCalendar = () => {
+  return <div></div>;
 };
 
-export default Calendar;
+export default CardsCalendar;
