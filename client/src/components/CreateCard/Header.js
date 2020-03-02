@@ -5,11 +5,14 @@ import Tag from "../Tag";
 import AssignmentOutlinedIcon from "@material-ui/icons/AssignmentOutlined";
 import CloseIcon from "@material-ui/icons/Close";
 import SelectTag from "./SelectTag";
+import { useHistory } from "react-router";
 
 import { CardContext } from "./cardContext";
 
 const Header = () => {
   const card = useContext(CardContext);
+  const history = useHistory();
+
   const {
     title,
     handleTitleChange,
@@ -38,10 +41,15 @@ const Header = () => {
 
   const classes = useStyles();
 
+  const handleClose = () => {
+    history.push("/dashboards");
+    handleCloseCard();
+  };
+
   return (
     <Grid item xs={12} className={classes.header}>
       <IconButton
-        onClick={handleCloseCard}
+        onClick={handleClose}
         className={classes.closeButton}
         aria-label="close"
       >

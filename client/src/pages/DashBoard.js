@@ -7,12 +7,14 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 
 const DashBoard = () => {
   return (
-    <CssBaseline>
-      <TopNav />
-      <BlueNav />
+    <div>
+      <CssBaseline>
+        <TopNav />
+        <BlueNav />
+        <ColumnArea />
+      </CssBaseline>
       <CardModal />
-      <ColumnArea />
-    </CssBaseline>
+    </div>
   );
 };
 

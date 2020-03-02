@@ -2,12 +2,19 @@ import React, { useContext } from "react";
 import { Grid, Typography, TextField } from "@material-ui/core";
 import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined";
 import BlueButton from "../BlueButton";
+import { useHistory } from "react-router";
 
 import { CardContext } from "./cardContext";
 
 const Description = () => {
   const card = useContext(CardContext);
   const { description, handleDescriptionChange, handleSubmit } = card;
+  const history = useHistory();
+
+  const submitCard = () => {
+    handleSubmit();
+    history.push("/dashboards");
+  };
 
   return (
     <Grid item container>
@@ -29,7 +36,7 @@ const Description = () => {
           fullWidth
           margin="normal"
         />
-        <BlueButton onClick={handleSubmit} mini>
+        <BlueButton onClick={submitCard} mini>
           Save
         </BlueButton>
       </Grid>

@@ -19,13 +19,14 @@ const CardProvider = props => {
   const [error, setError] = useState("");
   const [task, setTask] = useState("");
   const [columnId, setColumnId] = useState("");
+  const [openDelete, setOpenDelete] = useState("");
 
   //get dashboard values from user context
   const { value1 } = useContext(UserContext);
   const [dashboard, setDashboard] = value1;
   const dashboardId = dashboard && dashboard._id;
 
-  const handleCurrentTask = (taskId, columnId) => {
+  const handleCurrentTask = (taskId, columnId, hist) => {
     const columnName = dashboard.columns[columnId].title;
     if (!taskId) {
       setTitle("");
@@ -33,23 +34,40 @@ const CardProvider = props => {
       setDeadline("");
       setTag("");
       setTask("");
+      handleOpenCard();
     }
     if (taskId) {
       setTask(taskId);
-      fetchCard(taskId, columnId);
+      fetchCard(taskId, columnId, dashboard);
     }
+    routeChange(taskId, columnId, dashboardId, hist);
     setColumnId(columnId);
     setColumnName(columnName);
-    handleOpenCard();
   };
 
-  const fetchCard = (taskId, columnId) => {
+  const routeChange = (taskId, columnId, dashboardId, hist) => {
+    if (!taskId) {
+      hist.push("/dashboards");
+    } else {
+      let path = `/dashboards/${dashboardId}/columns/${columnId}/tasks/${taskId}`;
+      hist.push(path);
+    }
+  };
+
+  const fetchCard = (taskId, columnId, dashboard) => {
     const task = dashboard.columns[columnId].tasks[taskId];
-    setTitle(task.title);
-    setDescription(task.description);
-    setTag(task.tag);
-    setDeadline(task.deadline);
-    task.deadline && setOpenDeadline(true);
+    const columnName = dashboard.columns[columnId].title;
+    if (task) {
+      handleOpenCard();
+      setTask(taskId);
+      setTitle(task.title);
+      setDescription(task.description);
+      setTag(task.tag);
+      setDeadline(task.deadline);
+      setColumnName(columnName);
+      setColumnId(columnId);
+      task.deadline && setOpenDeadline(true);
+    }
   };
 
   const handleSubmit = () => {
@@ -68,7 +86,7 @@ const CardProvider = props => {
           body: JSON.stringify(createTask)
         })
           .then(res => updateUser(res))
-          .then(handleCloseCard())
+          .then(() => handleCloseCard())
           .then(() => handleSuccess(`${title} has been saved!`))
           .catch(err => {
             handleError(err);
@@ -80,10 +98,8 @@ const CardProvider = props => {
           description,
           tag
         };
-        console.log("task", updatedTask);
-        console.log(dashboardId, columnId, task);
 
-        authFetch(`dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`, {
+        authFetch("", {
           method: "PUT",
           body: JSON.stringify(updatedTask)
         })
@@ -109,6 +125,7 @@ const CardProvider = props => {
     setOpenCard(false);
     setOpenTag(false);
     setOpenDeadline(false);
+    setOpenDelete(false);
     setError(false);
   };
 
@@ -148,10 +165,31 @@ const CardProvider = props => {
     }
   };
 
+  const handleOpenDelete = () => {
+    setOpenDelete(true);
+  };
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+  };
+
+  const handleDelete = history => {
+    authFetch("", {
+      method: "DELETE"
+    })
+      .then(res => updateUser(res))
+      .then(history.push("/dashboards"))
+      .then(() => handleCloseCard())
+      .then(() => handleSuccess(`Task has been deleted`))
+      .catch(err => {
+        handleError(err);
+      });
+  };
+
   return (
     <CardContext.Provider
       value={{
         title,
+        task,
         handleTitleChange,
         handleCurrentTask,
         handleCloseCard,
@@ -169,7 +207,13 @@ const CardProvider = props => {
         deadline,
         handleDeadlineChange,
         handleOpenDeadline,
-        openDeadline
+
+        openDeadline,
+        fetchCard,
+        handleOpenDelete,
+        handleCloseDelete,
+        handleDelete,
+        openDelete
       }}>
       {props.children}
     </CardContext.Provider>

@@ -9,13 +9,15 @@ const handleError = err => {
   let message = "";
   switch (err) {
     case "Email not found":
-      message = "The email address that you've entered doesn't match any account. Please sign up.";
+      message =
+        "The email address that you've entered doesn't match any account. Please sign up.";
       break;
     case "Email already exists":
       message = "This email address is already in use.";
       break;
     case "Password is incorrect":
-      message = "The password that you've entered is incorrect. Please try again.";
+      message =
+        "The password that you've entered is incorrect. Please try again.";
       break;
     case "Dashboard does not exist":
       message = "The Dashboard does not exist. Please try again.";
@@ -34,6 +36,9 @@ const handleError = err => {
       break;
     case "Please Enter dashboard title":
       message = "We could not create a dashboard. Please try again.";
+      break;
+    case "cannot access":
+      message = "URL is invalid";
       break;
     default:
       message =
