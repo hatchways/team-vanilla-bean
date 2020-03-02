@@ -19,7 +19,7 @@ const CardProvider = props => {
   const [error, setError] = useState("");
   const [task, setTask] = useState("");
   const [columnId, setColumnId] = useState("");
-  const [openDelete, setOpenDelete] = useState("");
+  const [openDelete, setOpenDelete] = useState(false);
 
   //get dashboard values from user context
   const { value1 } = useContext(UserContext);

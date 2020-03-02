@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Dialog, DialogTitle, DialogActions, Button } from "@material-ui/core";
 
 import { CardContext } from "./cardContext";
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 const DeleteModal = () => {
   const card = useContext(CardContext);
