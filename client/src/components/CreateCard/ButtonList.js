@@ -6,7 +6,7 @@ import { CardContext } from "./cardContext";
 
 const ButtonList = () => {
   const card = useContext(CardContext);
-  const { handleOpenDeadline, handleOpenTag } = card;
+  const { handleOpenDeadline, handleOpenTag, handleOpenDelete, task } = card;
 
   return (
     <Grid item xs={2} container>
@@ -25,7 +25,7 @@ const ButtonList = () => {
           </Typography>
           <CardButton>Copy</CardButton>
           <CardButton>Share</CardButton>
-          <CardButton>Delete</CardButton>
+          {task && <CardButton onClick={handleOpenDelete}>Delete</CardButton>}
         </Box>
       </Grid>
     </Grid>
