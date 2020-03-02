@@ -22,7 +22,6 @@ const TitleInputModal = props => {
   const { open, handleClose, position, dashboard, column, columnId, columnTitle } = props;
   const [title, setTitle] = useState(columnTitle);
   const [error, setError] = useState(false);
-
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
   let dashboardId = taskState && taskState._id;
@@ -105,20 +104,34 @@ const TitleInputModal = props => {
     }
   }));
 
+  const handleCloseResetTitle = () => {
+    if (column) {
+      setTitle(columnTitle);
+      setError(false);
+    } else {
+      setTitle("");
+      setError(false);
+    }
+    handleClose(false);
+  };
+
   const classes = useStyles();
 
   return (
     <div>
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={handleCloseResetTitle}
         aria-labelledby='form-dialog-title'
         PaperProps={{
           className: classes.root
         }}>
         <DialogTitle disableTypography id='form-dialog-title'>
           {dashboard ? null : (
-            <IconButton onClick={handleClose} className={classes.closeButton} aria-label='close'>
+            <IconButton
+              onClick={handleCloseResetTitle}
+              className={classes.closeButton}
+              aria-label='close'>
               <CloseIcon />
             </IconButton>
           )}
@@ -130,7 +143,7 @@ const TitleInputModal = props => {
               label='Add Title'
               variant='outlined'
               margin='normal'
-              value={title}
+              value={title || ""}
               onChange={e => handleChange(e.target.value)}
               helperText={error && "Title Required"}
               error={error}

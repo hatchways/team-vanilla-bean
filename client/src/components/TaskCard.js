@@ -24,7 +24,7 @@ const TaskCard = ({ index, task, props, columnId }) => {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          isDragging={snapshot.isDragging}
+          isdragging={snapshot.isdragging}
           onClick={() => {
             handleCurrentTask(task._id, columnId, history);
           }}>
