@@ -42,9 +42,11 @@ const Column = props => {
             <Droppable droppableId={column._id} type='card'>
               {provided => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {tasks.map((task, index) => (
-                    <TaskCard key={task._id} task={task} index={index} columnId={column._id} />
-                  ))}
+                  {tasks.map((task, index) => {
+                    return (
+                      <TaskCard key={task._id} task={task} index={index} columnId={column._id} />
+                    );
+                  })}
                   {provided.placeholder}
                   <BlueButton mini onClick={() => handleCurrentTask(null, column._id)}>
                     Add a Card

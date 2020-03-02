@@ -80,13 +80,13 @@ const CardProvider = props => {
           description,
           tag
         };
-        authFetch(
-          `dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`,
-          {
-            method: "PUT",
-            body: JSON.stringify(updatedTask)
-          }
-        )
+        console.log("task", updatedTask);
+        console.log(dashboardId, columnId, task);
+
+        authFetch(`dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`, {
+          method: "PUT",
+          body: JSON.stringify(updatedTask)
+        })
           .then(res => updateUser(res))
           .then(() => handleCloseCard())
           .then(() => handleSuccess(`${title} has been updated!`))
@@ -170,8 +170,7 @@ const CardProvider = props => {
         handleDeadlineChange,
         handleOpenDeadline,
         openDeadline
-      }}
-    >
+      }}>
       {props.children}
     </CardContext.Provider>
   );

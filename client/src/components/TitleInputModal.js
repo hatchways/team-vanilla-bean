@@ -20,8 +20,9 @@ import { withRouter } from "react-router-dom";
 
 const TitleInputModal = props => {
   const { open, handleClose, position, dashboard, column, columnId, columnTitle } = props;
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(columnTitle);
   const [error, setError] = useState(false);
+
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
   let dashboardId = taskState && taskState._id;
@@ -39,13 +40,14 @@ const TitleInputModal = props => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (!title) setError(true);
-    if (dashboard) {
+
+    if (!title) {
+      setError(true);
+    } else if (dashboard) {
       addDashboard(title, res => {
         setTaskState(res);
         setTitle("");
         handleClose(false);
-        props.history.push(`/dashboards/${res._id}`);
       });
     } else if (column) {
       if (columnTitle === title) {

@@ -1,11 +1,10 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
 import WebOutlinedIcon from "@material-ui/icons/WebOutlined";
-import { UserContext } from "../userContext";
 import logo from "../images/logo.png";
 import profPic from "../images/profPic.png";
 import BlueButton from "./BlueButton";
@@ -14,7 +13,6 @@ import AddIcon from "@material-ui/icons/Add";
 import TitleInputModal from "../components/TitleInputModal";
 
 const TopNav = () => {
-  const { value1 } = useContext(UserContext);
   const [open, setOpen] = useState(false);
 
   const handleClose = () => {
@@ -81,7 +79,7 @@ const TopNav = () => {
             alignItems='center'
             justify='space-between'
             className={classes.root}>
-            <img src={logo} />
+            <img src={logo} alt='logo' />
             <div className={classes.wrapper}>
               <div className={classes.item} onClick={dashboardTrigger}>
                 <WebOutlinedIcon className={classes.icon} />
@@ -97,7 +95,7 @@ const TopNav = () => {
                 <AddIcon />
                 <Typography>Create board</Typography>
               </BlueButton>
-              <img src={profPic} className={classes.profPic} />
+              <img src={profPic} className={classes.profPic} alt='profPic' />
             </div>
           </Grid>
         </Toolbar>
