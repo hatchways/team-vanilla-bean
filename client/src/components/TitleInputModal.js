@@ -70,7 +70,6 @@ const TitleInputModal = props => {
           setTaskState(res);
           setTitle("");
           handleClose(false);
-          console.log(res);
         });
       } else {
         try {

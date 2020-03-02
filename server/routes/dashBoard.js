@@ -179,10 +179,6 @@ router.put("/:dashboardId/columns/:columnId/tasks/:taskId", checkToken, async (r
   try {
     const { title, description, deadline, comments, tag, action } = req.body;
     const { dashboardId, columnId, taskId } = req.params;
-    console.log(req.body);
-    console.log(req.params);
-
-    console.log(comments);
 
     if (!title) {
       return res.status(401).json({ error: "Please Enter task title" });
