@@ -10,15 +10,14 @@ import BlueButton from "./BlueButton";
 import AppBar from "@material-ui/core/AppBar";
 import AddIcon from "@material-ui/icons/Add";
 import TitleInputModal from "../components/TitleInputModal";
-import { UserContext } from "../userContext";
+import { Link } from "react-router-dom";
 import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
-import { useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const TopNav = () => {
   const [open, setOpen] = useState(false);
-  const { topNavState } = useContext(UserContext);
-  let [isInDashboard] = topNavState;
-  const history = useHistory();
+  const path = useLocation().pathname;
+  const [calendarView] = useState(path.includes("/calendar") ? true : false);
 
   const handleClose = () => {
     setOpen(false);
@@ -28,24 +27,14 @@ const TopNav = () => {
     setOpen(true);
   };
 
-  const dashboardTrigger = () => {
-    history.push("/dashboards");
-  };
-
-  const calendarTrigger = () => {
-    history.push("/calendar");
-  };
-
-  const useStyles = makeStyles(theme => ({
+  const useStyles = makeStyles(() => ({
     root: {
       flexGrow: 1,
       height: 100,
-      color: "#545454",
       backgroundColor: "white",
       padding: "0px 25px"
     },
-    itemActive: {
-      color: "#759CFC",
+    link: {
       display: "flex",
       fontSize: " 20px",
       marginRight: 30,
@@ -54,14 +43,8 @@ const TopNav = () => {
         cursor: "pointer"
       }
     },
-    itemInactive: {
-      display: "flex",
-      fontSize: " 20px",
-      marginRight: 30,
-      marginLeft: 30,
-      "&:hover": {
-        cursor: "pointer"
-      }
+    inactive: {
+      color: "#545454"
     },
     wrapper: {
       display: "flex"
@@ -97,24 +80,24 @@ const TopNav = () => {
           >
             <img src={logo} alt="logo" />
             <div className={classes.wrapper}>
-              <div
-                className={
-                  isInDashboard ? classes.itemActive : classes.itemInactive
-                }
-                onClick={dashboardTrigger}
-              >
-                <WebOutlinedIcon className={classes.icon} />
-                <Typography>Dashboard</Typography>
-              </div>
-              <div
-                className={
-                  isInDashboard ? classes.itemInactive : classes.itemActive
-                }
-                onClick={calendarTrigger}
-              >
-                <CalendarTodayIcon className={classes.icon} />
-                <Typography>Calendar</Typography>
-              </div>
+              <Link to="/dashboards">
+                <div
+                  className={`${classes.link} ${calendarView &&
+                    classes.inactive}`}
+                >
+                  <WebOutlinedIcon className={classes.icon} />
+                  <Typography>Dashboard</Typography>
+                </div>
+              </Link>
+              <Link to="/calendar">
+                <div
+                  className={`${classes.link} ${!calendarView &&
+                    classes.inactive}`}
+                >
+                  <CalendarTodayIcon className={classes.icon} />
+                  <Typography>Calendar</Typography>
+                </div>
+              </Link>
             </div>
             <div className={classes.wrapper}>
               <BlueButton

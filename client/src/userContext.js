@@ -5,14 +5,13 @@ export const UserContext = createContext();
 //To Handdle state and comments globally
 const UserProvider = props => {
   const [taskState, setTaskState] = useState(null);
-  const [isInDashboard, setIsInDashboard] = useState(true);
 
   return (
     <UserContext.Provider
       value={{
-        value1: [taskState, setTaskState],
-        topNavState: [isInDashboard, setIsInDashboard]
-      }}>
+        value1: [taskState, setTaskState]
+      }}
+    >
       {props.children}
     </UserContext.Provider>
   );
