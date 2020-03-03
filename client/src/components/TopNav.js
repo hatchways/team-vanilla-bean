@@ -29,8 +29,8 @@ const TopNav = () => {
     //To do Redirect to the dashBoard
   };
 
-  const calenderTrigger = () => {
-    //To do Redirect to calender
+  const calendarTrigger = () => {
+    //To do Redirect to calendar
   };
 
   const useStyles = makeStyles(theme => ({
@@ -101,9 +101,9 @@ const TopNav = () => {
               </div>
               <div
                 className={isInDashboard ? classes.itemInactive : classes.itemActive}
-                onClick={calenderTrigger}>
+                onClick={calendarTrigger}>
                 <CalendarTodayIcon className={classes.icon} />
-                <Typography>Calender</Typography>
+                <Typography>Calendar</Typography>
               </div>
             </div>
             <div className={classes.wrapper}>
