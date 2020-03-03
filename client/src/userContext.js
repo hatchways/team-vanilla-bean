@@ -6,12 +6,14 @@ export const UserContext = createContext();
 const UserProvider = props => {
   const [taskState, setTaskState] = useState(null);
   const [isInDashboard, setIsInDashboard] = useState(true);
+  const [dbIds, setDbIds] = useState([]);
 
   return (
     <UserContext.Provider
       value={{
         value1: [taskState, setTaskState],
-        topNavState: [isInDashboard, setIsInDashboard]
+        topNavState: [isInDashboard, setIsInDashboard],
+        dashboardIds: [dbIds, setDbIds]
       }}>
       {props.children}
     </UserContext.Provider>

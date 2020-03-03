@@ -9,7 +9,8 @@ import { authFetch } from "../AuthService";
 import {
   updateTaskIndexInColumn,
   moveTasksToOther,
-  updateColumnIndex
+  updateColumnIndex,
+  getDashboard
 } from "../utils/handleUpdateTasks";
 
 //Component
@@ -25,18 +26,12 @@ const ColumnArea = props => {
 
   const [open, setOpen] = useState(false);
 
-  let dashboardId = taskState && taskState._id;
+  let dashboardId = props.match.params.dashboardId;
 
   useEffect(() => {
-    authFetch(`/dashboards`)
-      .then(res => {
-        if (res.result) {
-          setTaskState(res.result);
-        }
-      })
-      .catch(() => {
-        setOpen(true);
-      });
+    getDashboard(dashboardId, res => {
+      setTaskState(res);
+    });
   }, [setTaskState]);
 
   const onDragEnd = result => {

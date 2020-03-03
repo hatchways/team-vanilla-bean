@@ -25,6 +25,22 @@ router.get("/", checkToken, async (req, res) => {
   }
 });
 
+//Retrieve specif dashboard
+router.post("/:dashboardId", checkToken, async (req, res) => {
+  let userId = req.decoded.id;
+  let id = req.params.dashboardId;
+  console.log(id);
+
+  try {
+    let result = await Dashboard.findOne({ user: userId, _id: id });
+
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ error: "Dashboard does not exist" });
+  }
+});
+
 //Add Dashboard @Done
 router.post("/", checkToken, async (req, res) => {
   const { title } = req.body;
@@ -64,17 +80,22 @@ router.post("/", checkToken, async (req, res) => {
   }
 });
 
-//delete dashboard @done
+//delete dashboard @To Do delete
 router.delete("/:dashboardId", checkToken, async (req, res) => {
   const { dashboardId } = req.params;
+  let userId = req.decoded.id;
   Dashboard.remove({ _id: dashboardId }, function(err) {
     if (!err) {
       res.status(200).json({ result: "Dashboard deleted" });
     } else {
       console.log(err);
-      res.status(400).json({ error: "Failed to delete dashboard" });
+      return res.status(400).json({ error: "Failed to delete dashboard" });
     }
   });
+  User.findOneAndUpdate(
+    { _id: userId, dashboardIds: dashboardId },
+    { $pull: { dashboardIds: dashboardId } }
+  );
 });
 
 // Add a column @Done
@@ -113,6 +134,7 @@ router.post("/:dashboardId/columns", checkToken, async (req, res) => {
 //delete column @done
 router.delete("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
   const { dashboardId, columnId } = req.params;
+
   try {
     //data manipulation
     let updateCond = {};

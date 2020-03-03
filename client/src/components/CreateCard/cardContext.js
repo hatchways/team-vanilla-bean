@@ -47,7 +47,7 @@ const CardProvider = props => {
 
   const routeChange = (taskId, columnId, dashboardId, hist) => {
     if (!taskId) {
-      hist.push("/dashboards");
+      hist.push(`/dashboards/${dashboardId}`);
     } else {
       let path = `/dashboards/${dashboardId}/columns/${columnId}/tasks/${taskId}`;
       hist.push(path);

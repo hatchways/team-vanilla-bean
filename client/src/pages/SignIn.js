@@ -10,8 +10,8 @@ const SignIn = props => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const redirect = () => {
-    loggedIn() && props.history.push("/dashboards");
+  const redirect = dashboardId => {
+    loggedIn() && props.history.push(`/dashboards/${dashboardId}`);
   };
 
   useEffect(() => {
@@ -21,8 +21,9 @@ const SignIn = props => {
   const handleSignIn = e => {
     e.preventDefault();
     login("signin", email, password)
-      .then(() => {
-        redirect();
+      .then(res => {
+        //Todo get last board Id user access  from storage
+        redirect(res.dashboardIds[0].toString());
       })
       .catch(err => {
         handleError(err);
@@ -35,19 +36,19 @@ const SignIn = props => {
       <Grid item xs={12} md={6}>
         <Container className={classes.paper}>
           <div>
-            <Typography variant="h1" className={classes.title}>
+            <Typography variant='h1' className={classes.title}>
               Welcome back!
             </Typography>
 
             <form onSubmit={handleSignIn}>
               <TextField
-                type="email"
-                label="Enter Email"
-                name="email"
+                type='email'
+                label='Enter Email'
+                name='email'
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                variant="outlined"
-                margin="normal"
+                variant='outlined'
+                margin='normal'
                 fullWidth
                 InputProps={{
                   classes: {
@@ -61,13 +62,13 @@ const SignIn = props => {
               />
 
               <TextField
-                type="password"
-                label="Password"
-                name="password"
+                type='password'
+                label='Password'
+                name='password'
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                variant="outlined"
-                margin="normal"
+                variant='outlined'
+                margin='normal'
                 fullWidth
                 InputProps={{
                   classes: {
@@ -88,12 +89,12 @@ const SignIn = props => {
         </Container>
 
         <Container className={classes.footer}>
-          <Typography paragraph variant="h3">
+          <Typography paragraph variant='h3'>
             Don't have an account?
           </Typography>
 
-          <Typography variant="h3">
-            <Link to="/signup">Create</Link>
+          <Typography variant='h3'>
+            <Link to='/signup'>Create</Link>
           </Typography>
         </Container>
       </Grid>
