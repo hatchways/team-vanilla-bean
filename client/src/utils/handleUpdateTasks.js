@@ -81,8 +81,6 @@ export const getDashboard = (dashboardId, cb) => {
     dashboardId
   };
 
-  console.log(dashboardId);
-
   authFetch(`/dashboards/${dashboardId}`, {
     method: "post",
     body: JSON.stringify(body)

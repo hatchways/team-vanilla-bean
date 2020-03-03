@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { withRouter } from "react-router";
-import { authFetch } from "../AuthService";
 
 import {
   updateTaskIndexInColumn,
@@ -21,14 +20,19 @@ import CreateBoardColumn from "./TitleInputModal";
 
 const ColumnArea = props => {
   const classes = useStyles(props);
-  const { value1 } = useContext(UserContext);
+  const { value1, dashboardIds } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
+  let [dbIds] = dashboardIds;
 
   const [open, setOpen] = useState(false);
 
   let dashboardId = props.match.params.dashboardId;
 
   useEffect(() => {
+    if (!dbIds || dashboardId === "createBoard") {
+      setOpen(true);
+      return;
+    }
     getDashboard(dashboardId, res => {
       setTaskState(res);
     });
@@ -137,7 +141,7 @@ const ColumnArea = props => {
     setOpen(false);
   };
 
-  if (!taskState) {
+  if (!taskState || dashboardId === "createBoard") {
     return <CreateBoardColumn open={open} handleClose={handleClose} dashboard />;
   } else {
     return (

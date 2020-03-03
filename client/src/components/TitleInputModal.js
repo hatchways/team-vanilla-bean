@@ -25,6 +25,7 @@ const TitleInputModal = props => {
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
   let dashboardId = taskState && taskState._id;
+  let history = props.history;
   let btnText = "Create";
   let titleText = "";
 
@@ -46,6 +47,7 @@ const TitleInputModal = props => {
       addDashboard(title, res => {
         setTaskState(res);
         setTitle("");
+        history.push(`/dashboards/${res._id}`);
         handleClose(false);
       });
     } else if (column) {

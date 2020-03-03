@@ -4,7 +4,7 @@ export const UserContext = createContext();
 
 //To Handdle state and comments globally
 const UserProvider = props => {
-  const [taskState, setTaskState] = useState(null);
+  const [taskState, setTaskState] = useState("");
   const [isInDashboard, setIsInDashboard] = useState(true);
   const [dbIds, setDbIds] = useState([]);
 
