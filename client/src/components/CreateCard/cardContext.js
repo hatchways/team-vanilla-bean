@@ -81,14 +81,22 @@ const CardProvider = props => {
           description,
           tag
         };
-        authFetch(`dashboards/${dashboardId}/columns/${columnId}/tasks`, {
+        console.log(dashboardId);
+        console.log(columnId);
+
+        authFetch(`/dashboards/${dashboardId}/columns/${columnId}/tasks`, {
           method: "POST",
           body: JSON.stringify(createTask)
         })
-          .then(res => updateUser(res))
+          .then(res => {
+            console.log(res);
+
+            updateUser(res);
+          })
           .then(() => handleCloseCard())
           .then(() => handleSuccess(`${title} has been saved!`))
           .catch(err => {
+            console.log(err);
             handleError(err);
           });
       } else {
@@ -177,7 +185,7 @@ const CardProvider = props => {
       method: "DELETE"
     })
       .then(res => updateUser(res))
-      .then(history.push("/dashboards"))
+      .then(history.push(`/dashboards/${dashboard._id}`))
       .then(() => handleCloseCard())
       .then(() => handleSuccess(`Task has been deleted`))
       .catch(err => {

@@ -67,22 +67,14 @@ const TitleInputModal = props => {
       });
       handleClose(false);
     } else {
-      if (dashboard) {
-        addDashboard(title, res => {
+      try {
+        addColumn(dashboardId, title, position, res => {
           setTaskState(res);
           setTitle("");
           handleClose(false);
         });
-      } else {
-        try {
-          addColumn(dashboardId, title, position, res => {
-            setTaskState(res);
-            setTitle("");
-            handleClose(false);
-          });
-        } catch (err) {
-          handleError(err);
-        }
+      } catch (err) {
+        handleError(err);
       }
     }
   };
