@@ -5,7 +5,7 @@ const checkToken = require("../auth/validateToken");
 
 // Models;
 const { Task, Column, Dashboard } = require("../models/Dashboard");
-const { User } = require("../models/User");
+const User = require("../models/User");
 
 //@CreateBoard
 router.get("/", checkToken, async (req, res) => {
@@ -29,13 +29,6 @@ router.get("/", checkToken, async (req, res) => {
 router.post("/", checkToken, async (req, res) => {
   const { title } = req.body;
   let userId = req.decoded.id;
-  console.log(userId);
-
-  let user = User.findOne({ _id: userId });
-
-  if (!user) {
-    return res.status(401).json({ error: "User doesn't exist" });
-  }
 
   if (!title) {
     return res.status(401).json({ error: "Please Enter dashboard title" });
@@ -62,9 +55,7 @@ router.post("/", checkToken, async (req, res) => {
 
     let result = await newDashBoard.save();
 
-    await user.dashboardId.push(result._id);
-    let newData = await user.save();
-    console.log(newData);
+    await User.findOneAndUpdate({ _id: userId }, { $push: { dashboardIds: result._id } });
 
     res.status(200).json({ result });
   } catch (err) {
