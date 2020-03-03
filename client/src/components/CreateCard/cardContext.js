@@ -98,6 +98,7 @@ const CardProvider = props => {
           description,
           tag
         };
+
         authFetch("", {
           method: "PUT",
           body: JSON.stringify(updatedTask)
@@ -206,14 +207,14 @@ const CardProvider = props => {
         deadline,
         handleDeadlineChange,
         handleOpenDeadline,
+
         openDeadline,
         fetchCard,
         handleOpenDelete,
         handleCloseDelete,
         handleDelete,
         openDelete
-      }}
-    >
+      }}>
       {props.children}
     </CardContext.Provider>
   );

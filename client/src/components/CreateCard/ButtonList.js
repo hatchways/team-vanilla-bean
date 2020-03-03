@@ -11,7 +11,7 @@ const ButtonList = () => {
   return (
     <Grid item xs={2} container>
       <Grid item>
-        <Typography color="secondary" variant="caption">
+        <Typography color='secondary' variant='caption'>
           ADD TO CARD:
         </Typography>
         <CardButton onClick={handleOpenTag}>Tag</CardButton>
@@ -20,7 +20,7 @@ const ButtonList = () => {
         <CardButton>Attachment</CardButton>
         <CardButton>Cover</CardButton>
         <Box style={{ marginTop: "30%" }}>
-          <Typography color="secondary" variant="caption">
+          <Typography color='secondary' variant='caption'>
             ACTIONS:
           </Typography>
           <CardButton>Copy</CardButton>

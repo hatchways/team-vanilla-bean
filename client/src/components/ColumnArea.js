@@ -158,12 +158,12 @@ const ColumnArea = props => {
               {taskState.columnOrder.map((columnId, index) => {
                 const column = taskState.columns[columnId];
                 let taskOrder = taskState.columns[columnId].taskOrder || [];
-                let tasks = taskOrder.map(task => {
+                let tasks = taskOrder.map((task, i) => {
                   return column.tasks[task];
                 });
 
                 return (
-                  <div className={classes.columns}>
+                  <div key={index} className={classes.columns}>
                     <Column
                       key={columnId}
                       column={column}

@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { CardContext } from "./CreateCard/cardContext";
 
 import TaskCard from "./TaskCard";
-import Button from "../components/BlueButton";
+import BlueButton from "./BlueButton";
 import DropDownMenu from "../components/DropDownMenu";
 //check how to use Cards in column data
 
@@ -28,23 +28,10 @@ const Column = props => {
   return (
     <Draggable draggableId={column._id} index={index}>
       {provided => (
-        <Card
-          {...provided.draggableProps}
-          ref={provided.innerRef}
-          className={classes.root}
-        >
+        <Card {...provided.draggableProps} ref={provided.innerRef} className={classes.root}>
           <CardContent>
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
-              alignItems="flex-start"
-            >
-              <Typography
-                variant="h5"
-                className={classes.title}
-                {...provided.dragHandleProps}
-              >
+            <Grid container direction='row' justify='space-between' alignItems='flex-start'>
+              <Typography variant='h5' className={classes.title} {...provided.dragHandleProps}>
                 {column.title}
               </Typography>
               <DropDownMenu
@@ -54,26 +41,19 @@ const Column = props => {
                 title={column.title}
               />
             </Grid>
-            <Droppable droppableId={column._id} type="card">
+            <Droppable droppableId={column._id} type='card'>
               {provided => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
                   {tasks.map((task, index) => {
                     return (
-                      <TaskCard
-                        key={task._id}
-                        task={task}
-                        index={index}
-                        columnId={column._id}
-                      />
+                      <TaskCard key={task._id} task={task} index={index} columnId={column._id} />
                     );
                   })}
                   {provided.placeholder}
-                  <Button
-                    mini
-                    onClick={() => handleCurrentTask(null, column._id, history)}
-                  >
+
+                  <BlueButton mini onClick={() => handleCurrentTask(null, column._id, history)}>
                     Add a Card
-                  </Button>
+                  </BlueButton>
                 </div>
               )}
             </Droppable>
