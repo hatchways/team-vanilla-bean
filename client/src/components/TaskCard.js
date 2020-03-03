@@ -18,17 +18,15 @@ const TaskCard = ({ index, task, props, columnId }) => {
 
   return (
     <Draggable draggableId={task._id} index={index}>
-      {(provided, snapshot) => (
+      {provided => (
         <Card
-          className={snapshot.isdragging ? classes.dragged : classes.root}
+          className={classes.root}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          isdragging={snapshot.isdragging}
           onClick={() => {
             handleCurrentTask(task._id, columnId, history);
-          }}
-        >
+          }}>
           <CardContent>
             {task.tag && <Tag color={task.tag} />}
             <Typography>{task.title}</Typography>
@@ -45,11 +43,6 @@ const useStyles = makeStyles({
     borderRadius: 5,
     marginBottom: ".5rem",
     backgroundColor: "white",
-    cursor: "move"
-  },
-  dragged: {
-    borderRadius: 5,
-    marginBottom: ".5rem",
     cursor: "move"
   }
 });

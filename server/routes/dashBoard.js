@@ -26,7 +26,6 @@ router.get("/", checkToken, async (req, res) => {
 });
 
 //Add Dashboard @Done
-
 router.post("/", checkToken, async (req, res) => {
   const { title } = req.body;
   let userId = req.decoded.id;
@@ -233,7 +232,6 @@ router.delete("/:dashboardId/columns/:columnId/tasks/:taskId", checkToken, async
     updateCond["$pull"]["columns." + columnId + ".taskOrder"] = taskId;
 
     const result = await updateData(Dashboard, dashboardId, updateCond);
-
     res.status(200).json({ result });
   } catch (err) {
     console.log(err);
@@ -267,7 +265,6 @@ router.put("/:dashboardId/columns/:columnId/columnOrder", checkToken, async (req
   try {
     const { dashboardId } = req.params;
     const { columnOrder } = req.body;
-
     //data manipulation
     let updateCond = {};
     updateCond["$set"] = {};

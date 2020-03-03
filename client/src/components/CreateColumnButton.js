@@ -55,7 +55,6 @@ const useStyles = makeStyles({
     }
   },
   isDraggingOver: {
-    backgroundColor: "red",
     opacity: 0
   },
   plusIcon: {

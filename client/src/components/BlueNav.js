@@ -13,7 +13,7 @@ const BlueNav = () => {
   const useStyles = makeStyles(theme => ({
     root: {
       flexGrow: 1,
-      height: 100,
+      height: 70,
       color: "white",
       display: "flex",
       justifyContent: "center",
