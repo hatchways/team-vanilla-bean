@@ -12,29 +12,16 @@ import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import BlueButton from "./BlueButton";
 
-import {
-  addColumn,
-  addDashboard,
-  updateColumnName
-} from "../utils/handleUpdateTasks";
+import { addColumn, addDashboard, updateColumnName } from "../utils/handleUpdateTasks";
 import { UserContext } from "../userContext";
 import { handleError } from "../utils/handleAlerts";
 
 import { withRouter } from "react-router-dom";
 
 const TitleInputModal = props => {
-  const {
-    open,
-    handleClose,
-    position,
-    dashboard,
-    column,
-    columnId,
-    columnTitle
-  } = props;
+  const { open, handleClose, position, dashboard, column, columnId, columnTitle } = props;
   const [title, setTitle] = useState(columnTitle);
   const [error, setError] = useState(false);
-
   const { value1 } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
   let dashboardId = taskState && taskState._id;
@@ -83,7 +70,6 @@ const TitleInputModal = props => {
           setTaskState(res);
           setTitle("");
           handleClose(false);
-          console.log(res);
         });
       } else {
         try {
@@ -117,44 +103,51 @@ const TitleInputModal = props => {
     }
   }));
 
+  const handleCloseResetTitle = () => {
+    if (column) {
+      setTitle(columnTitle);
+    } else {
+      setTitle("");
+    }
+    handleClose(false);
+    setError(false);
+  };
+
   const classes = useStyles();
 
   return (
     <div>
       <Dialog
         open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
+        onClose={handleCloseResetTitle}
+        aria-labelledby='form-dialog-title'
         PaperProps={{
           className: classes.root
-        }}
-      >
-        <DialogTitle disableTypography id="form-dialog-title">
+        }}>
+        <DialogTitle disableTypography id='form-dialog-title'>
           {dashboard ? null : (
             <IconButton
-              onClick={handleClose}
+              onClick={handleCloseResetTitle}
               className={classes.closeButton}
-              aria-label="close"
-            >
+              aria-label='close'>
               <CloseIcon />
             </IconButton>
           )}
-          <Typography variant="h1">{titleText}</Typography>
+          <Typography variant='h1'>{titleText}</Typography>
         </DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit}>
             <TextField
-              label="Add Title"
-              variant="outlined"
-              margin="normal"
-              value={title}
+              label='Add Title'
+              variant='outlined'
+              margin='normal'
+              value={title || ""}
               onChange={e => handleChange(e.target.value)}
               helperText={error && "Title Required"}
               error={error}
               autoFocus
-              fullWidth
-            ></TextField>
-            <BlueButton type="submit">{btnText}</BlueButton>
+              fullWidth></TextField>
+            <BlueButton type='submit'>{btnText}</BlueButton>
           </form>
         </DialogContent>
       </Dialog>

@@ -6,28 +6,27 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Tag from "./Tag";
 import { CardContext } from "./CreateCard/cardContext";
-
 import { Draggable } from "react-beautiful-dnd";
+import { useHistory } from "react-router-dom";
 
 const TaskCard = ({ index, task, props, columnId }) => {
   const classes = useStyles(props);
 
   const card = useContext(CardContext);
   const { handleCurrentTask } = card;
+  const history = useHistory();
 
   return (
     <Draggable draggableId={task._id} index={index}>
-      {(provided, snapshot) => (
+      {provided => (
         <Card
-          className={snapshot.isdragging ? classes.dragged : classes.root}
+          className={classes.root}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
-          isdragging={snapshot.isdragging}
           onClick={() => {
-            handleCurrentTask(task._id, columnId);
-          }}
-        >
+            handleCurrentTask(task._id, columnId, history);
+          }}>
           <CardContent>
             {task.tag && <Tag color={task.tag} />}
             <Typography>{task.title}</Typography>
@@ -44,11 +43,6 @@ const useStyles = makeStyles({
     borderRadius: 5,
     marginBottom: ".5rem",
     backgroundColor: "white",
-    cursor: "move"
-  },
-  dragged: {
-    borderRadius: 5,
-    marginBottom: ".5rem",
     cursor: "move"
   }
 });
