@@ -71,7 +71,6 @@ export const addDashboard = (title, cb) => {
       cb(res.result);
     })
     .catch(err => {
-      console.log(err);
       handleError(err);
     });
 };
@@ -89,7 +88,6 @@ export const getDashboard = (dashboardId, cb) => {
       cb(res.result);
     })
     .catch(err => {
-      console.log(err);
       handleError(err);
     });
 };

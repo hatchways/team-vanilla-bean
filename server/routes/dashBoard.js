@@ -25,11 +25,10 @@ router.get("/", checkToken, async (req, res) => {
   }
 });
 
-//Retrieve specif dashboard
+//Retrieve specific dashboard
 router.post("/:dashboardId", checkToken, async (req, res) => {
   let userId = req.decoded.id;
   let id = req.params.dashboardId;
-  console.log(id);
 
   try {
     let result = await Dashboard.findOne({ user: userId, _id: id });

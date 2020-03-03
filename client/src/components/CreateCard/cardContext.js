@@ -81,22 +81,17 @@ const CardProvider = props => {
           description,
           tag
         };
-        console.log(dashboardId);
-        console.log(columnId);
 
         authFetch(`/dashboards/${dashboardId}/columns/${columnId}/tasks`, {
           method: "POST",
           body: JSON.stringify(createTask)
         })
           .then(res => {
-            console.log(res);
-
             updateUser(res);
           })
           .then(() => handleCloseCard())
           .then(() => handleSuccess(`${title} has been saved!`))
           .catch(err => {
-            console.log(err);
             handleError(err);
           });
       } else {

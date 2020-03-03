@@ -13,7 +13,6 @@ const Description = ({ dashboardId }) => {
 
   const submitCard = () => {
     handleSubmit();
-    console.log("handleSbumit", dashboardId);
     history.push(`/dashboards/${dashboardId}`);
   };
 
