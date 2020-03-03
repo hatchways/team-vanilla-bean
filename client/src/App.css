@@ -2,7 +2,12 @@ a {
   text-decoration: none;
 }
 
-
 a:visited {
   color: #759cfc;
+}
+
+.fc-right .fc-prev-button,
+.fc-right .fc-next-button {
+  background-color: #759cfc;
+  background-image: none;
 }

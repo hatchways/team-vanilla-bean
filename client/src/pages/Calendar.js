@@ -15,7 +15,7 @@ const CardsCalendar = () => {
           header={{
             left: "",
             center: "title",
-            right: "prev,next today"
+            right: "prev,next"
           }}
           fixedWeekCount={false}
           plugins={[dayGridPlugin]}
