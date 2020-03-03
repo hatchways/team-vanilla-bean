@@ -10,7 +10,6 @@ import { authFetch } from "../../AuthService";
 import { useParams, useHistory } from "react-router-dom";
 import { handleError } from "../../utils/handleAlerts";
 import DeleteModal from "./DeleteModal";
-import { getDashboard } from "../../utils/handleUpdateTasks";
 
 const CardModal = () => {
   const card = useContext(CardContext);

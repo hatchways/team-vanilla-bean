@@ -40,6 +40,20 @@ router.post("/:dashboardId", checkToken, async (req, res) => {
   }
 });
 
+//@get dashboard titles
+router.get("/titles", checkToken, async (req, res) => {
+  let userId = req.decoded.id;
+
+  try {
+    let result = await Dashboard.find({ user: userId }).select("title");
+
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ error: "Dashboard does not exist" });
+  }
+});
+
 //Add Dashboard @Done
 router.post("/", checkToken, async (req, res) => {
   const { title } = req.body;
