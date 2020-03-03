@@ -44,7 +44,7 @@ const CardModal = () => {
       };
       fetchUrlCard();
     }
-  }, []);
+  });
 
   const handleClose = () => {
     history.push("/dashboards");
