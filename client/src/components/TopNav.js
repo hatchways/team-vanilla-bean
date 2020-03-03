@@ -12,10 +12,13 @@ import AddIcon from "@material-ui/icons/Add";
 import TitleInputModal from "../components/TitleInputModal";
 import { UserContext } from "../userContext";
 import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
+import { useHistory } from "react-router-dom";
+
 const TopNav = () => {
   const [open, setOpen] = useState(false);
   const { topNavState } = useContext(UserContext);
   let [isInDashboard] = topNavState;
+  const history = useHistory();
 
   const handleClose = () => {
     setOpen(false);
@@ -26,11 +29,11 @@ const TopNav = () => {
   };
 
   const dashboardTrigger = () => {
-    //To do Redirect to the dashBoard
+    history.push("/dashboards");
   };
 
   const calendarTrigger = () => {
-    //To do Redirect to calendar
+    history.push("/calendar");
   };
 
   const useStyles = makeStyles(theme => ({
@@ -82,32 +85,43 @@ const TopNav = () => {
   const classes = useStyles();
   return (
     <div>
-      <AppBar position='static' className={classes.root}>
+      <AppBar position="static" className={classes.root}>
         <Toolbar>
           <Grid
-            position='static'
+            position="static"
             container
-            direction='row'
-            alignItems='center'
-            justify='space-between'
-            className={classes.root}>
-            <img src={logo} alt='logo' />
+            direction="row"
+            alignItems="center"
+            justify="space-between"
+            className={classes.root}
+          >
+            <img src={logo} alt="logo" />
             <div className={classes.wrapper}>
               <div
-                className={isInDashboard ? classes.itemActive : classes.itemInactive}
-                onClick={dashboardTrigger}>
+                className={
+                  isInDashboard ? classes.itemActive : classes.itemInactive
+                }
+                onClick={dashboardTrigger}
+              >
                 <WebOutlinedIcon className={classes.icon} />
                 <Typography>Dashboard</Typography>
               </div>
               <div
-                className={isInDashboard ? classes.itemInactive : classes.itemActive}
-                onClick={calendarTrigger}>
+                className={
+                  isInDashboard ? classes.itemInactive : classes.itemActive
+                }
+                onClick={calendarTrigger}
+              >
                 <CalendarTodayIcon className={classes.icon} />
                 <Typography>Calendar</Typography>
               </div>
             </div>
             <div className={classes.wrapper}>
-              <BlueButton mini className={classes.btn} onClick={handleClickOpen}>
+              <BlueButton
+                mini
+                className={classes.btn}
+                onClick={handleClickOpen}
+              >
                 <AddIcon className={classes.icon} />
                 <Typography>Create board</Typography>
               </BlueButton>

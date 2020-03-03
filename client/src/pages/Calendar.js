@@ -1,18 +1,24 @@
 import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import Navbar from "./Navbar";
 
 const CardsCalendar = () => {
   return (
-    <FullCalendar
-      defaultView="dayGridMonth"
-      header={{
-        left: "",
-        center: "title",
-        right: "prev,next today"
-      }}
-      plugins={[dayGridPlugin]}
-    />
+    <div>
+      <Navbar />
+      <FullCalendar
+        defaultView="dayGridMonth"
+        height={550}
+        header={{
+          left: "",
+          center: "title",
+          right: "prev,next today"
+        }}
+        fixedWeekCount={false}
+        plugins={[dayGridPlugin]}
+      />
+    </div>
   );
 };
 
