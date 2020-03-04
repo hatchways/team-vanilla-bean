@@ -12,9 +12,15 @@ import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import BlueButton from "./BlueButton";
 
-import { addColumn, addDashboard, updateColumnName } from "../utils/handleUpdateTasks";
+import {
+  addColumn,
+  addDashboard,
+  updateColumnName,
+  getDashboardTitles
+} from "../utils/handleUpdateTasks";
 import { UserContext } from "../userContext";
 import { handleError } from "../utils/handleAlerts";
+import { setCurrentBoard } from "../AuthService";
 
 import { withRouter } from "react-router-dom";
 
@@ -22,8 +28,9 @@ const TitleInputModal = props => {
   const { open, handleClose, position, dashboard, column, columnId, columnTitle } = props;
   const [title, setTitle] = useState(columnTitle);
   const [error, setError] = useState(false);
-  const { value1 } = useContext(UserContext);
+  const { value1, dashboardTitles } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
+  let [, setDbTitles] = dashboardTitles;
   let dashboardId = taskState && taskState._id;
   let history = props.history;
   let btnText = "Create";
@@ -47,8 +54,14 @@ const TitleInputModal = props => {
       addDashboard(title, res => {
         setTaskState(res);
         setTitle("");
-        history.push(`/dashboards/${res._id}`);
+
+        let newDbUrl = res._id;
+        getDashboardTitles(res => {
+          setDbTitles(res);
+        });
+        setCurrentBoard(newDbUrl);
         handleClose(false);
+        history.push(`/dashboards/${newDbUrl}`);
       });
     } else if (column) {
       if (columnTitle === title) {
@@ -65,6 +78,7 @@ const TitleInputModal = props => {
         setTitle("");
         handleClose(false);
       });
+
       handleClose(false);
     } else {
       try {

@@ -92,6 +92,18 @@ export const getDashboard = (dashboardId, cb) => {
     });
 };
 
+export const getDashboardTitles = cb => {
+  authFetch(`/dashboards/titles`, {
+    method: "get"
+  })
+    .then(res => {
+      cb(res.result);
+    })
+    .catch(err => {
+      handleError(err);
+    });
+};
+
 export const deleteColumn = (dashboardId, columnId, cb) => {
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}`, {
     method: "delete"

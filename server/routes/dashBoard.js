@@ -58,6 +58,7 @@ router.get("/titles", checkToken, async (req, res) => {
 router.post("/", checkToken, async (req, res) => {
   const { title } = req.body;
   let userId = req.decoded.id;
+  console.log(userId);
 
   if (!title) {
     return res.status(401).json({ error: "Please Enter dashboard title" });

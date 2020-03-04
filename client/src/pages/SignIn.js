@@ -1,29 +1,50 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, TextField, Grid, Typography } from "@material-ui/core";
 import Button from "../components/BlueButton";
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
-import { login, loggedIn } from "../AuthService";
+import { login, loggedIn, getCurrentBoard } from "../AuthService";
 import { handleError } from "../utils/handleAlerts";
+import { UserContext } from "../userContext";
+import { getDashboardTitles } from "../utils/handleUpdateTasks";
 
 const SignIn = props => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { dashboardTitles } = useContext(UserContext);
+  let dashboardId;
+  let currentBoard = getCurrentBoard();
+
+  let [dbTitles, setdbTitles] = dashboardTitles;
   const redirect = dashboardId => {
+    console.log(dashboardId);
+
     loggedIn() && props.history.push(`/dashboards/${dashboardId}`);
   };
 
   useEffect(() => {
-    redirect();
-  });
+    console.log("triggered");
+
+    redirect(dashboardId);
+  }, []);
 
   const handleSignIn = e => {
     e.preventDefault();
+
     login("signin", email, password)
       .then(res => {
         //Todo get last board Id user access  from storage
-        redirect(res.dashboardIds[0].toString());
+        getDashboardTitles(res => {
+          setdbTitles(res);
+          dashboardId = res[0]._id;
+          for (const key in res) {
+            if (res[key]._id === currentBoard) {
+              dashboardId = currentBoard;
+            }
+          }
+          redirect(dashboardId);
+        });
       })
       .catch(err => {
         handleError(err);
