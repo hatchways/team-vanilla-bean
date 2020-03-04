@@ -63,7 +63,7 @@ const TitleInputModal = props => {
         setCurrentBoard(newDbUrl);
         handleClose(false);
         history.push(`/dashboards/${newDbUrl}`);
-        handleSuccess(`${taskState.title} has been created!`);
+        handleSuccess(`Dashboard has been created!`);
       });
     } else if (column) {
       if (columnTitle === title) {

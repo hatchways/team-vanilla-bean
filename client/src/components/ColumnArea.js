@@ -148,6 +148,8 @@ const ColumnArea = props => {
     setOpen(false);
   };
 
+  console.log(taskState.columnOrder === undefined || taskState.columnOrder.length == 0);
+
   if (!taskState || dashboardId === "createboard") {
     return <CreateBoardColumn open={open} handleClose={handleClose} dashboard />;
   } else {
@@ -158,7 +160,11 @@ const ColumnArea = props => {
             <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
               <CreateColumnButton
                 position='left'
-                className={classes.bbb}
+                noColumn={
+                  taskState.columnOrder === undefined || taskState.columnOrder.length == 0
+                    ? true
+                    : false
+                }
                 isDraggingOver={snapshot.isDraggingOver}
               />
               {taskState.columnOrder.map((columnId, index) => {
@@ -180,7 +186,10 @@ const ColumnArea = props => {
                   </div>
                 );
               })}
-              <CreateColumnButton position='right' isDraggingOver={snapshot.isDraggingOver} />
+
+              {taskState.columnOrder === undefined || taskState.columnOrder.length == 0 ? null : (
+                <CreateColumnButton position='right' isDraggingOver={snapshot.isDraggingOver} />
+              )}
               {provided.placeholder}
             </div>
           )}
