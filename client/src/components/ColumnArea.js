@@ -148,8 +148,6 @@ const ColumnArea = props => {
     setOpen(false);
   };
 
-  console.log(taskState.columnOrder === undefined || taskState.columnOrder.length == 0);
-
   if (!taskState || dashboardId === "createboard") {
     return <CreateBoardColumn open={open} handleClose={handleClose} dashboard />;
   } else {
