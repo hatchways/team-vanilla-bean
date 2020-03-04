@@ -11,3 +11,8 @@ a:visited {
   background-color: #759cfc;
   background-image: none;
 }
+
+.fc td {
+  background-color: #f5f6ff;
+  color: "red";
+}

@@ -21,7 +21,7 @@ function App() {
         <Route path="/signup" component={SignUp} />
         <Route path="/calendar" component={CardsCalendar} />
         <Route
-          path="/dashboards/:dashboardId/columns/:columnId/tasks/:taskId"
+          path="/(dashboards|calendar)/:dashboardId/columns/:columnId/tasks/:taskId"
           render={props => <CardModal {...props} />}
         />
       </BrowserRouter>

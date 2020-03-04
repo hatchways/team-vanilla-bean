@@ -58,7 +58,7 @@ const CardsCalendar = props => {
     console.log(columnId, task, dashboardId);
 
     props.history.push(
-      `/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`
+      `/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`
     );
     console.log(props.history);
   };
@@ -77,6 +77,9 @@ const CardsCalendar = props => {
           }}
           events={events}
           editable={true}
+          eventBackgroundColor="white"
+          eventTextColor="black"
+          eventBorderColor="rgba(117,156,252,0.3)"
           eventDrop={info => eventDrop(info)}
           eventClick={info => eventClick(info)}
           plugins={[dayGridPlugin, interactionPlugin]}
