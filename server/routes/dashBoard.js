@@ -362,6 +362,22 @@ router.put(
         "columns." + columnToSourceId + ".taskOrder"
       ] = columnToTaskOrder;
 
+      const calendarTask = await Calendar.findOne({
+        "deadlines.column": columnId
+      });
+
+      if (calendarTask) {
+        await Calendar.findOneAndUpdate(
+          { dashboard: dashboardId, "deadlines.column": columnId },
+          {
+            $set: {
+              "deadlines.$.column": columnToSourceId
+            }
+          },
+          { new: true }
+        );
+      }
+
       const result = await updateData(Dashboard, dashboardId, updateCond);
 
       res.status(200).json({ result });
