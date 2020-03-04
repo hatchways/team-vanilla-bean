@@ -4,34 +4,20 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { Container } from "@material-ui/core";
 import Navbar from "./Navbar";
-import { UserContext } from "../userContext";
 import { authFetch } from "../AuthService";
+import { CalendarContext } from "../calendarContext";
 import moment from "moment";
 
 const CardsCalendar = props => {
-  const { value1 } = useContext(UserContext);
-  let [dashboard] = value1;
-  let loadedDashboardId = dashboard && dashboard._id;
-  const [dashboardId, setDashboardId] = useState(loadedDashboardId);
-  const [events, setEvents] = useState([]);
-
-  const fetchCalendar = async () => {
-    try {
-      const res = await authFetch(`/calendar/${dashboardId}`);
-      setEvents(res);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const { calendar, dashboardId } = useContext(CalendarContext);
+  let [deadlines, setDeadlines] = calendar;
 
   useEffect(() => {
-    if (!dashboardId) {
-      authFetch(`/dashboards`)
-        .then(res => setDashboardId(res.result._id))
-        .then(fetchCalendar);
-    } else {
-      fetchCalendar();
-    }
+    authFetch(`/calendar/${dashboardId}`).then(res => {
+      if (res) {
+        setDeadlines(res);
+      }
+    });
   }, [dashboardId]);
 
   const eventDrop = info => {
@@ -55,12 +41,9 @@ const CardsCalendar = props => {
     const columnId = info.event.extendedProps.column;
     const task = info.event.extendedProps.task;
 
-    console.log(columnId, task, dashboardId);
-
     props.history.push(
       `/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`
     );
-    console.log(props.history);
   };
 
   return (
@@ -75,7 +58,7 @@ const CardsCalendar = props => {
             center: "title",
             right: "prev,next"
           }}
-          events={events}
+          events={deadlines}
           editable={true}
           eventBackgroundColor="white"
           eventTextColor="black"

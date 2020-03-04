@@ -3,6 +3,7 @@ import moment from "moment";
 import { authFetch } from "../../AuthService";
 import { UserContext } from "../../userContext";
 import { handleError, handleSuccess } from "../../utils/handleAlerts";
+import { CalendarContext } from "../../calendarContext";
 
 const CardContext = createContext();
 
@@ -24,14 +25,7 @@ const CardProvider = props => {
   //get dashboard values from user context
   const { value1 } = useContext(UserContext);
   let [dashboard, setDashboard] = value1;
-  let loadedDashboardId = dashboard && dashboard._id;
-  const [dashboardId, setDashboardId] = useState(loadedDashboardId);
-
-  useEffect(() => {
-    if (!dashboardId) {
-      authFetch(`/dashboards`).then(res => setDashboardId(res.result._id));
-    }
-  }, [dashboardId]);
+  let dashboardId = dashboard && dashboard._id;
 
   const handleCurrentTask = (taskId, columnId, hist) => {
     const columnName = dashboard.columns[columnId].title;
