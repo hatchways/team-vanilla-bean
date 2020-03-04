@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import moment from "moment";
 import { authFetch } from "../../AuthService";
 import { UserContext } from "../../userContext";
@@ -23,8 +23,15 @@ const CardProvider = props => {
 
   //get dashboard values from user context
   const { value1 } = useContext(UserContext);
-  const [dashboard, setDashboard] = value1;
-  const dashboardId = dashboard && dashboard._id;
+  let [dashboard, setDashboard] = value1;
+  let loadedDashboardId = dashboard && dashboard._id;
+  const [dashboardId, setDashboardId] = useState(loadedDashboardId);
+
+  useEffect(() => {
+    if (!dashboardId) {
+      authFetch(`/dashboards`).then(res => setDashboardId(res.result._id));
+    }
+  }, [dashboardId]);
 
   const handleCurrentTask = (taskId, columnId, hist) => {
     const columnName = dashboard.columns[columnId].title;
@@ -109,10 +116,13 @@ const CardProvider = props => {
           );
         }
 
-        authFetch("", {
-          method: "PUT",
-          body: JSON.stringify(updatedTask)
-        })
+        authFetch(
+          `/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`,
+          {
+            method: "PUT",
+            body: JSON.stringify(updatedTask)
+          }
+        )
           .then(res => updateUser(res))
           .then(() => handleCloseCard())
           .then(() => handleSuccess(`${title} has been updated!`))

@@ -1,17 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, IconButton, Typography, TextField } from "@material-ui/core";
 import Tag from "../Tag";
 import AssignmentOutlinedIcon from "@material-ui/icons/AssignmentOutlined";
 import CloseIcon from "@material-ui/icons/Close";
 import SelectTag from "./SelectTag";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { CardContext } from "./cardContext";
 
 const Header = () => {
   const card = useContext(CardContext);
   const history = useHistory();
+  const path = useLocation().pathname;
+  const [calendarView] = useState(path.includes("/calendar") ? true : false);
 
   const {
     title,
@@ -42,7 +44,12 @@ const Header = () => {
   const classes = useStyles();
 
   const handleClose = () => {
-    history.push("/dashboards");
+    if (calendarView) {
+      history.push("/calendar");
+    } else {
+      history.push("/dashboards");
+    }
+
     handleCloseCard();
   };
 

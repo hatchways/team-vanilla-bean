@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Dialog, DialogContent, Grid } from "@material-ui/core";
 import Header from "./Header";
 import Description from "./Description";
@@ -7,7 +7,7 @@ import Comment from "./Comment";
 import ButtonList from "./ButtonList";
 import { CardContext } from "./cardContext";
 import { authFetch } from "../../AuthService";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import { handleError } from "../../utils/handleAlerts";
 import DeleteModal from "./DeleteModal";
 
@@ -15,6 +15,8 @@ const CardModal = () => {
   const card = useContext(CardContext);
   const { openCard, handleCloseCard, deadline, fetchCard } = card;
   const { dashboardId, columnId, taskId } = useParams();
+  const path = useLocation().pathname;
+  const [calendarView] = useState(path.includes("/calendar") ? true : false);
   const history = useHistory();
 
   useEffect(() => {
@@ -32,13 +34,21 @@ const CardModal = () => {
             task !== taskId ||
             dashboard !== dashboardId
           ) {
-            history.push("/dashboards");
+            if (calendarView) {
+              history.push("/calendar");
+            } else {
+              history.push("/dashboards");
+            }
             handleError("cannot access");
           } else {
             fetchCard(taskId, columnId, res.result);
           }
         } catch (e) {
-          history.push("/dashboards");
+          if (calendarView) {
+            history.push("/calendar");
+          } else {
+            history.push("/dashboards");
+          }
           handleError("cannot access");
         }
       };
@@ -47,7 +57,11 @@ const CardModal = () => {
   }, []);
 
   const handleClose = () => {
-    history.push("/dashboards");
+    if (calendarView) {
+      history.push("/calendar");
+    } else {
+      history.push("/dashboards");
+    }
     handleCloseCard();
   };
 

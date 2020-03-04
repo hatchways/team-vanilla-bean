@@ -1,19 +1,25 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import ChatBubbleOutlineOutlinedIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import { TextField, Grid, Typography } from "@material-ui/core";
 import BlueButton from "../BlueButton";
 import { CardContext } from "./cardContext";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 const Comment = () => {
   const card = useContext(CardContext);
   const { handleSubmit } = card;
+  const path = useLocation().pathname;
+  const [calendarView] = useState(path.includes("/calendar") ? true : false);
 
   const history = useHistory();
 
   const submitCard = () => {
     handleSubmit();
-    history.push("/dashboards");
+    if (calendarView) {
+      history.push("/calendar");
+    } else {
+      history.push("/dashboards");
+    }
   };
 
   return (

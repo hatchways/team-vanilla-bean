@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Grid, Typography, TextField } from "@material-ui/core";
 import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined";
 import BlueButton from "../BlueButton";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { CardContext } from "./cardContext";
 
@@ -11,9 +11,16 @@ const Description = () => {
   const { description, handleDescriptionChange, handleSubmit } = card;
   const history = useHistory();
 
+  const path = useLocation().pathname;
+  const [calendarView] = useState(path.includes("/calendar") ? true : false);
+
   const submitCard = () => {
     handleSubmit();
-    history.push("/dashboards");
+    if (calendarView) {
+      history.push("/calendar");
+    } else {
+      history.push("/dashboards");
+    }
   };
 
   return (
