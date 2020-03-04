@@ -12,6 +12,7 @@ import TitleInputModal from "../components/TitleInputModal";
 import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
 import { logout } from "../AuthService";
 import { makeStyles } from "@material-ui/core/styles";
+import { handleSuccess } from "../utils/handleAlerts";
 
 export default function DropDownMenu(props) {
   const ITEM_HEIGHT = 48;
@@ -21,7 +22,7 @@ export default function DropDownMenu(props) {
   const [openModal, setOpenModal] = useState(false);
   const { value1, dashboardTitles } = useContext(UserContext);
   const [dbTitles] = dashboardTitles;
-  let [, setTaskState] = value1;
+  let [taskState, setTaskState] = value1;
   let history = useHistory();
   let dbTitlesArray = [];
   let dbIdArray = [];
@@ -49,6 +50,7 @@ export default function DropDownMenu(props) {
   const deleteColumnTrigger = () => {
     deleteColumn(dashboardId, columnId, res => {
       setTaskState(res);
+      handleSuccess(`The column has been deleted!`);
     });
     handleCloseDropDown();
   };
@@ -68,6 +70,7 @@ export default function DropDownMenu(props) {
       handleCloseDropDown();
       setCurrentBoard(dashboardId);
       history.push(`/dashboards/${dashboardId}`);
+      handleSuccess(`Dashboard has been loaded!`);
     });
   };
 

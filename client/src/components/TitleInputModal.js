@@ -23,6 +23,7 @@ import { handleError } from "../utils/handleAlerts";
 import { setCurrentBoard } from "../AuthService";
 
 import { withRouter } from "react-router-dom";
+import { handleSuccess } from "../utils/handleAlerts";
 
 const TitleInputModal = props => {
   const { open, handleClose, position, dashboard, column, columnId, columnTitle } = props;
@@ -62,6 +63,7 @@ const TitleInputModal = props => {
         setCurrentBoard(newDbUrl);
         handleClose(false);
         history.push(`/dashboards/${newDbUrl}`);
+        handleSuccess(`${taskState.title} has been created!`);
       });
     } else if (column) {
       if (columnTitle === title) {
@@ -77,6 +79,7 @@ const TitleInputModal = props => {
         setTaskState(res);
         setTitle("");
         handleClose(false);
+        handleSuccess(`the column has been renamed!`);
       });
 
       handleClose(false);
@@ -86,6 +89,7 @@ const TitleInputModal = props => {
           setTaskState(res);
           setTitle("");
           handleClose(false);
+          handleSuccess(`${res.title} has been added!`);
         });
       } catch (err) {
         handleError(err);
