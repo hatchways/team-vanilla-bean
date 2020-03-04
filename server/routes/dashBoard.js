@@ -65,12 +65,12 @@ router.post("/", checkToken, async (req, res) => {
 
   try {
     const column1 = new Column({
-      title: "in progress",
+      title: "In Progress",
       taskOrder: [],
       tasks: {}
     });
     const column2 = new Column({
-      title: "completed",
+      title: "Completed",
       taskOrder: [],
       tasks: {}
     });
