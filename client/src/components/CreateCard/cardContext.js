@@ -99,6 +99,16 @@ const CardProvider = props => {
           tag
         };
 
+        if (deadline) {
+          authFetch(
+            `/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`,
+            {
+              method: "PUT",
+              body: JSON.stringify({ deadline, title })
+            }
+          );
+        }
+
         authFetch("", {
           method: "PUT",
           body: JSON.stringify(updatedTask)
@@ -214,7 +224,8 @@ const CardProvider = props => {
         handleCloseDelete,
         handleDelete,
         openDelete
-      }}>
+      }}
+    >
       {props.children}
     </CardContext.Provider>
   );
