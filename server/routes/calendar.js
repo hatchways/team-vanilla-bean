@@ -47,7 +47,7 @@ router.put(
         result = await newCalendar.save();
       }
 
-      res.status(200).json({ result });
+      res.status(200).send(result.deadlines);
     } catch (err) {
       console.log(err);
       res.status(400).json({ error: "Failed to update calendar" });
