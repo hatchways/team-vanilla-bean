@@ -159,7 +159,7 @@ const ColumnArea = props => {
               <CreateColumnButton
                 position='left'
                 noColumn={
-                  taskState.columnOrder === undefined || taskState.columnOrder.length == 0
+                  taskState.columnOrder === undefined || taskState.columnOrder.length === 0
                     ? true
                     : false
                 }
@@ -185,7 +185,7 @@ const ColumnArea = props => {
                 );
               })}
 
-              {taskState.columnOrder === undefined || taskState.columnOrder.length == 0 ? null : (
+              {taskState.columnOrder === undefined || taskState.columnOrder.length === 0 ? null : (
                 <CreateColumnButton position='right' isDraggingOver={snapshot.isDraggingOver} />
               )}
               {provided.placeholder}
