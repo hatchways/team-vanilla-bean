@@ -8,17 +8,18 @@ import { authFetch } from "../AuthService";
 import { CalendarContext } from "../calendarContext";
 import moment from "moment";
 
-const CardsCalendar = props => {
-  const { calendar, dashboardId } = useContext(CalendarContext);
+const Calendar = props => {
+  const { calendar, board } = useContext(CalendarContext);
   let [deadlines, setDeadlines] = calendar;
+  let [boardId] = board;
 
   useEffect(() => {
-    authFetch(`/calendar/${dashboardId}`).then(res => {
+    authFetch(`/calendar/${boardId}`).then(res => {
       if (res) {
         setDeadlines(res);
       }
     });
-  }, [dashboardId]);
+  }, [boardId]);
 
   const eventDrop = info => {
     const deadline = moment(info.event.start).format("YYYY-MM-DD");
@@ -26,12 +27,12 @@ const CardsCalendar = props => {
     const columnId = info.event.extendedProps.column;
     const task = info.event.extendedProps.task;
 
-    authFetch(`/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`, {
+    authFetch(`/calendar/${boardId}/columns/${columnId}/tasks/${task}`, {
       method: "PUT",
       body: JSON.stringify({ deadline, title })
     });
 
-    authFetch(`/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`, {
+    authFetch(`/dashboards/${boardId}/columns/${columnId}/tasks/${task}`, {
       method: "PUT",
       body: JSON.stringify({ deadline, title })
     });
@@ -42,7 +43,7 @@ const CardsCalendar = props => {
     const task = info.event.extendedProps.task;
 
     props.history.push(
-      `/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`
+      `/calendar/${boardId}/columns/${columnId}/tasks/${task}`
     );
   };
 
@@ -73,4 +74,4 @@ const CardsCalendar = props => {
   );
 };
 
-export default CardsCalendar;
+export default Calendar;

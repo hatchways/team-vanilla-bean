@@ -8,11 +8,11 @@ import CalendarProvider from "./calendarContext";
 
 ReactDOM.render(
   <UserProvider>
-    <CardProvider>
-      <CalendarProvider>
+    <CalendarProvider>
+      <CardProvider>
         <App />
-      </CalendarProvider>
-    </CardProvider>
+      </CardProvider>
+    </CalendarProvider>
   </UserProvider>,
   document.getElementById("root")
 );

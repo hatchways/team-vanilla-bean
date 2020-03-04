@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -13,11 +13,32 @@ import TitleInputModal from "../components/TitleInputModal";
 import { Link } from "react-router-dom";
 import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
 import { useLocation } from "react-router-dom";
+import { CalendarContext } from "../calendarContext";
+import { UserContext } from "../userContext";
+import { authFetch } from "../AuthService";
 
 const TopNav = () => {
   const [open, setOpen] = useState(false);
   const path = useLocation().pathname;
   const [calendarView] = useState(path.includes("/calendar") ? true : false);
+
+  const { value1 } = useContext(UserContext);
+  let [dashboard] = value1;
+  let loadedBoardId = dashboard && dashboard._id;
+
+  const { board } = useContext(CalendarContext);
+  let [boardId, setBoardId] = board;
+
+  useEffect(() => {
+    console.log("we here ");
+    if (!loadedBoardId) {
+      authFetch(`/dashboards`).then(res => {
+        if (res) {
+          setBoardId(res.result._id);
+        }
+      });
+    }
+  }, [boardId]);
 
   const handleClose = () => {
     setOpen(false);

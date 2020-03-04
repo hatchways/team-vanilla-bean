@@ -25,14 +25,11 @@ const CardProvider = props => {
   //get dashboard values from user context
   const { value1 } = useContext(UserContext);
   let [dashboard, setDashboard] = value1;
-  let loadedDashboardId = dashboard && dashboard._id;
-  const [dashboardId, setDashboardId] = useState(loadedDashboardId);
+  let dashboardId = dashboard && dashboard._id;
 
-  useEffect(() => {
-    if (!dashboardId) {
-      authFetch(`/dashboards`).then(res => setDashboardId(res.result._id));
-    }
-  }, [dashboardId]);
+  const { calendar, board } = useContext(CalendarContext);
+  const [boardId] = board;
+  const [, setDeadlines] = calendar;
 
   const handleCurrentTask = (taskId, columnId, hist) => {
     const columnName = dashboard.columns[columnId].title;
@@ -109,16 +106,18 @@ const CardProvider = props => {
 
         if (deadline) {
           authFetch(
-            `/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`,
+            `/calendar/${dashboardId ||
+              boardId}/columns/${columnId}/tasks/${task}`,
             {
               method: "PUT",
               body: JSON.stringify({ deadline, title })
             }
-          );
+          ).then(res => setDeadlines(res));
         }
 
         authFetch(
-          `/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`,
+          `/dashboards/${dashboardId ||
+            boardId}/columns/${columnId}/tasks/${task}`,
           {
             method: "PUT",
             body: JSON.stringify(updatedTask)
