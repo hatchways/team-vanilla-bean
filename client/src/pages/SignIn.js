@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Container, TextField, Grid, Typography } from "@material-ui/core";
 import Button from "../components/BlueButton";
 import useStyles from "../themes/AuthStyles";
@@ -15,17 +15,10 @@ const SignIn = props => {
   const { dashboardTitles } = useContext(UserContext);
   let dashboardId = getCurrentBoard() || "createboard";
 
-  let [dbTitles, setDbTitles] = dashboardTitles;
+  let [, setDbTitles] = dashboardTitles;
   const redirect = dashboardId => {
-    console.log("redirectDashboardId", dashboardId);
-
     loggedIn() && props.history.push(`/dashboards/${dashboardId}`);
   };
-
-  useEffect(() => {
-    console.log("useeffect", dashboardId);
-    redirect(dashboardId);
-  }, [setDbTitles]);
 
   const handleSignIn = e => {
     e.preventDefault();
@@ -37,7 +30,6 @@ const SignIn = props => {
           return redirect(dashboardId);
         }
         getDashboardTitles(res => {
-          console.log("triggered", res);
           setDbTitles(res);
           for (const key in res) {
             if (res[key]._id === dashboardId) {
@@ -45,7 +37,6 @@ const SignIn = props => {
             }
           }
           dashboardId = res[0]._id;
-          console.log("login", dashboardId);
 
           return redirect(dashboardId);
         });

@@ -23,7 +23,6 @@ const TopNav = () => {
   };
 
   const handleClickOpen = () => {
-    console.log("clicked");
     setOpen(true);
   };
 

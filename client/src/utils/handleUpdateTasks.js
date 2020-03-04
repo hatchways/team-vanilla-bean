@@ -2,7 +2,6 @@ import { handleError } from "./handleAlerts";
 import { authFetch } from "../AuthService";
 
 //ToDo remove this after implementing create board function
-
 export const updateTaskIndexInColumn = async (dashboardId, columnId, taskOrder) => {
   let body = { taskOrder };
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}/taskOrder`, {

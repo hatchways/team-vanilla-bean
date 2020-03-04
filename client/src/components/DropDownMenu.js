@@ -20,7 +20,7 @@ export default function DropDownMenu(props) {
   const open = Boolean(anchorEl);
   const [openModal, setOpenModal] = useState(false);
   const { value1, dashboardTitles } = useContext(UserContext);
-  const [dbTitles, setDbTitles] = dashboardTitles;
+  const [dbTitles] = dashboardTitles;
   let [, setTaskState] = value1;
   let history = useHistory();
   let dbTitlesArray = [];

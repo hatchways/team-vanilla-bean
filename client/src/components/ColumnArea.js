@@ -3,7 +3,7 @@ import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { getCurrentBoard, setCurrentBoard } from "../AuthService";
+import { setCurrentBoard } from "../AuthService";
 import { withRouter } from "react-router";
 
 import {
@@ -28,7 +28,7 @@ const ColumnArea = props => {
 
   const [open, setOpen] = useState(false);
 
-  let dashboardId = props.match.params.dashboardId;
+  let dashboardId = taskState._id || props.match.params.dashboardId;
 
   useEffect(() => {
     if (Object.entries(dbTitles).length === 0 && dashboardId === "createboard") {
