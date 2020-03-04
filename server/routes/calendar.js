@@ -23,14 +23,14 @@ router.put(
           {
             $set: {
               "deadlines.$.title": title,
-              "deadlines.$.deadline": deadline
+              "deadlines.$.start": deadline
             }
           },
           { new: true }
         );
       } else if (calendar) {
         calendar.deadlines.push({
-          deadline,
+          start: deadline,
           column: columnId,
           title,
           task: taskId
@@ -39,7 +39,9 @@ router.put(
       } else {
         const newCalendar = new Calendar({
           dashboard: dashboardId,
-          deadlines: [{ deadline, column: columnId, task: taskId, title }]
+          deadlines: [
+            { start: deadline, column: columnId, task: taskId, title }
+          ]
         });
 
         result = await newCalendar.save();
@@ -57,7 +59,7 @@ router.get("/:dashboardId", checkToken, async (req, res) => {
   try {
     const { dashboardId } = req.params;
     const result = await Calendar.findOne({ dashboard: dashboardId });
-    res.status(200).json({ result });
+    res.status(200).send(result.deadlines);
   } catch (err) {
     console.log(err);
     res.status(400).json({ error: "Failed to update calendar" });

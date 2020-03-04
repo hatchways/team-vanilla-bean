@@ -180,7 +180,7 @@ router.post(
 
         if (calendar) {
           calendar.deadlines.push({
-            deadline,
+            start: deadline,
             column: columnId,
             title,
             task: newTask._id
@@ -189,7 +189,7 @@ router.post(
           calendar = new Calendar({
             dashboard: dashboardId,
             deadlines: [
-              { deadline, column: columnId, task: newTask._id, title }
+              { start: deadline, column: columnId, task: newTask._id, title }
             ]
           });
         }
