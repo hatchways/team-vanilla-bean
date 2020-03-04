@@ -13,37 +13,41 @@ const SignIn = props => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { dashboardTitles } = useContext(UserContext);
-  let dashboardId;
-  let currentBoard = getCurrentBoard();
+  let dashboardId = getCurrentBoard() || "createboard";
 
-  let [dbTitles, setdbTitles] = dashboardTitles;
+  let [dbTitles, setDbTitles] = dashboardTitles;
   const redirect = dashboardId => {
-    console.log(dashboardId);
+    console.log("redirectDashboardId", dashboardId);
 
     loggedIn() && props.history.push(`/dashboards/${dashboardId}`);
   };
 
   useEffect(() => {
-    console.log("triggered");
-
+    console.log("useeffect", dashboardId);
     redirect(dashboardId);
-  }, []);
+  }, [setDbTitles]);
 
   const handleSignIn = e => {
     e.preventDefault();
 
     login("signin", email, password)
       .then(res => {
-        //Todo get last board Id user access  from storage
+        if (res.dashboardIds.length === 0) {
+          dashboardId = "createboard";
+          return redirect(dashboardId);
+        }
         getDashboardTitles(res => {
-          setdbTitles(res);
-          dashboardId = res[0]._id;
+          console.log("triggered", res);
+          setDbTitles(res);
           for (const key in res) {
-            if (res[key]._id === currentBoard) {
-              dashboardId = currentBoard;
+            if (res[key]._id === dashboardId) {
+              return redirect(dashboardId);
             }
           }
-          redirect(dashboardId);
+          dashboardId = res[0]._id;
+          console.log("login", dashboardId);
+
+          return redirect(dashboardId);
         });
       })
       .catch(err => {

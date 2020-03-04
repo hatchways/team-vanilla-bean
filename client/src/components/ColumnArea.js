@@ -31,7 +31,7 @@ const ColumnArea = props => {
   let dashboardId = props.match.params.dashboardId;
 
   useEffect(() => {
-    if (Object.entries(dbTitles).length === 0 && dashboardId === "createBoard") {
+    if (Object.entries(dbTitles).length === 0 && dashboardId === "createboard") {
       setOpen(true);
       return;
     }
@@ -148,7 +148,7 @@ const ColumnArea = props => {
     setOpen(false);
   };
 
-  if (!taskState || dashboardId === "createBoard") {
+  if (!taskState || dashboardId === "createboard") {
     return <CreateBoardColumn open={open} handleClose={handleClose} dashboard />;
   } else {
     return (

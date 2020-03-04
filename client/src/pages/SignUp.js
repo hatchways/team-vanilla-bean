@@ -11,7 +11,7 @@ const SignUp = props => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const redirect = () => {
-    loggedIn() && props.history.push("/dashboards/createBoard");
+    loggedIn() && props.history.push("/dashboards/createboard");
   };
 
   useEffect(() => {
