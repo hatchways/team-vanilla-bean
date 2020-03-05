@@ -12,8 +12,7 @@ const deadlineSchema = new Schema({
 
 const calendarSchema = new Schema({
   dashboard: { type: mongoose.Schema.Types.ObjectId, ref: "Dashboard" },
-  deadlines: [deadlineSchema],
-  deadline: deadlineSchema
+  deadlines: [deadlineSchema]
 });
 
 module.exports = mongoose.model("Calendar", calendarSchema);

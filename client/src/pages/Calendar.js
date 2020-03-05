@@ -73,7 +73,6 @@ const Calendar = props => {
           editable={true}
           eventBackgroundColor="white"
           eventTextColor="black"
-          eventBorderColor="rgba(117,156,252,0.3)"
           eventDrop={info => eventDrop(info)}
           eventClick={info => eventClick(info)}
           plugins={[dayGridPlugin, interactionPlugin]}
