@@ -176,7 +176,9 @@ router.post("/:dashboardId/columns/:columnId/tasks", checkToken, async (req, res
       tag,
       deadline,
       actions,
-      comments
+      comments,
+      attachments,
+      coverImage
     });
 
     if (!title) {
@@ -229,7 +231,9 @@ router.put("/:dashboardId/columns/:columnId/tasks/:taskId", checkToken, async (r
       comments,
       tag,
       action,
-      _id: taskId
+      _id: taskId,
+      attachments,
+      coverImage
     };
 
     let updateCond = {};

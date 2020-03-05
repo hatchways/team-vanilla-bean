@@ -9,13 +9,15 @@ const TaskSchema = new Schema({
   deadline: { type: String },
   comments: [{ type: String }],
   tag: { type: String },
-  action: { tag: { type: String }, color: { type: Number } }
+  action: { tag: { type: String }, color: { type: Number } },
+  attachments: [{ type: String }],
+  coverImage: { type: String }
 });
 
 const ColumnSchema = new Schema({
   title: { type: String, required: true },
   tasks: { type: Map, of: TaskSchema },
-  taskOrder: [{ type: mongoose.Schema.Types.ObjectId, ref: TaskSchema }] //don't populate this, it's for ordering
+  taskOrder: [{ type: mongoose.Schema.Types.ObjectId, ref: TaskSchema }] //don't populate this, it's for ordering,
 });
 
 const DashBoardSchema = new Schema({
