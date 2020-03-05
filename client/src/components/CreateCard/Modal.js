@@ -23,7 +23,9 @@ const CardModal = () => {
     if ((dashboardId, columnId, taskId)) {
       const fetchUrlCard = async () => {
         try {
-          const res = await authFetch("/dashboards");
+          const res = await authFetch(`/dashboards/${dashboardId}`, {
+            method: "POST"
+          });
 
           const column = res.result.columns[columnId]._id;
           const task = res.result.columns[columnId].tasks[taskId]._id;
@@ -37,7 +39,7 @@ const CardModal = () => {
             if (calendarView) {
               history.push("/calendar");
             } else {
-              history.push("/dashboards");
+              history.push(`/dashboards/${dashboardId}`);
             }
             handleError("cannot access");
           } else {
@@ -47,7 +49,7 @@ const CardModal = () => {
           if (calendarView) {
             history.push("/calendar");
           } else {
-            history.push("/dashboards");
+            history.push(`/dashboards/${dashboardId}`);
           }
           handleError("cannot access");
         }
@@ -60,7 +62,7 @@ const CardModal = () => {
     if (calendarView) {
       history.push("/calendar");
     } else {
-      history.push("/dashboards");
+      history.push(`/dashboards/${dashboardId}`);
     }
     handleCloseCard();
   };
@@ -85,13 +87,13 @@ const CardModal = () => {
     >
       <DialogContent>
         <Grid container spacing={4}>
-          <Header />
+          <Header dashboardId={dashboardId} />
           <Grid item xs={10} container spacing={4}>
-            <Description />
-            <DeleteModal />
-            <Deadline />
+            <Description dashboardId={dashboardId} />
+            <DeleteModal dashboardId={dashboardId} />
+            <Deadline dashboardId={dashboardId} />
           </Grid>
-          <ButtonList />
+          <ButtonList dashboardId={dashboardId} />
 
           <Grid justify="center" item xs={12} container>
             <BlueButton onClick={submitCard} mini>

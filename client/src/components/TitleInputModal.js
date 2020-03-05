@@ -12,19 +12,28 @@ import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import BlueButton from "./BlueButton";
 
-import { addColumn, addDashboard, updateColumnName } from "../utils/handleUpdateTasks";
+import {
+  addColumn,
+  addDashboard,
+  updateColumnName,
+  getDashboardTitles
+} from "../utils/handleUpdateTasks";
 import { UserContext } from "../userContext";
 import { handleError } from "../utils/handleAlerts";
+import { setCurrentBoard } from "../AuthService";
 
 import { withRouter } from "react-router-dom";
+import { handleSuccess } from "../utils/handleAlerts";
 
 const TitleInputModal = props => {
   const { open, handleClose, position, dashboard, column, columnId, columnTitle } = props;
   const [title, setTitle] = useState(columnTitle);
   const [error, setError] = useState(false);
-  const { value1 } = useContext(UserContext);
+  const { value1, dashboardTitles } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
+  let [, setDbTitles] = dashboardTitles;
   let dashboardId = taskState && taskState._id;
+  let history = props.history;
   let btnText = "Create";
   let titleText = "";
 
@@ -46,7 +55,15 @@ const TitleInputModal = props => {
       addDashboard(title, res => {
         setTaskState(res);
         setTitle("");
+
+        let newDbUrl = res._id;
+        getDashboardTitles(res => {
+          setDbTitles(res);
+        });
+        setCurrentBoard(newDbUrl);
         handleClose(false);
+        history.push(`/dashboards/${newDbUrl}`);
+        handleSuccess(`Dashboard has been created!`);
       });
     } else if (column) {
       if (columnTitle === title) {
@@ -62,25 +79,20 @@ const TitleInputModal = props => {
         setTaskState(res);
         setTitle("");
         handleClose(false);
+        handleSuccess(`the column has been renamed!`);
       });
+
       handleClose(false);
     } else {
-      if (dashboard) {
-        addDashboard(title, res => {
+      try {
+        addColumn(dashboardId, title, position, res => {
           setTaskState(res);
           setTitle("");
           handleClose(false);
+          handleSuccess(`${res.title} has been added!`);
         });
-      } else {
-        try {
-          addColumn(dashboardId, title, position, res => {
-            setTaskState(res);
-            setTitle("");
-            handleClose(false);
-          });
-        } catch (err) {
-          handleError(err);
-        }
+      } catch (err) {
+        handleError(err);
       }
     }
   };

@@ -16,10 +16,9 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <PrivateRoute path="/dashboards" component={DashBoard} />
+        <PrivateRoute path="/dashboards/:dashboardId" component={DashBoard} />
         <Route path="/signin" component={SignIn} />
         <Route path="/signup" component={SignUp} />
-        <Route path="/calendar" component={Calendar} />
         <Route
           path="/(dashboards|calendar)/:dashboardId/columns/:columnId/tasks/:taskId"
           render={props => <CardModal {...props} />}

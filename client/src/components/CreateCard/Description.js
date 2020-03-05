@@ -3,7 +3,7 @@ import { Grid, Typography, TextField } from "@material-ui/core";
 import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined";
 import { CardContext } from "./cardContext";
 
-const Description = () => {
+const Description = ({ dashboardId }) => {
   const card = useContext(CardContext);
   const { description, handleDescriptionChange } = card;
 

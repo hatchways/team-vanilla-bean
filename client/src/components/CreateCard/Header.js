@@ -9,7 +9,7 @@ import { useHistory, useLocation } from "react-router-dom";
 
 import { CardContext } from "./cardContext";
 
-const Header = () => {
+const Header = ({ dashboardId }) => {
   const card = useContext(CardContext);
   const history = useHistory();
   const path = useLocation().pathname;
@@ -47,7 +47,7 @@ const Header = () => {
     if (calendarView) {
       history.push("/calendar");
     } else {
-      history.push("/dashboards");
+      history.push(`/dashboards/${dashboardId}`);
     }
 
     handleCloseCard();

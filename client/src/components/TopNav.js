@@ -11,11 +11,12 @@ import AppBar from "@material-ui/core/AppBar";
 import AddIcon from "@material-ui/icons/Add";
 import TitleInputModal from "../components/TitleInputModal";
 import { Link } from "react-router-dom";
-import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
 import { useLocation } from "react-router-dom";
 import { CalendarContext } from "../calendarContext";
 import { UserContext } from "../userContext";
 import { authFetch } from "../AuthService";
+import { UserContext } from "../userContext";
+import DropDownMenu from "./DropDownMenu";
 
 const TopNav = () => {
   const [open, setOpen] = useState(false);
@@ -71,14 +72,10 @@ const TopNav = () => {
     wrapper: {
       display: "flex"
     },
-    icon: {
-      width: 18,
-      height: 18,
-      marginRight: 10
-    },
     btn: {
       color: "white",
-      backgroundColor: "#759CFC"
+      backgroundColor: "#759CFC",
+      marginRight: 6000
     },
     profPic: {
       height: 50,
@@ -88,6 +85,7 @@ const TopNav = () => {
     }
   }));
   const classes = useStyles();
+
   return (
     <div>
       <AppBar position="static" className={classes.root}>
@@ -130,7 +128,7 @@ const TopNav = () => {
                 <AddIcon className={classes.icon} />
                 <Typography>Create board</Typography>
               </BlueButton>
-              <AccountCircleOutlinedIcon className={classes.profPic} />
+              <DropDownMenu topNav />
             </div>
           </Grid>
         </Toolbar>

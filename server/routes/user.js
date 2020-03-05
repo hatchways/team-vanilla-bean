@@ -17,7 +17,7 @@ router.post("/signup", validationRules(), validate, async (req, res) => {
       res.status(400).json({ error: "Email already exists" });
     }
 
-    user = await User.create({ email, password });
+    user = await User.create({ email, password, dashboardIds: [] });
 
     //Save user
     const payload = {
@@ -60,7 +60,7 @@ router.post("/signin", validationRules(), validate, async (req, res) => {
     //Create JWT with user ID
     jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: 36000000 }, (err, token) => {
       if (err) throw err;
-      res.status(200).json({ token });
+      res.status(200).json({ token, dashboardIds: user.dashboardIds });
     });
   } catch (err) {
     console.log(err.message);
