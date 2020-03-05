@@ -60,4 +60,10 @@ const _checkStatus = response => {
   });
 };
 
-export { login, loggedIn, logout, authFetch };
+const requireAuth = (nextState, replace) => {
+  if (!loggedIn) {
+    replace({ pathname: "/login" });
+  }
+};
+
+export { login, loggedIn, logout, authFetch, requireAuth };

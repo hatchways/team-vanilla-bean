@@ -20,23 +20,39 @@ import CreateBoardColumn from "./TitleInputModal";
 
 const ColumnArea = props => {
   const classes = useStyles(props);
-  const { value1 } = useContext(UserContext);
+  const { value1, redirectUrl } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
-
+  const [rediUrl, setRediUrl] = redirectUrl;
   const [open, setOpen] = useState(false);
 
   let dashboardId = taskState && taskState._id;
 
   useEffect(() => {
-    authFetch(`/dashboards`)
-      .then(res => {
-        if (res.result) {
-          setTaskState(res.result);
-        }
-      })
-      .catch(() => {
-        setOpen(true);
-      });
+    console.log(rediUrl);
+
+    if (rediUrl) {
+      console.log("triggered");
+
+      authFetch(`${rediUrl}`)
+        .then(res => {
+          if (res.result) {
+            setTaskState(res.result);
+          }
+        })
+        .catch(() => {
+          setOpen(true);
+        });
+    } else {
+      authFetch(`/dashboards`)
+        .then(res => {
+          if (res.result) {
+            setTaskState(res.result);
+          }
+        })
+        .catch(() => {
+          setOpen(true);
+        });
+    }
   }, [setTaskState]);
 
   const onDragEnd = result => {
