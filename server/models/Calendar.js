@@ -4,6 +4,8 @@ const Schema = mongoose.Schema;
 const deadlineSchema = new Schema({
   start: { type: String },
   title: { type: String },
+  description: { type: String },
+  tag: { type: String },
   column: { type: mongoose.Schema.Types.ObjectId, ref: "Column" },
   task: { type: mongoose.Schema.Types.ObjectId, ref: "Task" }
 });

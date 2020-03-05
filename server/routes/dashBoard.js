@@ -136,7 +136,7 @@ router.post(
   "/:dashboardId/columns/:columnId/tasks",
   checkToken,
   async (req, res) => {
-    const { title, description, deadline, tag, actions, comments } = req.body;
+    const { title, description, deadline, tag } = req.body;
     const { dashboardId, columnId } = req.params;
 
     try {
@@ -144,9 +144,7 @@ router.post(
         title,
         description,
         tag,
-        deadline,
-        actions,
-        comments
+        deadline
       });
 
       if (!title) {
@@ -183,13 +181,22 @@ router.post(
             start: deadline,
             column: columnId,
             title,
-            task: newTask._id
+            task: newTask._id,
+            description,
+            tag
           });
         } else {
           calendar = new Calendar({
             dashboard: dashboardId,
             deadlines: [
-              { start: deadline, column: columnId, task: newTask._id, title }
+              {
+                start: deadline,
+                column: columnId,
+                task: newTask._id,
+                title,
+                description,
+                tag
+              }
             ]
           });
         }
@@ -211,7 +218,7 @@ router.put(
   checkToken,
   async (req, res) => {
     try {
-      const { title, description, deadline, comments, tag, action } = req.body;
+      const { title, description, deadline, tag } = req.body;
       const { dashboardId, columnId, taskId } = req.params;
 
       if (!title) {
@@ -222,9 +229,7 @@ router.put(
         title,
         description,
         deadline,
-        comments,
         tag,
-        action,
         _id: taskId
       };
 

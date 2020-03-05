@@ -2,7 +2,6 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 
 export const CalendarContext = createContext();
 
-//To Handdle state and comments globally
 const CalendarProvider = props => {
   const [deadlines, setDeadlines] = useState(null);
   const [boardId, setBoardId] = useState(null);

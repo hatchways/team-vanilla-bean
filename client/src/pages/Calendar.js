@@ -22,19 +22,24 @@ const Calendar = props => {
   }, [boardId]);
 
   const eventDrop = info => {
-    const deadline = moment(info.event.start).format("YYYY-MM-DD");
-    const title = info.event.title;
     const columnId = info.event.extendedProps.column;
     const task = info.event.extendedProps.task;
 
+    const card = {
+      deadline: moment(info.event.start).format("YYYY-MM-DD"),
+      title: info.event.title,
+      tag: info.event.extendedProps.tag,
+      description: info.event.extendedProps.description
+    };
+
     authFetch(`/calendar/${boardId}/columns/${columnId}/tasks/${task}`, {
       method: "PUT",
-      body: JSON.stringify({ deadline, title })
+      body: JSON.stringify(card)
     });
 
     authFetch(`/dashboards/${boardId}/columns/${columnId}/tasks/${task}`, {
       method: "PUT",
-      body: JSON.stringify({ deadline, title })
+      body: JSON.stringify(card)
     });
   };
 

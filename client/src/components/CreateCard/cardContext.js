@@ -7,7 +7,6 @@ import { CalendarContext } from "../../calendarContext";
 
 const CardContext = createContext();
 
-//To Handle state and comments globally
 const CardProvider = props => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -110,7 +109,7 @@ const CardProvider = props => {
               boardId}/columns/${columnId}/tasks/${task}`,
             {
               method: "PUT",
-              body: JSON.stringify({ deadline, title })
+              body: JSON.stringify(updatedTask)
             }
           ).then(res => setDeadlines(res));
         }

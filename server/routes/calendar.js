@@ -11,7 +11,7 @@ router.put(
   async (req, res) => {
     try {
       const { dashboardId, columnId, taskId } = req.params;
-      const { title, deadline } = req.body;
+      const { title, deadline, description, tag } = req.body;
 
       const task = await Calendar.findOne({ "deadlines.task": taskId });
       let calendar = await Calendar.findOne({ dashboard: dashboardId });
@@ -23,7 +23,9 @@ router.put(
           {
             $set: {
               "deadlines.$.title": title,
-              "deadlines.$.start": deadline
+              "deadlines.$.start": deadline,
+              "deadlines.$.description": description,
+              "deadlines.$.tag": tag
             }
           },
           { new: true }
@@ -33,14 +35,23 @@ router.put(
           start: deadline,
           column: columnId,
           title,
-          task: taskId
+          task: taskId,
+          description,
+          tag
         });
         result = await calendar.save();
       } else {
         const newCalendar = new Calendar({
           dashboard: dashboardId,
           deadlines: [
-            { start: deadline, column: columnId, task: taskId, title }
+            {
+              start: deadline,
+              column: columnId,
+              task: taskId,
+              title,
+              description,
+              tag
+            }
           ]
         });
 

@@ -30,13 +30,14 @@ const TopNav = () => {
   let [boardId, setBoardId] = board;
 
   useEffect(() => {
-    console.log("we here ");
     if (!loadedBoardId) {
       authFetch(`/dashboards`).then(res => {
         if (res) {
           setBoardId(res.result._id);
         }
       });
+    } else {
+      setBoardId(loadedBoardId);
     }
   }, [boardId]);
 
