@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Grid, Typography, Box } from "@material-ui/core";
 import CardButton from "./CardButton";
 import { CardContext } from "./cardContext";

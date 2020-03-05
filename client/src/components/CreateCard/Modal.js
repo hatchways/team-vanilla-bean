@@ -13,7 +13,7 @@ import BlueButton from "../BlueButton";
 
 const CardModal = () => {
   const card = useContext(CardContext);
-  const { openCard, handleCloseCard, deadline, fetchCard, handleSubmit } = card;
+  const { openCard, handleCloseCard, fetchCard, handleSubmit } = card;
   const { dashboardId, columnId, taskId } = useParams();
   const path = useLocation().pathname;
   const [calendarView] = useState(path.includes("/calendar") ? true : false);
