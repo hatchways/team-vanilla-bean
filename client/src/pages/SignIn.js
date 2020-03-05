@@ -1,9 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Container, TextField, Grid, Typography } from "@material-ui/core";
 import Button from "../components/BlueButton";
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
-import { login, loggedIn, getCurrentBoard } from "../AuthService";
+import {
+  login,
+  loggedIn,
+  getCurrentBoard,
+  setCurrentBoard
+} from "../AuthService";
 import { handleError } from "../utils/handleAlerts";
 import { UserContext } from "../userContext";
 import { getDashboardTitles } from "../utils/handleUpdateTasks";
@@ -16,30 +21,31 @@ const SignIn = props => {
   let dashboardId = getCurrentBoard() || "createboard";
 
   let [, setDbTitles] = dashboardTitles;
-  const redirect = dashboardId => {
+  const redirect = () => {
     loggedIn() && props.history.push(`/dashboards/${dashboardId}`);
   };
+
+  useEffect(() => {
+    redirect();
+  });
 
   const handleSignIn = e => {
     e.preventDefault();
     login("signin", email, password)
       .then(res => {
         if (res.dashboardIds.length === 0) {
-          dashboardId = "createboard";
-          redirect(dashboardId);
+          setCurrentBoard("createboard");
         }
         getDashboardTitles(res => {
           setDbTitles(res);
           for (const key in res) {
-            if (res[key]._id === dashboardId) {
-              redirect(dashboardId);
+            if (res[key]._id !== dashboardId) {
+              setCurrentBoard(res[0]._id);
             }
           }
-          dashboardId = res[0]._id;
-
-          redirect(dashboardId);
         });
       })
+      .then(redirect())
       .catch(err => {
         handleError(err);
       });
