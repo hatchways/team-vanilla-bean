@@ -173,15 +173,10 @@ const CardProvider = props => {
   };
 
   const handleOpenDeadline = () => {
-    if (!openDeadline) {
-      if (!deadline) {
-        setDeadline(moment().format("YYYY-MM-DD"));
-      }
-      setOpenDeadline(true);
-    } else {
-      setDeadline("");
-      setOpenDeadline(false);
+    if (!deadline) {
+      setDeadline(moment().format("YYYY-MM-DD"));
     }
+    setOpenDeadline(true);
   };
 
   const handleOpenDelete = () => {
@@ -191,17 +186,28 @@ const CardProvider = props => {
     setOpenDelete(false);
   };
 
-  const handleDelete = history => {
-    authFetch("", {
-      method: "DELETE"
-    })
+  const handleDelete = (calendarView, hist) => {
+    authFetch(
+      `/dashboards/${dashboardId || boardId}/columns/${columnId}/tasks/${task}`,
+      {
+        method: "DELETE"
+      }
+    )
       .then(res => updateUser(res))
-      .then(history.push("/dashboards"))
+      .then(calendarView ? hist.push("/calendar") : hist.push("/dashboards"))
       .then(() => handleCloseCard())
       .then(() => handleSuccess(`Task has been deleted`))
       .catch(err => {
         handleError(err);
       });
+
+    if (deadline) {
+      authFetch(`/calendar/${dashboardId || boardId}/tasks/${task}`, {
+        method: "DELETE"
+      })
+        .then(res => setDeadlines(res))
+        .then(calendarView ? hist.push("/calendar") : hist.push("/dashboards"));
+    }
   };
 
   return (
@@ -226,7 +232,6 @@ const CardProvider = props => {
         deadline,
         handleDeadlineChange,
         handleOpenDeadline,
-
         openDeadline,
         fetchCard,
         handleOpenDelete,
