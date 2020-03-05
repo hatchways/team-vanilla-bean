@@ -66,6 +66,25 @@ router.put(
   }
 );
 
+router.delete("/:dashboardId/tasks/:taskId", checkToken, async (req, res) => {
+  try {
+    const { dashboardId, taskId } = req.params;
+
+    await Calendar.findOneAndUpdate(
+      { dashboard: dashboardId },
+      { $pull: { deadlines: { task: taskId } } },
+      { safe: true, multi: true }
+    );
+
+    let calendar = await Calendar.findOne({ dashboard: dashboardId });
+
+    res.status(200).send(calendar.deadlines);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: "Failed to update calendar" });
+  }
+});
+
 router.get("/:dashboardId", checkToken, async (req, res) => {
   try {
     const { dashboardId } = req.params;
