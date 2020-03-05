@@ -79,23 +79,15 @@ export const addDashboard = (title, cb) => {
 };
 
 export const getDashboard = (dashboardId, cb) => {
-  authFetch(`/dashboards/${dashboardId}`)
-    .then(res => {
-      cb(res.result);
-    })
-    .catch(err => {
-      handleError(err);
-    });
+  authFetch(`/dashboards/${dashboardId}`).then(res => {
+    cb(res.result);
+  });
 };
 
 export const getDashboardTitles = cb => {
-  authFetch("/dashboards")
-    .then(res => {
-      cb(res.result);
-    })
-    .catch(err => {
-      handleError(err);
-    });
+  authFetch("/dashboards").then(res => {
+    cb(res.result);
+  });
 };
 
 export const deleteColumn = (dashboardId, columnId, cb) => {
