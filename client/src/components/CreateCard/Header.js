@@ -45,7 +45,7 @@ const Header = ({ dashboardId }) => {
 
   const handleClose = () => {
     if (calendarView) {
-      history.push("/calendar");
+      history.push(`/calendar/${dashboardId}`);
     } else {
       history.push(`/dashboards/${dashboardId}`);
     }

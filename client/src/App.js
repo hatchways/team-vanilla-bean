@@ -23,7 +23,7 @@ function App() {
           path="/(dashboards|calendar)/:dashboardId/columns/:columnId/tasks/:taskId"
           render={props => <CardModal {...props} />}
         />
-        <Route path="/calendar" component={Calendar} />
+        <Route path="/calendar/:dashboardId" component={Calendar} />
       </BrowserRouter>
     </MuiThemeProvider>
   );

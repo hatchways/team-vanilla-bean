@@ -13,11 +13,13 @@ import TitleInputModal from "../components/TitleInputModal";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import DropDownMenu from "./DropDownMenu";
+import { getCurrentBoard } from "../AuthService";
 
 const TopNav = () => {
   const [open, setOpen] = useState(false);
   const path = useLocation().pathname;
   const [calendarView] = useState(path.includes("/calendar") ? true : false);
+  let dashboardId = getCurrentBoard();
 
   const handleClose = () => {
     setOpen(false);
@@ -77,7 +79,7 @@ const TopNav = () => {
           >
             <img src={logo} alt="logo" />
             <div className={classes.wrapper}>
-              <Link to="/dashboards">
+              <Link to={`/dashboards/${dashboardId}`}>
                 <div
                   className={`${classes.link} ${calendarView &&
                     classes.inactive}`}
@@ -86,7 +88,7 @@ const TopNav = () => {
                   <Typography>Dashboard</Typography>
                 </div>
               </Link>
-              <Link to="/calendar">
+              <Link to={`/calendar/${dashboardId}`}>
                 <div
                   className={`${classes.link} ${!calendarView &&
                     classes.inactive}`}

@@ -5,7 +5,7 @@ import Description from "./Description";
 import Deadline from "./Deadline";
 import ButtonList from "./ButtonList";
 import { CardContext } from "./cardContext";
-import { authFetch } from "../../AuthService";
+import { authFetch, getCurrentBoard } from "../../AuthService";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import { handleError } from "../../utils/handleAlerts";
 import DeleteModal from "./DeleteModal";
@@ -14,10 +14,11 @@ import BlueButton from "../BlueButton";
 const CardModal = () => {
   const card = useContext(CardContext);
   const { openCard, handleCloseCard, fetchCard, handleSubmit } = card;
-  const { dashboardId, columnId, taskId } = useParams();
+  const { columnId, taskId } = useParams();
   const path = useLocation().pathname;
   const [calendarView] = useState(path.includes("/calendar") ? true : false);
   const history = useHistory();
+  let dashboardId = getCurrentBoard();
 
   useEffect(() => {
     if ((dashboardId, columnId, taskId)) {
@@ -59,7 +60,7 @@ const CardModal = () => {
 
   const routeChange = () => {
     if (calendarView) {
-      history.push("/calendar");
+      history.push(`/calendar/${dashboardId}`);
     } else {
       history.push(`/dashboards/${dashboardId}`);
     }

@@ -6,7 +6,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import Typography from "@material-ui/core/Typography";
 import { UserContext } from "../userContext";
 import { deleteColumn, getDashboard } from "../utils/handleUpdateTasks";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { setCurrentBoard } from "../AuthService";
 import TitleInputModal from "../components/TitleInputModal";
 import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
@@ -27,6 +27,9 @@ export default function DropDownMenu(props) {
   let dbTitlesArray = [];
   let dbIdArray = [];
   let options = [];
+
+  const path = useLocation().pathname;
+  const [calendarView] = useState(path.includes("/calendar") ? true : false);
 
   if (column) {
     options = ["Rename", "Delete"];
@@ -69,7 +72,9 @@ export default function DropDownMenu(props) {
       setTaskState(res);
       handleCloseDropDown();
       setCurrentBoard(dashboardId);
-      history.push(`/dashboards/${dashboardId}`);
+      calendarView
+        ? history.push(`/calendar/${dashboardId}`)
+        : history.push(`/dashboards/${dashboardId}`);
     });
   };
 
@@ -100,15 +105,20 @@ export default function DropDownMenu(props) {
   return (
     <div>
       <IconButton
-        aria-label='more'
-        aria-controls='long-menu'
-        aria-haspopup='true'
+        aria-label="more"
+        aria-controls="long-menu"
+        aria-haspopup="true"
         className={topNav ? classes.icon : ""}
-        onClick={handleClickDropDown}>
-        {topNav ? <AccountCircleOutlinedIcon fontSize='large' /> : <MoreHorizIcon />}
+        onClick={handleClickDropDown}
+      >
+        {topNav ? (
+          <AccountCircleOutlinedIcon fontSize="large" />
+        ) : (
+          <MoreHorizIcon />
+        )}
       </IconButton>
       <Menu
-        id='long-menu'
+        id="long-menu"
         anchorEl={anchorEl}
         keepMounted
         open={open}
@@ -118,7 +128,8 @@ export default function DropDownMenu(props) {
             maxHeight: ITEM_HEIGHT * 4.5,
             width: 200
           }
-        }}>
+        }}
+      >
         {options ? (
           options.map((option, index) => {
             let onClick = onClickObject[option] || changeDbTrigger;
@@ -127,7 +138,8 @@ export default function DropDownMenu(props) {
               <MenuItem
                 key={option}
                 selected={option === "Pyxis"}
-                onClick={() => onClick(UDashboardId)}>
+                onClick={() => onClick(UDashboardId)}
+              >
                 <Typography>{option}</Typography>
               </MenuItem>
             );

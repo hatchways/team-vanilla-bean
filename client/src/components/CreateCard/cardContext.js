@@ -198,7 +198,7 @@ const CardProvider = props => {
       .then(res => updateUser(res))
       .then(
         calendarView
-          ? hist.push("/calendar")
+          ? hist.push(`/calendar/${dashboardId}`)
           : hist.push(`/dashboards/${dashboardId}`)
       )
       .then(() => handleCloseCard())
@@ -212,7 +212,11 @@ const CardProvider = props => {
         method: "DELETE"
       })
         .then(res => setDeadlines(res))
-        .then(calendarView ? hist.push("/calendar") : hist.push("/dashboards"))
+        .then(
+          calendarView
+            ? hist.push(`/calendar/${dashboardId}`)
+            : hist.push(`/dashboards/${dashboardId}`)
+        )
         .catch(err => {
           handleError(err);
         });

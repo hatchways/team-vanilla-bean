@@ -16,11 +16,11 @@ const Calendar = props => {
   let dashboardId = getCurrentBoard();
 
   useEffect(() => {
-    authFetch(`/calendar/${dashboardId}`).then(res => {
-      if (res) {
+    authFetch(`/calendar/${dashboardId}`)
+      .then(res => {
         setDeadlines(res);
-      }
-    });
+      })
+      .catch(() => setDeadlines([]));
   }, [dashboardId]);
 
   const eventDrop = info => {
