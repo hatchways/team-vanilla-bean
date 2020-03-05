@@ -34,6 +34,7 @@ const getToken = () => {
 
 const logout = () => {
   localStorage.clear();
+
   window.location.href = "/signin";
 };
 
@@ -66,4 +67,12 @@ const requireAuth = (nextState, replace) => {
   }
 };
 
-export { login, loggedIn, logout, authFetch, requireAuth };
+const setCurrentBoard = dashboardId => {
+  localStorage.setItem("dashboard", dashboardId);
+};
+
+const getCurrentBoard = () => {
+  return localStorage.getItem("dashboard");
+};
+
+export { login, loggedIn, logout, authFetch, setCurrentBoard, getCurrentBoard, requireAuth };

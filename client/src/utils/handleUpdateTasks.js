@@ -2,12 +2,7 @@ import { handleError } from "./handleAlerts";
 import { authFetch } from "../AuthService";
 
 //ToDo remove this after implementing create board function
-
-export const updateTaskIndexInColumn = async (
-  dashboardId,
-  columnId,
-  taskOrder
-) => {
+export const updateTaskIndexInColumn = async (dashboardId, columnId, taskOrder) => {
   let body = { taskOrder };
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}/taskOrder`, {
     method: "put",
@@ -75,7 +70,35 @@ export const addDashboard = (title, cb) => {
       cb(res.result);
     })
     .catch(err => {
-      console.log(err);
+      handleError(err);
+    });
+};
+
+export const getDashboard = (dashboardId, cb) => {
+  let body = {
+    dashboardId
+  };
+
+  authFetch(`/dashboards/${dashboardId}`, {
+    method: "post",
+    body: JSON.stringify(body)
+  })
+    .then(res => {
+      cb(res.result);
+    })
+    .catch(err => {
+      handleError(err);
+    });
+};
+
+export const getDashboardTitles = cb => {
+  authFetch(`/dashboards/titles`, {
+    method: "get"
+  })
+    .then(res => {
+      cb(res.result);
+    })
+    .catch(err => {
       handleError(err);
     });
 };

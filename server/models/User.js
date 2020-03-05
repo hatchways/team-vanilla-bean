@@ -9,7 +9,8 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  dashboardIds: [{ type: mongoose.Schema.Types.ObjectId, ref: "Dashboard" }]
 });
 
 //hash password on signup

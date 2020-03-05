@@ -5,26 +5,38 @@ import MenuItem from "@material-ui/core/MenuItem";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import Typography from "@material-ui/core/Typography";
 import { UserContext } from "../userContext";
-import { deleteColumn } from "../utils/handleUpdateTasks";
-import { logout } from "../AuthService";
-
+import { deleteColumn, getDashboard } from "../utils/handleUpdateTasks";
+import { useHistory } from "react-router-dom";
+import { setCurrentBoard } from "../AuthService";
 import TitleInputModal from "../components/TitleInputModal";
+import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
+import { logout } from "../AuthService";
+import { makeStyles } from "@material-ui/core/styles";
+import { handleSuccess } from "../utils/handleAlerts";
 
 export default function DropDownMenu(props) {
   const ITEM_HEIGHT = 48;
+  const { column, blueNav, columnId, dashboardId, title, topNav } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [openModal, setOpenModal] = useState(false);
-  const { value1 } = useContext(UserContext);
+  const { value1, dashboardTitles } = useContext(UserContext);
+  const [dbTitles] = dashboardTitles;
   let [, setTaskState] = value1;
-
-  const { column, blueNav, columnId, dashboardId, title } = props;
+  let history = useHistory();
+  let dbTitlesArray = [];
+  let dbIdArray = [];
   let options = [];
 
   if (column) {
     options = ["Rename", "Delete"];
-  }
-  if (blueNav) {
+  } else if (blueNav) {
+    for (let i = 0; i < dbTitles.length; i++) {
+      dbTitlesArray.push(dbTitles[i].title);
+      dbIdArray.push(dbTitles[i]._id);
+    }
+    options = dbTitlesArray;
+  } else {
     options = ["Logout"];
   }
   const handleClickDropDown = event => {
@@ -38,6 +50,7 @@ export default function DropDownMenu(props) {
   const deleteColumnTrigger = () => {
     deleteColumn(dashboardId, columnId, res => {
       setTaskState(res);
+      handleSuccess(`The column has been deleted!`);
     });
     handleCloseDropDown();
   };
@@ -47,8 +60,18 @@ export default function DropDownMenu(props) {
     handleCloseDropDown();
   };
 
-  const logoutTrigger = e => {
+  const logoutTrigger = () => {
     logout();
+  };
+
+  const changeDbTrigger = dashboardId => {
+    getDashboard(dashboardId, res => {
+      setTaskState(res);
+      handleCloseDropDown();
+      setCurrentBoard(dashboardId);
+      history.push(`/dashboards/${dashboardId}`);
+      handleSuccess(`Dashboard has been loaded!`);
+    });
   };
 
   const handleClose = () => {
@@ -62,8 +85,18 @@ export default function DropDownMenu(props) {
   const onClickObject = {
     Rename: renameTrigger,
     Delete: deleteColumnTrigger,
-    Logout: logoutTrigger
+    Logout: logoutTrigger,
+    BlueNav: changeDbTrigger
   };
+
+  const useStyles = makeStyles(theme => ({
+    icon: {
+      marginLeft: 50,
+      width: 50,
+      height: 50
+    }
+  }));
+  const classes = useStyles();
 
   return (
     <div>
@@ -71,8 +104,9 @@ export default function DropDownMenu(props) {
         aria-label='more'
         aria-controls='long-menu'
         aria-haspopup='true'
+        className={topNav ? classes.icon : ""}
         onClick={handleClickDropDown}>
-        <MoreHorizIcon />
+        {topNav ? <AccountCircleOutlinedIcon fontSize='large' /> : <MoreHorizIcon />}
       </IconButton>
       <Menu
         id='long-menu'
@@ -86,14 +120,22 @@ export default function DropDownMenu(props) {
             width: 200
           }
         }}>
-        {options.map(option => {
-          let onClick = onClickObject[option];
-          return (
-            <MenuItem key={option} selected={option === "Pyxis"} onClick={e => onClick(e)}>
-              <Typography>{option}</Typography>
-            </MenuItem>
-          );
-        })}
+        {options ? (
+          options.map((option, index) => {
+            let onClick = onClickObject[option] || changeDbTrigger;
+            let UDashboardId = dbIdArray[index];
+            return (
+              <MenuItem
+                key={option}
+                selected={option === "Pyxis"}
+                onClick={() => onClick(UDashboardId)}>
+                <Typography>{option}</Typography>
+              </MenuItem>
+            );
+          })
+        ) : (
+          <h1>no board exist</h1>
+        )}
       </Menu>
       <TitleInputModal
         open={openModal}

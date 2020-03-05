@@ -3,14 +3,18 @@ import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { setCurrentBoard, getCurrentBoard } from "../AuthService";
 import { withRouter } from "react-router";
-import { authFetch } from "../AuthService";
 
 import {
   updateTaskIndexInColumn,
   moveTasksToOther,
-  updateColumnIndex
+  updateColumnIndex,
+  getDashboard,
+  getDashboardTitles
 } from "../utils/handleUpdateTasks";
+
+import { authFetch } from "../AuthService";
 
 //Component
 import CreateColumnButton from "../components/CreateColumnButton";
@@ -20,40 +24,38 @@ import CreateBoardColumn from "./TitleInputModal";
 
 const ColumnArea = props => {
   const classes = useStyles(props);
-  const { value1, redirectUrl } = useContext(UserContext);
+  const { value1, dashboardTitles, redirectUrl } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
+  let [dbTitles, setdbTitles] = dashboardTitles;
   const [rediUrl, setRediUrl] = redirectUrl;
   const [open, setOpen] = useState(false);
 
-  let dashboardId = taskState && taskState._id;
+  let dashboardId = props.match.params.dashboardId;
 
   useEffect(() => {
-    console.log(rediUrl);
-
-    if (rediUrl) {
-      console.log("triggered");
-
-      authFetch(`${rediUrl}`)
-        .then(res => {
-          if (res.result) {
-            setTaskState(res.result);
-          }
-        })
-        .catch(() => {
-          setOpen(true);
-        });
-    } else {
-      authFetch(`/dashboards`)
-        .then(res => {
-          if (res.result) {
-            setTaskState(res.result);
-          }
-        })
-        .catch(() => {
-          setOpen(true);
-        });
+    if (Object.entries(dbTitles).length === 0 && dashboardId === "createboard") {
+      setOpen(true);
+      return;
     }
-  }, [setTaskState]);
+    if (getCurrentBoard()) {
+      console.log("triggred2");
+      getDashboard(getCurrentBoard(), res => {
+        setTaskState(res);
+        setCurrentBoard(res._id);
+      });
+      getDashboardTitles(res => {
+        setdbTitles(res);
+      });
+    } else {
+      getDashboard(dashboardId, res => {
+        setTaskState(res);
+        setCurrentBoard(res._id);
+      });
+      getDashboardTitles(res => {
+        setdbTitles(res);
+      });
+    }
+  }, []);
 
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
@@ -158,7 +160,7 @@ const ColumnArea = props => {
     setOpen(false);
   };
 
-  if (!taskState) {
+  if (!taskState || dashboardId === "createboard") {
     return <CreateBoardColumn open={open} handleClose={handleClose} dashboard />;
   } else {
     return (
@@ -168,7 +170,11 @@ const ColumnArea = props => {
             <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
               <CreateColumnButton
                 position='left'
-                className={classes.bbb}
+                noColumn={
+                  taskState.columnOrder === undefined || taskState.columnOrder.length === 0
+                    ? true
+                    : false
+                }
                 isDraggingOver={snapshot.isDraggingOver}
               />
               {taskState.columnOrder.map((columnId, index) => {
@@ -190,7 +196,10 @@ const ColumnArea = props => {
                   </div>
                 );
               })}
-              <CreateColumnButton position='right' isDraggingOver={snapshot.isDraggingOver} />
+
+              {taskState.columnOrder === undefined || taskState.columnOrder.length === 0 ? null : (
+                <CreateColumnButton position='right' isDraggingOver={snapshot.isDraggingOver} />
+              )}
               {provided.placeholder}
             </div>
           )}

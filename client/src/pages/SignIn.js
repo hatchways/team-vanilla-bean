@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Container, TextField, Grid, Typography } from "@material-ui/core";
 import Button from "../components/BlueButton";
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
-import { login, loggedIn } from "../AuthService";
+import { login, loggedIn, getCurrentBoard } from "../AuthService";
 import { handleError } from "../utils/handleAlerts";
 import { UserContext } from "../userContext";
+import { getDashboardTitles } from "../utils/handleUpdateTasks";
 
 const SignIn = props => {
   const classes = useStyles();
@@ -13,27 +14,48 @@ const SignIn = props => {
   const [password, setPassword] = useState("");
   const { redirectUrl } = useContext(UserContext);
   const [rediUrl, setRediUrl] = redirectUrl;
+  const { dashboardTitles } = useContext(UserContext);
+  let dashboardId = getCurrentBoard() || "createboard";
 
-  console.log(props);
-
-  const redirect = () => {
-    const { from } = props.location.state || { from: { pathname: "/" } };
+  let [, setDbTitles] = dashboardTitles;
+  const redirect = dashboardId => {
+    const { from } = props.location.state || { from: { pathname: "" } };
     const pathname = from.pathname;
+    setRediUrl(pathname);
     console.log(pathname);
 
-    setRediUrl(pathname);
-    loggedIn() && props.history.push("/dashboards");
+    if (getCurrentBoard()) {
+      loggedIn() && props.history.push(`/dashboards/${getCurrentBoard()}`);
+    } else if (rediUrl) {
+      loggedIn() && props.history.push(`${rediUrl}`);
+    } else {
+      loggedIn() && props.history.push(`/dashboards/${dashboardId}`);
+    }
   };
 
   useEffect(() => {
-    redirect();
-  });
-
+    redirect(dashboardId);
+  }, []);
   const handleSignIn = e => {
     e.preventDefault();
+
     login("signin", email, password)
-      .then(() => {
-        redirect();
+      .then(res => {
+        if (res.dashboardIds.length === 0) {
+          dashboardId = "createboard";
+          return redirect(dashboardId);
+        }
+        getDashboardTitles(res => {
+          setDbTitles(res);
+          for (const key in res) {
+            if (res[key]._id === dashboardId) {
+              return redirect(dashboardId);
+            }
+          }
+          dashboardId = res[0]._id;
+
+          return redirect(dashboardId);
+        });
       })
       .catch(err => {
         handleError(err);

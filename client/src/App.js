@@ -18,7 +18,7 @@ function App() {
       <BrowserRouter>
         <Route path='/signin' component={SignIn} />
         <Route path='/signup' component={SignUp} />
-        <PrivateRoute loggedIn={loggedIn()} path='/dashboards' component={DashBoard} />
+        <PrivateRoute loggedIn={loggedIn()} path='/dashboards/:dashboardId' component={DashBoard} />
         <Route
           path='/dashboards/:dashboardId/columns/:columnId/tasks/:taskId'
           render={props => <CardModal {...props} />}
