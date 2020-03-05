@@ -69,23 +69,33 @@ router.post("/signin", validationRules(), validate, async (req, res) => {
 });
 
 router.put("/profilePic", validationRules(), validate, async (req, res) => {
-  console.log("triggered");
-
   try {
     const { profilePic, email } = req.body;
-    console.log(req.body);
 
     // Do not save if user exists
     if (!profilePic) {
       res.status(400).json({ error: "profile picture doesn't exists" });
     }
-    console.log(profilePic);
 
     let result = await User.findOneAndUpdate(
       { email: email },
       { profilePic: profilePic },
       { new: true }
     );
+
+    res.status(200).json(result);
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ error: "failed to update a profile picture" });
+  }
+});
+
+router.delete("/profilePic", validationRules(), validate, async (req, res) => {
+  console.log("triggered");
+
+  try {
+    const { email } = req.body;
+    let result = await User.findOneAndUpdate({ email: email }, { profilePic: "" }, { new: true });
     res.status(200).json(result);
   } catch (err) {
     console.log(err.message);
