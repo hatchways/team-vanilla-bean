@@ -70,7 +70,6 @@ export default function DropDownMenu(props) {
       handleCloseDropDown();
       setCurrentBoard(dashboardId);
       history.push(`/dashboards/${dashboardId}`);
-      handleSuccess(`Dashboard has been loaded!`);
     });
   };
 

@@ -22,7 +22,6 @@ const SignIn = props => {
 
   const handleSignIn = e => {
     e.preventDefault();
-
     login("signin", email, password)
       .then(res => {
         if (res.dashboardIds.length === 0) {

@@ -75,13 +75,8 @@ export const addDashboard = (title, cb) => {
 };
 
 export const getDashboard = (dashboardId, cb) => {
-  let body = {
-    dashboardId
-  };
-
   authFetch(`/dashboards/${dashboardId}`, {
-    method: "post",
-    body: JSON.stringify(body)
+    method: "get"
   })
     .then(res => {
       cb(res.result);
@@ -92,9 +87,7 @@ export const getDashboard = (dashboardId, cb) => {
 };
 
 export const getDashboardTitles = cb => {
-  authFetch(`/dashboards/titles`, {
-    method: "get"
-  })
+  authFetch("/dashboards")
     .then(res => {
       cb(res.result);
     })
