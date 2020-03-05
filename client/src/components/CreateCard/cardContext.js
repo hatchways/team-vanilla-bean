@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext } from "react";
 import moment from "moment";
-import { authFetch } from "../../AuthService";
+import { authFetch, getCurrentBoard } from "../../AuthService";
 import { UserContext } from "../../userContext";
 import { handleError, handleSuccess } from "../../utils/handleAlerts";
 import { CalendarContext } from "../../calendarContext";
@@ -21,13 +21,13 @@ const CardProvider = props => {
   const [columnId, setColumnId] = useState("");
   const [openDelete, setOpenDelete] = useState(false);
 
+  let dashboardId = getCurrentBoard();
+
   //get dashboard values from user context
   const { value1 } = useContext(UserContext);
   let [dashboard, setDashboard] = value1;
-  let dashboardId = dashboard && dashboard._id;
 
   const { calendar, board } = useContext(CalendarContext);
-  const [boardId] = board;
   const [, setDeadlines] = calendar;
 
   const handleCurrentTask = (taskId, columnId, hist) => {
@@ -108,8 +108,7 @@ const CardProvider = props => {
 
         if (deadline) {
           authFetch(
-            `/calendar/${dashboardId ||
-              boardId}/columns/${columnId}/tasks/${task}`,
+            `/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`,
             {
               method: "PUT",
               body: JSON.stringify(updatedTask)
@@ -122,8 +121,7 @@ const CardProvider = props => {
         }
 
         authFetch(
-          `/dashboards/${dashboardId ||
-            boardId}/columns/${columnId}/tasks/${task}`,
+          `/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`,
           {
             method: "PUT",
             body: JSON.stringify(updatedTask)
@@ -194,12 +192,9 @@ const CardProvider = props => {
   };
 
   const handleDelete = (calendarView, hist) => {
-    authFetch(
-      `/dashboards/${dashboardId || boardId}/columns/${columnId}/tasks/${task}`,
-      {
-        method: "DELETE"
-      }
-    )
+    authFetch(`/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`, {
+      method: "DELETE"
+    })
       .then(res => updateUser(res))
       .then(
         calendarView
@@ -213,7 +208,7 @@ const CardProvider = props => {
       });
 
     if (deadline) {
-      authFetch(`/calendar/${dashboardId || boardId}/tasks/${task}`, {
+      authFetch(`/calendar/${dashboardId}/tasks/${task}`, {
         method: "DELETE"
       })
         .then(res => setDeadlines(res))

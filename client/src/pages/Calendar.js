@@ -4,23 +4,24 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { Container } from "@material-ui/core";
 import Navbar from "./Navbar";
-import { authFetch } from "../AuthService";
+import { authFetch, getCurrentBoard } from "../AuthService";
 import { CalendarContext } from "../calendarContext";
 import moment from "moment";
 import { handleError } from "../utils/handleAlerts";
 
 const Calendar = props => {
-  const { calendar, board } = useContext(CalendarContext);
+  const { calendar } = useContext(CalendarContext);
   let [deadlines, setDeadlines] = calendar;
-  let [boardId] = board;
+
+  let dashboardId = getCurrentBoard();
 
   useEffect(() => {
-    authFetch(`/calendar/${boardId}`).then(res => {
+    authFetch(`/calendar/${dashboardId}`).then(res => {
       if (res) {
         setDeadlines(res);
       }
     });
-  }, [boardId]);
+  }, [dashboardId]);
 
   const eventDrop = info => {
     const columnId = info.event.extendedProps.column;
@@ -33,14 +34,14 @@ const Calendar = props => {
       description: info.event.extendedProps.description
     };
 
-    authFetch(`/calendar/${boardId}/columns/${columnId}/tasks/${task}`, {
+    authFetch(`/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`, {
       method: "PUT",
       body: JSON.stringify(card)
     }).catch(err => {
       handleError(err);
     });
 
-    authFetch(`/dashboards/${boardId}/columns/${columnId}/tasks/${task}`, {
+    authFetch(`/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`, {
       method: "PUT",
       body: JSON.stringify(card)
     }).catch(err => {
@@ -53,7 +54,7 @@ const Calendar = props => {
     const task = info.event.extendedProps.task;
 
     props.history.push(
-      `/calendar/${boardId}/columns/${columnId}/tasks/${task}`
+      `/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`
     );
   };
 

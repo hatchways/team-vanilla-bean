@@ -24,7 +24,7 @@ const CardModal = () => {
       const fetchUrlCard = async () => {
         try {
           const res = await authFetch(`/dashboards/${dashboardId}`, {
-            method: "POST"
+            method: "GET"
           });
 
           const column = res.result.columns[columnId]._id;

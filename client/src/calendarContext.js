@@ -4,13 +4,11 @@ export const CalendarContext = createContext();
 
 const CalendarProvider = props => {
   const [deadlines, setDeadlines] = useState(null);
-  const [boardId, setBoardId] = useState(null);
 
   return (
     <CalendarContext.Provider
       value={{
-        calendar: [deadlines, setDeadlines],
-        board: [boardId, setBoardId]
+        calendar: [deadlines, setDeadlines]
       }}
     >
       {props.children}
