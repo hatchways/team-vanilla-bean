@@ -15,11 +15,11 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <PrivateRoute path="/dashboards" component={DashBoard} />
-        <Route path="/signin" component={SignIn} />
-        <Route path="/signup" component={SignUp} />
+        <PrivateRoute path='/dashboards/:dashboardId' component={DashBoard} />
+        <Route path='/signin' component={SignIn} />
+        <Route path='/signup' component={SignUp} />
         <Route
-          path="/dashboards/:dashboardId/columns/:columnId/tasks/:taskId"
+          path='/dashboards/:dashboardId/columns/:columnId/tasks/:taskId'
           render={props => <CardModal {...props} />}
         />
       </BrowserRouter>

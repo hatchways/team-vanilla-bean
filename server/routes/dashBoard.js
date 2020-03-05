@@ -5,22 +5,51 @@ const checkToken = require("../auth/validateToken");
 
 // Models;
 const { Task, Column, Dashboard } = require("../models/Dashboard");
+const User = require("../models/User");
 
 //@CreateBoard
-router.get("/", checkToken, async (req, res) => {
+// router.get("/", checkToken, async (req, res) => {
+//   let userId = req.decoded.id;
+
+//   try {
+//     let result = await Dashboard.findOne({ user: userId });
+
+//     if (result) {
+//       res.status(200).json({ result });
+//     } else {
+//       res.status(404).json({ error: "no dashboard" });
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     res.status(404).json({ error: "Failed to get dashboard" });
+//   }
+// });
+
+//Retrieve specific dashboard
+router.get("/:dashboardId", checkToken, async (req, res) => {
   let userId = req.decoded.id;
+  let id = req.params.dashboardId;
 
   try {
-    let result = await Dashboard.findOne({ user: userId });
+    let result = await Dashboard.findOne({ user: userId, _id: id });
 
-    if (result) {
-      res.status(200).json({ result });
-    } else {
-      res.status(404).json({ error: "no dashboard" });
-    }
+    res.status(200).json({ result });
   } catch (err) {
     console.log(err);
-    res.status(404).json({ error: "Failed to get dashboard" });
+    res.status(404).json({ error: "Dashboard does not exist" });
+  }
+});
+
+//@get dashboard titles
+router.get("/", checkToken, async (req, res) => {
+  let userId = req.decoded.id;
+  try {
+    let result = await Dashboard.find({ user: userId }).select("title");
+
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ error: "Dashboard does not exist" });
   }
 });
 
@@ -53,6 +82,9 @@ router.post("/", checkToken, async (req, res) => {
     });
 
     let result = await newDashBoard.save();
+
+    await User.findOneAndUpdate({ _id: userId }, { $push: { dashboardIds: result._id } });
+
     res.status(200).json({ result });
   } catch (err) {
     console.log(err);
@@ -60,17 +92,22 @@ router.post("/", checkToken, async (req, res) => {
   }
 });
 
-//delete dashboard @done
+//delete dashboard @To Do delete
 router.delete("/:dashboardId", checkToken, async (req, res) => {
   const { dashboardId } = req.params;
+  let userId = req.decoded.id;
   Dashboard.remove({ _id: dashboardId }, function(err) {
     if (!err) {
       res.status(200).json({ result: "Dashboard deleted" });
     } else {
       console.log(err);
-      res.status(400).json({ error: "Failed to delete dashboard" });
+      return res.status(400).json({ error: "Failed to delete dashboard" });
     }
   });
+  User.findOneAndUpdate(
+    { _id: userId, dashboardIds: dashboardId },
+    { $pull: { dashboardIds: dashboardId } }
+  );
 });
 
 // Add a column @Done
@@ -109,6 +146,7 @@ router.post("/:dashboardId/columns", checkToken, async (req, res) => {
 //delete column @done
 router.delete("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
   const { dashboardId, columnId } = req.params;
+
   try {
     //data manipulation
     let updateCond = {};
@@ -225,7 +263,6 @@ router.delete("/:dashboardId/columns/:columnId/tasks/:taskId", checkToken, async
     res.status(400).json({ error: "Failed to delete task" });
   }
 });
-
 //update ColumnTitle
 router.put("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
   try {

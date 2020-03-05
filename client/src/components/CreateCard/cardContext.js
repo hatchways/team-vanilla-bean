@@ -47,7 +47,7 @@ const CardProvider = props => {
 
   const routeChange = (taskId, columnId, dashboardId, hist) => {
     if (!taskId) {
-      hist.push("/dashboards");
+      hist.push(`/dashboards/${dashboardId}`);
     } else {
       let path = `/dashboards/${dashboardId}/columns/${columnId}/tasks/${taskId}`;
       hist.push(path);
@@ -81,11 +81,14 @@ const CardProvider = props => {
           description,
           tag
         };
-        authFetch(`dashboards/${dashboardId}/columns/${columnId}/tasks`, {
+
+        authFetch(`/dashboards/${dashboardId}/columns/${columnId}/tasks`, {
           method: "POST",
           body: JSON.stringify(createTask)
         })
-          .then(res => updateUser(res))
+          .then(res => {
+            updateUser(res);
+          })
           .then(() => handleCloseCard())
           .then(() => handleSuccess(`${title} has been saved!`))
           .catch(err => {
@@ -177,7 +180,7 @@ const CardProvider = props => {
       method: "DELETE"
     })
       .then(res => updateUser(res))
-      .then(history.push("/dashboards"))
+      .then(history.push(`/dashboards/${dashboard._id}`))
       .then(() => handleCloseCard())
       .then(() => handleSuccess(`Task has been deleted`))
       .catch(err => {

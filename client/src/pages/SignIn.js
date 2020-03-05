@@ -1,28 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { Container, TextField, Grid, Typography } from "@material-ui/core";
 import Button from "../components/BlueButton";
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
-import { login, loggedIn } from "../AuthService";
+import { login, loggedIn, getCurrentBoard } from "../AuthService";
 import { handleError } from "../utils/handleAlerts";
+import { UserContext } from "../userContext";
+import { getDashboardTitles } from "../utils/handleUpdateTasks";
 
 const SignIn = props => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const redirect = () => {
-    loggedIn() && props.history.push("/dashboards");
-  };
+  const { dashboardTitles } = useContext(UserContext);
+  let dashboardId = getCurrentBoard() || "createboard";
 
-  useEffect(() => {
-    redirect();
-  });
+  let [, setDbTitles] = dashboardTitles;
+  const redirect = dashboardId => {
+    loggedIn() && props.history.push(`/dashboards/${dashboardId}`);
+  };
 
   const handleSignIn = e => {
     e.preventDefault();
     login("signin", email, password)
-      .then(() => {
-        redirect();
+      .then(res => {
+        if (res.dashboardIds.length === 0) {
+          dashboardId = "createboard";
+          return redirect(dashboardId);
+        }
+        getDashboardTitles(res => {
+          setDbTitles(res);
+          for (const key in res) {
+            if (res[key]._id === dashboardId) {
+              return redirect(dashboardId);
+            }
+          }
+          dashboardId = res[0]._id;
+
+          return redirect(dashboardId);
+        });
       })
       .catch(err => {
         handleError(err);
@@ -35,19 +51,19 @@ const SignIn = props => {
       <Grid item xs={12} md={6}>
         <Container className={classes.paper}>
           <div>
-            <Typography variant="h1" className={classes.title}>
+            <Typography variant='h1' className={classes.title}>
               Welcome back!
             </Typography>
 
             <form onSubmit={handleSignIn}>
               <TextField
-                type="email"
-                label="Enter Email"
-                name="email"
+                type='email'
+                label='Enter Email'
+                name='email'
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                variant="outlined"
-                margin="normal"
+                variant='outlined'
+                margin='normal'
                 fullWidth
                 InputProps={{
                   classes: {
@@ -61,13 +77,13 @@ const SignIn = props => {
               />
 
               <TextField
-                type="password"
-                label="Password"
-                name="password"
+                type='password'
+                label='Password'
+                name='password'
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                variant="outlined"
-                margin="normal"
+                variant='outlined'
+                margin='normal'
                 fullWidth
                 InputProps={{
                   classes: {
@@ -88,12 +104,12 @@ const SignIn = props => {
         </Container>
 
         <Container className={classes.footer}>
-          <Typography paragraph variant="h3">
+          <Typography paragraph variant='h3'>
             Don't have an account?
           </Typography>
 
-          <Typography variant="h3">
-            <Link to="/signup">Create</Link>
+          <Typography variant='h3'>
+            <Link to='/signup'>Create</Link>
           </Typography>
         </Container>
       </Grid>

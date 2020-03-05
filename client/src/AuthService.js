@@ -33,7 +33,8 @@ const getToken = () => {
 };
 
 const logout = () => {
-  localStorage.clear();
+  localStorage.removeItem("token");
+  localStorage.removeItem("email");
   window.location.href = "/signin";
 };
 
@@ -60,4 +61,12 @@ const _checkStatus = response => {
   });
 };
 
-export { login, loggedIn, logout, authFetch };
+const setCurrentBoard = dashboardId => {
+  localStorage.setItem("dashboard", dashboardId);
+};
+
+const getCurrentBoard = () => {
+  return localStorage.getItem("dashboard");
+};
+
+export { login, loggedIn, logout, authFetch, setCurrentBoard, getCurrentBoard };
