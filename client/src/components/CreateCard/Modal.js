@@ -3,17 +3,17 @@ import { Dialog, DialogContent, Grid } from "@material-ui/core";
 import Header from "./Header";
 import Description from "./Description";
 import Deadline from "./Deadline";
-import Comment from "./Comment";
 import ButtonList from "./ButtonList";
 import { CardContext } from "./cardContext";
 import { authFetch } from "../../AuthService";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 import { handleError } from "../../utils/handleAlerts";
 import DeleteModal from "./DeleteModal";
+import BlueButton from "../BlueButton";
 
 const CardModal = () => {
   const card = useContext(CardContext);
-  const { openCard, handleCloseCard, deadline, fetchCard } = card;
+  const { openCard, handleCloseCard, deadline, fetchCard, handleSubmit } = card;
   const { dashboardId, columnId, taskId } = useParams();
   const path = useLocation().pathname;
   const [calendarView] = useState(path.includes("/calendar") ? true : false);
@@ -65,13 +65,22 @@ const CardModal = () => {
     handleCloseCard();
   };
 
+  const submitCard = () => {
+    handleSubmit();
+    if (calendarView) {
+      history.push("/calendar");
+    } else {
+      history.push("/dashboards");
+    }
+  };
+
   return (
     <Dialog
       open={openCard}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
       PaperProps={{
-        style: { paddingBottom: "3%", height: deadline && "600px" }
+        style: { paddingBottom: "3%" }
       }}
     >
       <DialogContent>
@@ -81,9 +90,14 @@ const CardModal = () => {
             <Description />
             <DeleteModal />
             <Deadline />
-            <Comment />
           </Grid>
           <ButtonList />
+
+          <Grid justify="center" item xs={12} container>
+            <BlueButton onClick={submitCard} mini>
+              Save
+            </BlueButton>
+          </Grid>
         </Grid>
       </DialogContent>
     </Dialog>

@@ -1,27 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { Grid, Typography, TextField } from "@material-ui/core";
 import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined";
-import BlueButton from "../BlueButton";
-import { useHistory, useLocation } from "react-router-dom";
-
 import { CardContext } from "./cardContext";
 
 const Description = () => {
   const card = useContext(CardContext);
-  const { description, handleDescriptionChange, handleSubmit } = card;
-  const history = useHistory();
-
-  const path = useLocation().pathname;
-  const [calendarView] = useState(path.includes("/calendar") ? true : false);
-
-  const submitCard = () => {
-    handleSubmit();
-    if (calendarView) {
-      history.push("/calendar");
-    } else {
-      history.push("/dashboards");
-    }
-  };
+  const { description, handleDescriptionChange } = card;
 
   return (
     <Grid item container>
@@ -43,9 +27,6 @@ const Description = () => {
           fullWidth
           margin="normal"
         />
-        <BlueButton onClick={submitCard} mini>
-          Save
-        </BlueButton>
       </Grid>
     </Grid>
   );
