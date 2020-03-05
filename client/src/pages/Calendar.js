@@ -7,6 +7,7 @@ import Navbar from "./Navbar";
 import { authFetch } from "../AuthService";
 import { CalendarContext } from "../calendarContext";
 import moment from "moment";
+import { handleError } from "../utils/handleAlerts";
 
 const Calendar = props => {
   const { calendar, board } = useContext(CalendarContext);
@@ -35,11 +36,15 @@ const Calendar = props => {
     authFetch(`/calendar/${boardId}/columns/${columnId}/tasks/${task}`, {
       method: "PUT",
       body: JSON.stringify(card)
+    }).catch(err => {
+      handleError(err);
     });
 
     authFetch(`/dashboards/${boardId}/columns/${columnId}/tasks/${task}`, {
       method: "PUT",
       body: JSON.stringify(card)
+    }).catch(err => {
+      handleError(err);
     });
   };
 

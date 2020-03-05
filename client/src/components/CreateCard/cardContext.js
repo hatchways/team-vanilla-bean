@@ -111,7 +111,11 @@ const CardProvider = props => {
               method: "PUT",
               body: JSON.stringify(updatedTask)
             }
-          ).then(res => setDeadlines(res));
+          )
+            .then(res => setDeadlines(res))
+            .catch(err => {
+              handleError(err);
+            });
         }
 
         authFetch(
@@ -206,7 +210,10 @@ const CardProvider = props => {
         method: "DELETE"
       })
         .then(res => setDeadlines(res))
-        .then(calendarView ? hist.push("/calendar") : hist.push("/dashboards"));
+        .then(calendarView ? hist.push("/calendar") : hist.push("/dashboards"))
+        .catch(err => {
+          handleError(err);
+        });
     }
   };
 
