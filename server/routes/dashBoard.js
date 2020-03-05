@@ -122,6 +122,13 @@ router.delete(
       updateCond["$pull"] = {};
       updateCond["$pull"]["columnOrder"] = columnId;
 
+      //delete all tasks in calendar
+      await Calendar.updateMany(
+        { dashboard: dashboardId },
+        { $pull: { deadlines: { column: columnId } } },
+        { safe: true, multi: true }
+      );
+
       const result = await updateData(Dashboard, dashboardId, updateCond);
       res.status(200).json({ result });
     } catch (err) {
