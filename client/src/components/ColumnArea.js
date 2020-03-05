@@ -3,15 +3,12 @@ import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { setCurrentBoard } from "../AuthService";
 import { withRouter } from "react-router";
 
 import {
   updateTaskIndexInColumn,
   moveTasksToOther,
-  updateColumnIndex,
-  getDashboard,
-  getDashboardTitles
+  updateColumnIndex
 } from "../utils/handleUpdateTasks";
 
 //Component
@@ -24,7 +21,7 @@ const ColumnArea = props => {
   const classes = useStyles(props);
   const { value1, dashboardTitles } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
-  let [dbTitles, setdbTitles] = dashboardTitles;
+  let [dbTitles] = dashboardTitles;
 
   const [open, setOpen] = useState(false);
 
@@ -39,14 +36,6 @@ const ColumnArea = props => {
       setOpen(true);
       return;
     }
-
-    getDashboard(dashboardId, res => {
-      setTaskState(res);
-      setCurrentBoard(dashboardId);
-    });
-    getDashboardTitles(res => {
-      setdbTitles(res);
-    });
   }, []);
 
   const onDragEnd = result => {

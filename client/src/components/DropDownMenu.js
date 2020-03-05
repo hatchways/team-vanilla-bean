@@ -1,12 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import Typography from "@material-ui/core/Typography";
 import { UserContext } from "../userContext";
-import { deleteColumn, getDashboard } from "../utils/handleUpdateTasks";
-import { useHistory, useLocation } from "react-router-dom";
+import {
+  deleteColumn,
+  getDashboard,
+  getDashboardTitles
+} from "../utils/handleUpdateTasks";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { setCurrentBoard } from "../AuthService";
 import TitleInputModal from "../components/TitleInputModal";
 import AccountCircleOutlinedIcon from "@material-ui/icons/AccountCircleOutlined";
@@ -16,13 +20,13 @@ import { handleSuccess } from "../utils/handleAlerts";
 
 export default function DropDownMenu(props) {
   const ITEM_HEIGHT = 48;
-  const { column, blueNav, columnId, dashboardId, title, topNav } = props;
+  const { column, blueNav, columnId, title, topNav } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [openModal, setOpenModal] = useState(false);
   const { value1, dashboardTitles } = useContext(UserContext);
-  const [dbTitles] = dashboardTitles;
-  let [, setTaskState] = value1;
+  const [dbTitles, setdbTitles] = dashboardTitles;
+  let [taskState, setTaskState] = value1;
   let history = useHistory();
   let dbTitlesArray = [];
   let dbIdArray = [];
@@ -30,6 +34,19 @@ export default function DropDownMenu(props) {
 
   const path = useLocation().pathname;
   const [calendarView] = useState(path.includes("/calendar") ? true : false);
+
+  const { dashboardId } = useParams();
+  let boardId = (taskState && taskState._id) || dashboardId;
+
+  useEffect(() => {
+    getDashboard(boardId, res => {
+      setTaskState(res);
+      setCurrentBoard(boardId);
+    });
+    getDashboardTitles(res => {
+      setdbTitles(res);
+    });
+  }, []);
 
   if (column) {
     options = ["Rename", "Delete"];
@@ -51,7 +68,7 @@ export default function DropDownMenu(props) {
   };
 
   const deleteColumnTrigger = () => {
-    deleteColumn(dashboardId, columnId, res => {
+    deleteColumn(boardId, columnId, res => {
       setTaskState(res);
       handleSuccess(`The column has been deleted!`);
     });
@@ -67,14 +84,14 @@ export default function DropDownMenu(props) {
     logout();
   };
 
-  const changeDbTrigger = dashboardId => {
-    getDashboard(dashboardId, res => {
+  const changeDbTrigger = boardId => {
+    getDashboard(boardId, res => {
       setTaskState(res);
       handleCloseDropDown();
-      setCurrentBoard(dashboardId);
+      setCurrentBoard(boardId);
       calendarView
-        ? history.push(`/calendar/${dashboardId}`)
-        : history.push(`/dashboards/${dashboardId}`);
+        ? history.push(`/calendar/${boardId}`)
+        : history.push(`/dashboards/${boardId}`);
     });
   };
 
