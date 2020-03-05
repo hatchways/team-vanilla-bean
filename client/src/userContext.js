@@ -6,7 +6,6 @@ export const UserContext = createContext();
 const UserProvider = props => {
   const [taskState, setTaskState] = useState("");
   const [isInDashboard, setIsInDashboard] = useState(true);
-  const [rediUrl, setRediUrl] = useState("");
   const [dbTitles, setDbTitles] = useState({});
 
   return (
@@ -14,7 +13,6 @@ const UserProvider = props => {
       value={{
         value1: [taskState, setTaskState],
         topNavState: [isInDashboard, setIsInDashboard],
-        redirectUrl: [rediUrl, setRediUrl],
         dashboardTitles: [dbTitles, setDbTitles]
       }}>
       {props.children}

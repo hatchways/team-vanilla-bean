@@ -12,20 +12,15 @@ const SignIn = props => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { redirectUrl } = useContext(UserContext);
-  const [rediUrl, setRediUrl] = redirectUrl;
   const { dashboardTitles } = useContext(UserContext);
   let dashboardId = getCurrentBoard() || "createboard";
 
   let [, setDbTitles] = dashboardTitles;
   const redirect = dashboardId => {
     const { from } = props.location.state || { from: { pathname: "" } };
-    const pathname = from.pathname;
-    setRediUrl(pathname);
-    if (getCurrentBoard()) {
-      loggedIn() && props.history.push(`/dashboards/${getCurrentBoard()}`);
-    } else if (rediUrl) {
-      loggedIn() && props.history.push(`${rediUrl}`);
+
+    if (from) {
+      loggedIn() && props.history.push(`${from}`);
     } else {
       loggedIn() && props.history.push(`/dashboards/${dashboardId}`);
     }

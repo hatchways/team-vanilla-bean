@@ -26,7 +26,6 @@ const ColumnArea = props => {
   let [taskState, setTaskState] = value1;
   let [dbTitles, setdbTitles] = dashboardTitles;
   const [open, setOpen] = useState(false);
-
   let dashboardId = props.match.params.dashboardId;
 
   useEffect(() => {
