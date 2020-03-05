@@ -15,8 +15,9 @@ router.put(
 
       const task = await Calendar.findOne({ "deadlines.task": taskId });
       let calendar = await Calendar.findOne({ dashboard: dashboardId });
-      let result = null;
+      let result;
 
+      //update card within calendar
       if (task && calendar) {
         result = await Calendar.findOneAndUpdate(
           { dashboard: dashboardId, "deadlines.task": taskId },
@@ -31,6 +32,7 @@ router.put(
           { new: true }
         );
       } else if (calendar) {
+        //add card to calendar
         calendar.deadlines.push({
           start: deadline,
           column: columnId,
@@ -41,6 +43,7 @@ router.put(
         });
         result = await calendar.save();
       } else {
+        //add calendar with card
         const newCalendar = new Calendar({
           dashboard: dashboardId,
           deadlines: [
@@ -81,18 +84,23 @@ router.delete("/:dashboardId/tasks/:taskId", checkToken, async (req, res) => {
     res.status(200).send(calendar.deadlines);
   } catch (err) {
     console.log(err);
-    res.status(400).json({ error: "Failed to update calendar" });
+    res.status(400).json({ error: "Failed to delete deadline" });
   }
 });
 
 router.get("/:dashboardId", checkToken, async (req, res) => {
   try {
     const { dashboardId } = req.params;
-    const result = await Calendar.findOne({ dashboard: dashboardId });
-    res.status(200).send(result.deadlines);
+    const calendar = await Calendar.findOne({ dashboard: dashboardId });
+
+    if (!calendar) {
+      res.status(404).json({ error: "Calendar does not exist" });
+    }
+
+    res.status(200).send(calendar.deadlines);
   } catch (err) {
     console.log(err);
-    res.status(400).json({ error: "Failed to update calendar" });
+    res.status(400).json({ error: "Failed to fetch calendar" });
   }
 });
 module.exports = router;

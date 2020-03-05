@@ -172,10 +172,10 @@ router.post(
       updateCond["$push"] = {};
       updateCond["$push"]["columns." + columnId + ".taskOrder"] = newTask._id;
 
-      //Calendar add
+      //Add calendar if deadline in card
       if (deadline) {
         let calendar = await Calendar.findOne({ dashboard: dashboardId });
-
+        //add card to existing calendar
         if (calendar) {
           calendar.deadlines.push({
             start: deadline,
@@ -186,6 +186,7 @@ router.post(
             tag
           });
         } else {
+          //create new calendar
           calendar = new Calendar({
             dashboard: dashboardId,
             deadlines: [
@@ -367,8 +368,8 @@ router.put(
         "columns." + columnToSourceId + ".taskOrder"
       ] = columnToTaskOrder;
 
+      //if moving task is in calendar, update column
       const movingTaskId = Object.keys(columnToTasks).pop();
-
       await Calendar.findOneAndUpdate(
         { dashboard: dashboardId, "deadlines.task": movingTaskId },
         {
