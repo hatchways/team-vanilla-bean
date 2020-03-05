@@ -13,7 +13,6 @@ import TitleInputModal from "../components/TitleInputModal";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { CalendarContext } from "../calendarContext";
-import { UserContext } from "../userContext";
 import { authFetch } from "../AuthService";
 import { UserContext } from "../userContext";
 import DropDownMenu from "./DropDownMenu";

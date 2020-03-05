@@ -36,21 +36,15 @@ const CardModal = () => {
             task !== taskId ||
             dashboard !== dashboardId
           ) {
-            if (calendarView) {
-              history.push("/calendar");
-            } else {
-              history.push(`/dashboards/${dashboardId}`);
-            }
+            routeChange();
+
             handleError("cannot access");
           } else {
             fetchCard(taskId, columnId, res.result);
           }
         } catch (e) {
-          if (calendarView) {
-            history.push("/calendar");
-          } else {
-            history.push(`/dashboards/${dashboardId}`);
-          }
+          routeChange();
+
           handleError("cannot access");
         }
       };
@@ -59,21 +53,21 @@ const CardModal = () => {
   }, []);
 
   const handleClose = () => {
+    routeChange();
+    handleCloseCard();
+  };
+
+  const routeChange = () => {
     if (calendarView) {
       history.push("/calendar");
     } else {
       history.push(`/dashboards/${dashboardId}`);
     }
-    handleCloseCard();
   };
 
   const submitCard = () => {
     handleSubmit();
-    if (calendarView) {
-      history.push("/calendar");
-    } else {
-      history.push("/dashboards");
-    }
+    routeChange();
   };
 
   return (
