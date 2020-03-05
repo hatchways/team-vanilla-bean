@@ -22,8 +22,6 @@ const SignIn = props => {
     const { from } = props.location.state || { from: { pathname: "" } };
     const pathname = from.pathname;
     setRediUrl(pathname);
-    console.log(pathname);
-
     if (getCurrentBoard()) {
       loggedIn() && props.history.push(`/dashboards/${getCurrentBoard()}`);
     } else if (rediUrl) {
@@ -34,7 +32,7 @@ const SignIn = props => {
   };
 
   useEffect(() => {
-    redirect(dashboardId);
+    redirect();
   }, []);
   const handleSignIn = e => {
     e.preventDefault();

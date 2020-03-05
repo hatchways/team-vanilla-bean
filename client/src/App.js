@@ -8,7 +8,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import PrivateRoute from "./utils/routes";
 import CardModal from "./components/CreateCard/Modal";
-import { loggedin, loggedIn } from "./AuthService";
+import { loggedIn } from "./AuthService";
 
 import "./App.css";
 

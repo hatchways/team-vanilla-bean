@@ -29,7 +29,7 @@ const BlueNav = () => {
   return (
     <AppBar position='static' className={classes.root}>
       <Toolbar>
-        <Typography variant='h6' className={classes.title}>
+        <Typography variant='h5' className={classes.title}>
           {taskState ? taskState.title : "My Board"}
         </Typography>
         <DropDownMenu blueNav />

@@ -14,8 +14,6 @@ import {
   getDashboardTitles
 } from "../utils/handleUpdateTasks";
 
-import { authFetch } from "../AuthService";
-
 //Component
 import CreateColumnButton from "../components/CreateColumnButton";
 import CreateBoardColumn from "./TitleInputModal";
@@ -24,10 +22,9 @@ import CreateBoardColumn from "./TitleInputModal";
 
 const ColumnArea = props => {
   const classes = useStyles(props);
-  const { value1, dashboardTitles, redirectUrl } = useContext(UserContext);
+  const { value1, dashboardTitles } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
   let [dbTitles, setdbTitles] = dashboardTitles;
-  const [rediUrl, setRediUrl] = redirectUrl;
   const [open, setOpen] = useState(false);
 
   let dashboardId = props.match.params.dashboardId;
@@ -38,7 +35,6 @@ const ColumnArea = props => {
       return;
     }
     if (getCurrentBoard()) {
-      console.log("triggred2");
       getDashboard(getCurrentBoard(), res => {
         setTaskState(res);
         setCurrentBoard(res._id);
