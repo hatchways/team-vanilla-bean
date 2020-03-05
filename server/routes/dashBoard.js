@@ -166,8 +166,19 @@ router.delete("/:dashboardId/columns/:columnId", checkToken, async (req, res) =>
 
 // Add a task @Done
 router.post("/:dashboardId/columns/:columnId/tasks", checkToken, async (req, res) => {
-  const { title, description, deadline, tag, actions, comments } = req.body;
+  const {
+    title,
+    description,
+    deadline,
+    tag,
+    actions,
+    comments,
+    attachments,
+    coverImage
+  } = req.body;
   const { dashboardId, columnId } = req.params;
+
+  console.log(attachments);
 
   try {
     const newTask = new Task({
@@ -217,7 +228,16 @@ router.post("/:dashboardId/columns/:columnId/tasks", checkToken, async (req, res
 //Update card Data
 router.put("/:dashboardId/columns/:columnId/tasks/:taskId", checkToken, async (req, res) => {
   try {
-    const { title, description, deadline, comments, tag, action } = req.body;
+    const {
+      title,
+      description,
+      deadline,
+      comments,
+      tag,
+      action,
+      attachments,
+      coverImage
+    } = req.body;
     const { dashboardId, columnId, taskId } = req.params;
 
     if (!title) {
