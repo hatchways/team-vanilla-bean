@@ -20,8 +20,9 @@ const CardProvider = props => {
   const [task, setTask] = useState("");
   const [columnId, setColumnId] = useState("");
   const [openDelete, setOpenDelete] = useState(false);
+  const [attachment, setAttachment] = useState([]);
   const [openAttachment, setOpenAttachment] = useState(false);
-  const [attachment, setAttachment] = useState(null);
+  const [file, setFile] = useState([]);
 
   let dashboardId = getCurrentBoard();
 
@@ -38,7 +39,7 @@ const CardProvider = props => {
       setTitle("");
       setDescription("");
       setDeadline("");
-      setAttachment("");
+      setAttachment([]);
       setTag("");
       setTask("");
       handleOpenCard();
@@ -64,20 +65,19 @@ const CardProvider = props => {
   const fetchCard = (taskId, columnId, dashboard) => {
     const task = dashboard.columns[columnId].tasks[taskId];
     const columnName = dashboard.columns[columnId].title;
+    console.log(task);
     if (task) {
       handleOpenCard();
       setTask(taskId);
       setTitle(task.title);
       setDescription(task.description);
       setTag(task.tag);
-      setAttachment(task.attachment);
       setDeadline(task.deadline);
-      setTask(task.attachment);
+      setAttachment(task.attachment);
+      console.log(task.attachment);
       setColumnName(columnName);
       setColumnId(columnId);
       task.deadline && setOpenDeadline(true);
-      task.attachment[0] !== "" && setOpenAttachment(true);
-      console.log(task.attachment);
     }
   };
 
@@ -94,18 +94,36 @@ const CardProvider = props => {
           attachment
         };
 
-        authFetch(`/dashboards/${dashboardId}/columns/${columnId}/tasks`, {
-          method: "POST",
-          body: JSON.stringify(createTask)
-        })
-          .then(res => {
-            updateUser(res);
+        const postCard = () => {
+          authFetch(`/dashboards/${dashboardId}/columns/${columnId}/tasks`, {
+            method: "POST",
+            body: JSON.stringify(createTask)
           })
-          .then(() => handleCloseCard())
-          .then(() => handleSuccess(`${title} has been saved!`))
-          .catch(err => {
-            handleError(err);
-          });
+            .then(res => {
+              updateUser(res);
+            })
+            .then(() => handleCloseCard())
+            .then(() => handleSuccess(`${title} has been saved!`))
+            .catch(err => {
+              handleError(err);
+            });
+        };
+
+        if (file instanceof FormData) {
+          fetch("/file/url", {
+            method: "POST",
+            body: file
+          })
+            .then(response => response.json())
+            .then(data => {
+              const fileData = [{ url: data.url, name: data.name }];
+              createTask.attachment = fileData;
+              console.log(fileData);
+            })
+            .then(() => postCard());
+        } else {
+          postCard();
+        }
       } else {
         const updatedTask = {
           deadline,
@@ -115,33 +133,51 @@ const CardProvider = props => {
           attachment
         };
 
-        if (deadline) {
-          authFetch(
-            `/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`,
-            {
-              method: "PUT",
-              body: JSON.stringify(updatedTask)
-            }
-          )
-            .then(res => setDeadlines(res))
-            .catch(err => {
-              handleError(err);
-            });
-        }
+        const updateCard = () => {
+          if (deadline) {
+            authFetch(
+              `/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`,
+              {
+                method: "PUT",
+                body: JSON.stringify(updatedTask)
+              }
+            )
+              .then(res => setDeadlines(res))
+              .catch(err => {
+                handleError(err);
+              });
 
-        authFetch(
-          `/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`,
-          {
-            method: "PUT",
-            body: JSON.stringify(updatedTask)
+            authFetch(
+              `/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`,
+              {
+                method: "PUT",
+                body: JSON.stringify(updatedTask)
+              }
+            )
+              .then(res => updateUser(res))
+              .then(() => handleCloseCard())
+              .then(() => handleSuccess(`${title} has been updated!`))
+              .catch(err => {
+                handleError(err);
+              });
           }
-        )
-          .then(res => updateUser(res))
-          .then(() => handleCloseCard())
-          .then(() => handleSuccess(`${title} has been updated!`))
-          .catch(err => {
-            handleError(err);
-          });
+        };
+
+        if (file instanceof FormData) {
+          fetch("/file/url", {
+            method: "POST",
+            body: file
+          })
+            .then(response => response.json())
+            .then(data => {
+              const fileData = [{ url: data.url, name: data.name }];
+              updatedTask.attachment = fileData;
+              console.log(fileData);
+            })
+            .then(() => updateCard());
+        } else {
+          updateCard();
+        }
       }
     }
   };
@@ -159,6 +195,7 @@ const CardProvider = props => {
     setOpenTag(false);
     setOpenDeadline(false);
     setOpenAttachment(false);
+    setFile(null);
     setOpenDelete(false);
     setError(false);
   };
@@ -204,7 +241,8 @@ const CardProvider = props => {
   const handleAttachmentChange = event => {
     const data = new FormData();
     data.append("file", event.target.files[0]);
-    setAttachment(data);
+    setAttachment([]);
+    setFile(data);
   };
 
   const handleOpenAttachment = () => {
@@ -271,9 +309,10 @@ const CardProvider = props => {
         handleCloseDelete,
         handleDelete,
         openDelete,
-        handleAttachmentChange,
+        handleOpenAttachment,
         openAttachment,
-        handleOpenAttachment
+        attachment,
+        handleAttachmentChange
       }}
     >
       {props.children}

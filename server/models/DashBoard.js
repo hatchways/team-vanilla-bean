@@ -8,7 +8,12 @@ const TaskSchema = new Schema({
   description: { type: String },
   deadline: { type: String },
   tag: { type: String },
-  attachment: [{ type: String }]
+  attachment: [
+    {
+      url: { type: String },
+      name: { type: String }
+    }
+  ]
 });
 
 const ColumnSchema = new Schema({

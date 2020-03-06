@@ -251,7 +251,7 @@ router.put(
   checkToken,
   async (req, res) => {
     try {
-      const { title, description, deadline, tag } = req.body;
+      const { title, description, deadline, tag, attachment } = req.body;
       const { dashboardId, columnId, taskId } = req.params;
 
       if (!title) {
@@ -263,6 +263,7 @@ router.put(
         description,
         deadline,
         tag,
+        attachment,
         _id: taskId
       };
 

@@ -1,9 +1,7 @@
 import React, { useContext } from "react";
-import { Grid, Typography, Link } from "@material-ui/core";
+import { Grid, Typography, Box } from "@material-ui/core";
 import AttachmentIcon from "@material-ui/icons/Attachment";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import parseISO from "date-fns/parseISO";
 import { CardContext } from "./cardContext";
 
 const Attachment = () => {
@@ -11,7 +9,7 @@ const Attachment = () => {
   const { attachment, handleAttachmentChange, openAttachment } = card;
 
   return (
-    openAttachment && (
+    (openAttachment || !!attachment.length) && (
       <Grid item container>
         <Grid item xs={1}>
           <AttachmentIcon color="primary" />
@@ -21,7 +19,19 @@ const Attachment = () => {
           <Typography gutterBottom variant="h3">
             Attachment:
           </Typography>
-          <input type="file" name="file" onChange={handleAttachmentChange} />
+
+          <Box>
+            {attachment.map(file => {
+              return (
+                <a key={file.url} href={file.url}>
+                  {file.name}
+                </a>
+              );
+            })}
+          </Box>
+          {openAttachment && (
+            <input type="file" name="file" onChange={handleAttachmentChange} />
+          )}
         </Grid>
       </Grid>
     )

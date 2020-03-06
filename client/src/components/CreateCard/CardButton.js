@@ -5,8 +5,8 @@ import { makeStyles } from "@material-ui/core/styles";
 const CardButton = props => {
   const useStyles = makeStyles(() => ({
     button: {
-      backgroundColor: "#F4F6FF",
-      color: "#B5C0D9",
+      backgroundColor: props.delete ? "secondary" : "#F4F6FF",
+      color: props.delete ? "white" : "#B5C0D9",
       marginBottom: "5%",
       textTransform: "none",
       "&:hover": {

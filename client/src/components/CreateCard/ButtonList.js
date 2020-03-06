@@ -22,10 +22,15 @@ const ButtonList = () => {
         <CardButton onClick={handleOpenTag}>Tag</CardButton>
         <CardButton onClick={handleOpenDeadline}>Deadline</CardButton>
         <CardButton onClick={handleOpenAttachment}>Attachment</CardButton>
-        <CardButton>Cover</CardButton>
-        <Box style={{ marginTop: "30%" }}>
+        {task && (
+          <CardButton onClick={handleOpenDelete} delete>
+            Delete
+          </CardButton>
+        )}
+
+        {/* <Box style={{ marginTop: "30%" }}>
           {task && <CardButton onClick={handleOpenDelete}>Delete</CardButton>}
-        </Box>
+        </Box> */}
       </Grid>
     </Grid>
   );
