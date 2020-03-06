@@ -45,6 +45,10 @@ const ColumnArea = props => {
       });
     } else {
       getDashboard(dashboardId, res => {
+        if (!res) {
+          localStorage.removeItem("dashboard");
+          return;
+        }
         setTaskState(res);
         setCurrentBoard(res._id);
       });
