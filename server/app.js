@@ -7,6 +7,7 @@ const logger = require("morgan");
 const userRouter = require("./routes/user");
 const dashboardRouter = require("./routes/dashboard");
 const calendarRouter = require("./routes/calendar");
+const fileRouter = require("./routes/file");
 
 const { json, urlencoded } = express;
 
@@ -22,6 +23,7 @@ app.use(express.static(join(__dirname, "public")));
 app.use("/user", userRouter);
 app.use("/dashboards", dashboardRouter);
 app.use("/calendar", calendarRouter);
+app.use("/file", fileRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
