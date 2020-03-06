@@ -5,13 +5,12 @@ import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { setCurrentBoard, getCurrentBoard } from "../AuthService";
 import { withRouter } from "react-router";
+import { getDashboard, getDashboardTitles } from "../utils/handleUpdateTasks";
 
 import {
   updateTaskIndexInColumn,
   moveTasksToOther,
-  updateColumnIndex,
-  getDashboard,
-  getDashboardTitles
+  updateColumnIndex
 } from "../utils/handleUpdateTasks";
 
 //Component
@@ -26,7 +25,7 @@ const ColumnArea = props => {
   let [taskState, setTaskState] = value1;
   let [dbTitles, setdbTitles] = dashboardTitles;
   const [open, setOpen] = useState(false);
-  let dashboardId = props.match.params.dashboardId;
+  let dashboardId = (taskState && taskState._id) || props.match.params.dashboardId;
 
   useEffect(() => {
     if (Object.entries(dbTitles).length === 0 && dashboardId === "createboard") {
@@ -42,7 +41,10 @@ const ColumnArea = props => {
         setdbTitles(res);
       });
     } else {
+      console.log(dashboardId);
+
       getDashboard(dashboardId, res => {
+        console.log(res);
         setTaskState(res);
         setCurrentBoard(res._id);
       });

@@ -4,11 +4,11 @@ import { BrowserRouter, Route } from "react-router-dom";
 
 import { theme } from "./themes/theme";
 import DashBoard from "./pages/DashBoard";
+import Calendar from "./pages/Calendar";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import PrivateRoute from "./utils/routes";
 import CardModal from "./components/CreateCard/Modal";
-import { loggedIn } from "./AuthService";
 
 import "./App.css";
 
@@ -18,11 +18,13 @@ function App() {
       <BrowserRouter>
         <Route path='/signin' component={SignIn} />
         <Route path='/signup' component={SignUp} />
-        <PrivateRoute loggedIn={loggedIn()} path='/dashboards/:dashboardId' component={DashBoard} />
         <Route
-          path='/dashboards/:dashboardId/columns/:columnId/tasks/:taskId'
+          path='/(dashboards|calendar)/:dashboardId/columns/:columnId/tasks/:taskId'
           render={props => <CardModal {...props} />}
         />
+        <PrivateRoute path='/dashboards/:dashboardId' component={DashBoard} />
+
+        <Route path='/calendar/:dashboardId' component={Calendar} />
       </BrowserRouter>
     </MuiThemeProvider>
   );

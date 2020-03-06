@@ -2,10 +2,14 @@ import { handleError } from "./handleAlerts";
 import { authFetch } from "../AuthService";
 
 //ToDo remove this after implementing create board function
-export const updateTaskIndexInColumn = async (dashboardId, columnId, taskOrder) => {
+export const updateTaskIndexInColumn = async (
+  dashboardId,
+  columnId,
+  taskOrder
+) => {
   let body = { taskOrder };
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}/taskOrder`, {
-    method: "put",
+    method: "PUT",
     body: JSON.stringify(body)
   }).catch(err => handleError(err));
 };
@@ -21,7 +25,7 @@ export const moveTasksToOther = async (dashboardId, newStart, newFinish) => {
     columnToTaskOrder: newFinish.taskOrder
   };
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}/taskColumnOrder`, {
-    method: "put",
+    method: "PUT",
     body: JSON.stringify(body)
   }).catch(err => handleError(err));
 };
@@ -32,7 +36,7 @@ export const updateColumnIndex = (dashboardId, columnOrder, columnId) => {
   };
 
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}/columnOrder`, {
-    method: "put",
+    method: "PUT",
     body: JSON.stringify(body)
   }).catch(err => handleError(err));
 };
@@ -45,7 +49,7 @@ export const addColumn = (dashboardId, title, position, cb) => {
   };
 
   authFetch(`/dashboards/${dashboardId}/columns`, {
-    method: "post",
+    method: "POST",
     body: JSON.stringify(body)
   })
     .then(res => {
@@ -63,7 +67,7 @@ export const addDashboard = (title, cb) => {
   };
 
   authFetch("/dashboards", {
-    method: "post",
+    method: "POST",
     body: JSON.stringify(body)
   })
     .then(res => {
@@ -75,37 +79,20 @@ export const addDashboard = (title, cb) => {
 };
 
 export const getDashboard = (dashboardId, cb) => {
-  let body = {
-    dashboardId
-  };
-
-  authFetch(`/dashboards/${dashboardId}`, {
-    method: "post",
-    body: JSON.stringify(body)
-  })
-    .then(res => {
-      cb(res.result);
-    })
-    .catch(err => {
-      handleError(err);
-    });
+  authFetch(`/dashboards/${dashboardId}`).then(res => {
+    cb(res.result);
+  });
 };
 
 export const getDashboardTitles = cb => {
-  authFetch(`/dashboards/titles`, {
-    method: "get"
-  })
-    .then(res => {
-      cb(res.result);
-    })
-    .catch(err => {
-      handleError(err);
-    });
+  authFetch("/dashboards").then(res => {
+    cb(res.result);
+  });
 };
 
 export const deleteColumn = (dashboardId, columnId, cb) => {
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}`, {
-    method: "delete"
+    method: "DELETE"
   })
     .then(res => {
       cb(res.result);
@@ -120,7 +107,7 @@ export const updateColumnName = (dashboardId, columnId, title, cb) => {
     title
   };
   authFetch(`/dashboards/${dashboardId}/columns/${columnId}`, {
-    method: "put",
+    method: "PUT",
     body: JSON.stringify(body)
   })
     .then(res => {
