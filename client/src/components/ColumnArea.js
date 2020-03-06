@@ -25,6 +25,8 @@ const ColumnArea = props => {
   const [open, setOpen] = useState(false);
   let dashboardId = (taskState && taskState._id) || props.match.params.dashboardId;
 
+  console.log(props);
+
   useEffect(() => {
     if (Object.entries(dbTitles).length === 0 && dashboardId === "createboard") {
       setOpen(true);
@@ -32,6 +34,12 @@ const ColumnArea = props => {
     }
     if (getCurrentBoard()) {
       getDashboard(getCurrentBoard(), res => {
+        if (!res) {
+          localStorage.removeItem("dashboard");
+          props.history.push(`/dashboards/createboard`);
+          return;
+        }
+
         setTaskState(res);
         setCurrentBoard(res._id);
       });
