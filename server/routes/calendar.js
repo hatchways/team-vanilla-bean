@@ -11,7 +11,7 @@ router.put(
   async (req, res) => {
     try {
       const { dashboardId, columnId, taskId } = req.params;
-      const { title, deadline, description, tag } = req.body;
+      const { title, deadline, description, tag, attachment } = req.body;
 
       const task = await Calendar.findOne({ "deadlines.task": taskId });
       let calendar = await Calendar.findOne({ dashboard: dashboardId });
@@ -26,7 +26,8 @@ router.put(
               "deadlines.$.title": title,
               "deadlines.$.start": deadline,
               "deadlines.$.description": description,
-              "deadlines.$.tag": tag
+              "deadlines.$.tag": tag,
+              "deadlines.$.attachment": attachment
             }
           },
           { new: true }
@@ -39,7 +40,8 @@ router.put(
           title,
           task: taskId,
           description,
-          tag
+          tag,
+          attachment
         });
         result = await calendar.save();
       } else {
@@ -53,7 +55,8 @@ router.put(
               task: taskId,
               title,
               description,
-              tag
+              tag,
+              attachment
             }
           ]
         });
