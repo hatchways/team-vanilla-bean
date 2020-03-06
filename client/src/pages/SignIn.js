@@ -18,7 +18,6 @@ const SignIn = props => {
   let [, setDbTitles] = dashboardTitles;
   const redirect = dashboardId => {
     const { from } = props.location.state || { from: { pathname: "" } };
-    console.log(from);
 
     if (dashboardId === undefined) {
       if (getCurrentBoard()) {
@@ -28,7 +27,6 @@ const SignIn = props => {
       }
     }
 
-    console.log(from.pathname === "");
     if (from.pathname !== "") {
       props.history.push(`${from.pathname}`);
     } else if (dashboardId === "undefined") {
