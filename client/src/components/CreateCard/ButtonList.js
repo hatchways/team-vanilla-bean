@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Grid, Typography, Box } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import CardButton from "./CardButton";
 import { CardContext } from "./cardContext";
 
