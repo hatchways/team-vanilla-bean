@@ -7,7 +7,8 @@ const deadlineSchema = new Schema({
   description: { type: String },
   tag: { type: String },
   column: { type: mongoose.Schema.Types.ObjectId, ref: "Column" },
-  task: { type: mongoose.Schema.Types.ObjectId, ref: "Task" }
+  task: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
+  attachment: [{ type: String }]
 });
 
 const calendarSchema = new Schema({

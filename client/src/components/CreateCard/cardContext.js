@@ -20,6 +20,8 @@ const CardProvider = props => {
   const [task, setTask] = useState("");
   const [columnId, setColumnId] = useState("");
   const [openDelete, setOpenDelete] = useState(false);
+  const [openAttachment, setOpenAttachment] = useState(false);
+  const [attachment, setAttachment] = useState(null);
 
   let dashboardId = getCurrentBoard();
 
@@ -27,7 +29,7 @@ const CardProvider = props => {
   const { value1 } = useContext(UserContext);
   let [dashboard, setDashboard] = value1;
 
-  const { calendar, board } = useContext(CalendarContext);
+  const { calendar } = useContext(CalendarContext);
   const [, setDeadlines] = calendar;
 
   const handleCurrentTask = (taskId, columnId, hist) => {
@@ -36,6 +38,7 @@ const CardProvider = props => {
       setTitle("");
       setDescription("");
       setDeadline("");
+      setAttachment("");
       setTag("");
       setTask("");
       handleOpenCard();
@@ -67,10 +70,14 @@ const CardProvider = props => {
       setTitle(task.title);
       setDescription(task.description);
       setTag(task.tag);
+      setAttachment(task.attachment);
       setDeadline(task.deadline);
+      setTask(task.attachment);
       setColumnName(columnName);
       setColumnId(columnId);
       task.deadline && setOpenDeadline(true);
+      task.attachment[0] !== "" && setOpenAttachment(true);
+      console.log(task.attachment);
     }
   };
 
@@ -83,7 +90,8 @@ const CardProvider = props => {
           deadline,
           title,
           description,
-          tag
+          tag,
+          attachment
         };
 
         authFetch(`/dashboards/${dashboardId}/columns/${columnId}/tasks`, {
@@ -103,7 +111,8 @@ const CardProvider = props => {
           deadline,
           title,
           description,
-          tag
+          tag,
+          attachment
         };
 
         if (deadline) {
@@ -149,6 +158,7 @@ const CardProvider = props => {
     setOpenCard(false);
     setOpenTag(false);
     setOpenDeadline(false);
+    setOpenAttachment(false);
     setOpenDelete(false);
     setError(false);
   };
@@ -189,6 +199,16 @@ const CardProvider = props => {
   };
   const handleCloseDelete = () => {
     setOpenDelete(false);
+  };
+
+  const handleAttachmentChange = event => {
+    const data = new FormData();
+    data.append("file", event.target.files[0]);
+    setAttachment(data);
+  };
+
+  const handleOpenAttachment = () => {
+    setOpenAttachment(true);
   };
 
   const handleDelete = (calendarView, hist) => {
@@ -250,7 +270,10 @@ const CardProvider = props => {
         handleOpenDelete,
         handleCloseDelete,
         handleDelete,
-        openDelete
+        openDelete,
+        handleAttachmentChange,
+        openAttachment,
+        handleOpenAttachment
       }}
     >
       {props.children}

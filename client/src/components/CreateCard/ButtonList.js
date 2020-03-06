@@ -5,7 +5,13 @@ import { CardContext } from "./cardContext";
 
 const ButtonList = () => {
   const card = useContext(CardContext);
-  const { handleOpenDeadline, handleOpenTag, handleOpenDelete, task } = card;
+  const {
+    handleOpenDeadline,
+    handleOpenTag,
+    handleOpenDelete,
+    task,
+    handleOpenAttachment
+  } = card;
 
   return (
     <Grid item xs={2} container>
@@ -15,7 +21,7 @@ const ButtonList = () => {
         </Typography>
         <CardButton onClick={handleOpenTag}>Tag</CardButton>
         <CardButton onClick={handleOpenDeadline}>Deadline</CardButton>
-        <CardButton>Attachment</CardButton>
+        <CardButton onClick={handleOpenAttachment}>Attachment</CardButton>
         <CardButton>Cover</CardButton>
         <Box style={{ marginTop: "30%" }}>
           {task && <CardButton onClick={handleOpenDelete}>Delete</CardButton>}

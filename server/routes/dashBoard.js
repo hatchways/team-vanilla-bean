@@ -165,7 +165,7 @@ router.post(
   "/:dashboardId/columns/:columnId/tasks",
   checkToken,
   async (req, res) => {
-    const { title, description, deadline, tag } = req.body;
+    const { title, description, deadline, tag, attachment } = req.body;
     const { dashboardId, columnId } = req.params;
 
     try {
@@ -173,7 +173,8 @@ router.post(
         title,
         description,
         tag,
-        deadline
+        deadline,
+        attachment
       });
 
       if (!title) {
@@ -212,7 +213,8 @@ router.post(
             title,
             task: newTask._id,
             description,
-            tag
+            tag,
+            attachment
           });
         } else {
           //create new calendar
@@ -225,7 +227,8 @@ router.post(
                 task: newTask._id,
                 title,
                 description,
-                tag
+                tag,
+                attachment
               }
             ]
           });
