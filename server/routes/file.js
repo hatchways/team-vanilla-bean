@@ -4,7 +4,6 @@ const upload = require("../util/file-upload");
 
 router.post("/url", upload.single("file"), async (req, res) => {
   try {
-    console.log(req.file);
     res
       .status(200)
       .json({ url: req.file.location, name: req.file.originalname });

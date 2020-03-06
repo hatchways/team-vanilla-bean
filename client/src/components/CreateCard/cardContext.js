@@ -65,7 +65,6 @@ const CardProvider = props => {
   const fetchCard = (taskId, columnId, dashboard) => {
     const task = dashboard.columns[columnId].tasks[taskId];
     const columnName = dashboard.columns[columnId].title;
-    console.log(task);
     if (task) {
       handleOpenCard();
       setTask(taskId);
@@ -74,7 +73,6 @@ const CardProvider = props => {
       setTag(task.tag);
       setDeadline(task.deadline);
       setAttachment(task.attachment);
-      console.log(task.attachment);
       setColumnName(columnName);
       setColumnId(columnId);
       task.deadline && setOpenDeadline(true);
@@ -118,7 +116,6 @@ const CardProvider = props => {
             .then(data => {
               const fileData = [{ url: data.url, name: data.name }];
               createTask.attachment = fileData;
-              console.log(fileData);
             })
             .then(() => postCard());
         } else {
@@ -146,21 +143,21 @@ const CardProvider = props => {
               .catch(err => {
                 handleError(err);
               });
-
-            authFetch(
-              `/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`,
-              {
-                method: "PUT",
-                body: JSON.stringify(updatedTask)
-              }
-            )
-              .then(res => updateUser(res))
-              .then(() => handleCloseCard())
-              .then(() => handleSuccess(`${title} has been updated!`))
-              .catch(err => {
-                handleError(err);
-              });
           }
+
+          authFetch(
+            `/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`,
+            {
+              method: "PUT",
+              body: JSON.stringify(updatedTask)
+            }
+          )
+            .then(res => updateUser(res))
+            .then(() => handleCloseCard())
+            .then(() => handleSuccess(`${title} has been updated!`))
+            .catch(err => {
+              handleError(err);
+            });
         };
 
         if (file instanceof FormData) {
@@ -172,7 +169,6 @@ const CardProvider = props => {
             .then(data => {
               const fileData = [{ url: data.url, name: data.name }];
               updatedTask.attachment = fileData;
-              console.log(fileData);
             })
             .then(() => updateCard());
         } else {
