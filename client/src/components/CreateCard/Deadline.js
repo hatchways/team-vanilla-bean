@@ -25,6 +25,7 @@ const Deadline = () => {
             <DatePicker
               style={{ border: "1px solid red" }}
               selected={deadline && parseISO(deadline)}
+              popperPlacement="top-start"
               onChange={handleDeadlineChange}
               dateFormat="MMMM d, yyyy"
             />

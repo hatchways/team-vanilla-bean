@@ -4,6 +4,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 
 import { theme } from "./themes/theme";
 import DashBoard from "./pages/DashBoard";
+import Calendar from "./pages/Calendar";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import PrivateRoute from "./utils/routes";
@@ -15,13 +16,14 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <PrivateRoute path='/dashboards/:dashboardId' component={DashBoard} />
-        <Route path='/signin' component={SignIn} />
-        <Route path='/signup' component={SignUp} />
+        <PrivateRoute path="/dashboards/:dashboardId" component={DashBoard} />
+        <Route path="/signin" component={SignIn} />
+        <Route path="/signup" component={SignUp} />
         <Route
-          path='/dashboards/:dashboardId/columns/:columnId/tasks/:taskId'
+          path="/(dashboards|calendar)/:dashboardId/columns/:columnId/tasks/:taskId"
           render={props => <CardModal {...props} />}
         />
+        <Route path="/calendar/:dashboardId" component={Calendar} />
       </BrowserRouter>
     </MuiThemeProvider>
   );

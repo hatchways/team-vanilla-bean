@@ -3,15 +3,24 @@ import { Container, TextField, Grid, Typography } from "@material-ui/core";
 import Button from "../components/BlueButton";
 import useStyles from "../themes/AuthStyles";
 import { Link } from "react-router-dom";
-import { login, loggedIn } from "../AuthService";
+import { login, loggedIn, getCurrentBoard } from "../AuthService";
 import { handleError } from "../utils/handleAlerts";
 
 const SignUp = props => {
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  let dashboardId = getCurrentBoard();
+
   const redirect = () => {
-    loggedIn() && props.history.push("/dashboards/createboard");
+    loggedIn() &&
+      dashboardId &&
+      props.history.push(`/dashboards/${dashboardId}`);
+  };
+
+  const signup = () => {
+    props.history.push(`/dashboards/createboard`);
   };
 
   useEffect(() => {
@@ -22,8 +31,9 @@ const SignUp = props => {
     e.preventDefault();
     login("signup", email, password)
       .then(() => {
-        redirect();
+        localStorage.removeItem("dashboard");
       })
+      .then(() => signup())
       .catch(err => {
         handleError(err);
       });
@@ -35,19 +45,19 @@ const SignUp = props => {
       <Grid item xs={12} md={6}>
         <Container className={classes.paper}>
           <div>
-            <Typography variant='h1' className={classes.title}>
+            <Typography variant="h1" className={classes.title}>
               Sign up to Kanban
             </Typography>
 
             <form onSubmit={handleSignUp}>
               <TextField
-                type='email'
-                label='Enter Email'
-                name='email'
+                type="email"
+                label="Enter Email"
+                name="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                variant='outlined'
-                margin='normal'
+                variant="outlined"
+                margin="normal"
                 fullWidth
                 InputProps={{
                   classes: {
@@ -61,13 +71,13 @@ const SignUp = props => {
               />
 
               <TextField
-                type='password'
-                label='Create password'
-                name='password'
+                type="password"
+                label="Create password"
+                name="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                variant='outlined'
-                margin='normal'
+                variant="outlined"
+                margin="normal"
                 fullWidth
                 InputProps={{
                   classes: {
@@ -89,12 +99,12 @@ const SignUp = props => {
         </Container>
 
         <Container className={classes.footer}>
-          <Typography paragraph variant='h3'>
+          <Typography paragraph variant="h3">
             Already have an account?
           </Typography>
 
-          <Typography variant='h3'>
-            <Link to='/signin'>Login</Link>
+          <Typography variant="h3">
+            <Link to="/signin">Login</Link>
           </Typography>
         </Container>
       </Grid>

@@ -7,9 +7,7 @@ const TaskSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
   deadline: { type: String },
-  comments: [{ type: String }],
-  tag: { type: String },
-  action: { tag: { type: String }, color: { type: Number } }
+  tag: { type: String }
 });
 
 const ColumnSchema = new Schema({

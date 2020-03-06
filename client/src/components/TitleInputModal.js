@@ -22,11 +22,19 @@ import { UserContext } from "../userContext";
 import { handleError } from "../utils/handleAlerts";
 import { setCurrentBoard } from "../AuthService";
 
-import { withRouter } from "react-router-dom";
+import { withRouter, useLocation } from "react-router-dom";
 import { handleSuccess } from "../utils/handleAlerts";
 
 const TitleInputModal = props => {
-  const { open, handleClose, position, dashboard, column, columnId, columnTitle } = props;
+  const {
+    open,
+    handleClose,
+    position,
+    dashboard,
+    column,
+    columnId,
+    columnTitle
+  } = props;
   const [title, setTitle] = useState(columnTitle);
   const [error, setError] = useState(false);
   const { value1, dashboardTitles } = useContext(UserContext);
@@ -36,6 +44,9 @@ const TitleInputModal = props => {
   let history = props.history;
   let btnText = "Create";
   let titleText = "";
+
+  const path = useLocation().pathname;
+  const [calendarView] = useState(path.includes("/calendar") ? true : false);
 
   if (dashboard) {
     titleText = "Create Board";
@@ -62,7 +73,9 @@ const TitleInputModal = props => {
         });
         setCurrentBoard(newDbUrl);
         handleClose(false);
-        history.push(`/dashboards/${newDbUrl}`);
+        calendarView
+          ? history.push(`/calendar/${newDbUrl}`)
+          : history.push(`/dashboards/${newDbUrl}`);
         handleSuccess(`Dashboard has been created!`);
       });
     } else if (column) {
@@ -132,34 +145,37 @@ const TitleInputModal = props => {
       <Dialog
         open={open}
         onClose={handleCloseResetTitle}
-        aria-labelledby='form-dialog-title'
+        aria-labelledby="form-dialog-title"
         PaperProps={{
           className: classes.root
-        }}>
-        <DialogTitle disableTypography id='form-dialog-title'>
+        }}
+      >
+        <DialogTitle disableTypography id="form-dialog-title">
           {dashboard ? null : (
             <IconButton
               onClick={handleCloseResetTitle}
               className={classes.closeButton}
-              aria-label='close'>
+              aria-label="close"
+            >
               <CloseIcon />
             </IconButton>
           )}
-          <Typography variant='h1'>{titleText}</Typography>
+          <Typography variant="h1">{titleText}</Typography>
         </DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit}>
             <TextField
-              label='Add Title'
-              variant='outlined'
-              margin='normal'
+              label="Add Title"
+              variant="outlined"
+              margin="normal"
               value={title || ""}
               onChange={e => handleChange(e.target.value)}
               helperText={error && "Title Required"}
               error={error}
               autoFocus
-              fullWidth></TextField>
-            <BlueButton type='submit'>{btnText}</BlueButton>
+              fullWidth
+            ></TextField>
+            <BlueButton type="submit">{btnText}</BlueButton>
           </form>
         </DialogContent>
       </Dialog>

@@ -4,12 +4,15 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import UserProvider from "./userContext";
 import { CardProvider } from "./components/CreateCard/cardContext";
+import CalendarProvider from "./calendarContext";
 
 ReactDOM.render(
   <UserProvider>
-    <CardProvider>
-      <App />
-    </CardProvider>
+    <CalendarProvider>
+      <CardProvider>
+        <App />
+      </CardProvider>
+    </CalendarProvider>
   </UserProvider>,
   document.getElementById("root")
 );

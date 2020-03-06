@@ -1,12 +1,12 @@
 import React, { createContext, useState, useContext } from "react";
 import moment from "moment";
-import { authFetch } from "../../AuthService";
+import { authFetch, getCurrentBoard } from "../../AuthService";
 import { UserContext } from "../../userContext";
 import { handleError, handleSuccess } from "../../utils/handleAlerts";
+import { CalendarContext } from "../../calendarContext";
 
 const CardContext = createContext();
 
-//To Handle state and comments globally
 const CardProvider = props => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -21,10 +21,14 @@ const CardProvider = props => {
   const [columnId, setColumnId] = useState("");
   const [openDelete, setOpenDelete] = useState(false);
 
+  let dashboardId = getCurrentBoard();
+
   //get dashboard values from user context
   const { value1 } = useContext(UserContext);
-  const [dashboard, setDashboard] = value1;
-  const dashboardId = dashboard && dashboard._id;
+  let [dashboard, setDashboard] = value1;
+
+  const { calendar, board } = useContext(CalendarContext);
+  const [, setDeadlines] = calendar;
 
   const handleCurrentTask = (taskId, columnId, hist) => {
     const columnName = dashboard.columns[columnId].title;
@@ -102,10 +106,27 @@ const CardProvider = props => {
           tag
         };
 
-        authFetch("", {
-          method: "PUT",
-          body: JSON.stringify(updatedTask)
-        })
+        if (deadline) {
+          authFetch(
+            `/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`,
+            {
+              method: "PUT",
+              body: JSON.stringify(updatedTask)
+            }
+          )
+            .then(res => setDeadlines(res))
+            .catch(err => {
+              handleError(err);
+            });
+        }
+
+        authFetch(
+          `/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`,
+          {
+            method: "PUT",
+            body: JSON.stringify(updatedTask)
+          }
+        )
           .then(res => updateUser(res))
           .then(() => handleCloseCard())
           .then(() => handleSuccess(`${title} has been updated!`))
@@ -157,15 +178,10 @@ const CardProvider = props => {
   };
 
   const handleOpenDeadline = () => {
-    if (!openDeadline) {
-      if (!deadline) {
-        setDeadline(moment().format("YYYY-MM-DD"));
-      }
-      setOpenDeadline(true);
-    } else {
-      setDeadline("");
-      setOpenDeadline(false);
+    if (!deadline) {
+      setDeadline(moment().format("YYYY-MM-DD"));
     }
+    setOpenDeadline(true);
   };
 
   const handleOpenDelete = () => {
@@ -175,17 +191,36 @@ const CardProvider = props => {
     setOpenDelete(false);
   };
 
-  const handleDelete = history => {
-    authFetch("", {
+  const handleDelete = (calendarView, hist) => {
+    authFetch(`/dashboards/${dashboardId}/columns/${columnId}/tasks/${task}`, {
       method: "DELETE"
     })
       .then(res => updateUser(res))
-      .then(history.push(`/dashboards/${dashboard._id}`))
+      .then(
+        calendarView
+          ? hist.push(`/calendar/${dashboardId}`)
+          : hist.push(`/dashboards/${dashboardId}`)
+      )
       .then(() => handleCloseCard())
       .then(() => handleSuccess(`Task has been deleted`))
       .catch(err => {
         handleError(err);
       });
+
+    if (deadline) {
+      authFetch(`/calendar/${dashboardId}/tasks/${task}`, {
+        method: "DELETE"
+      })
+        .then(res => setDeadlines(res))
+        .then(
+          calendarView
+            ? hist.push(`/calendar/${dashboardId}`)
+            : hist.push(`/dashboards/${dashboardId}`)
+        )
+        .catch(err => {
+          handleError(err);
+        });
+    }
   };
 
   return (
@@ -210,14 +245,14 @@ const CardProvider = props => {
         deadline,
         handleDeadlineChange,
         handleOpenDeadline,
-
         openDeadline,
         fetchCard,
         handleOpenDelete,
         handleCloseDelete,
         handleDelete,
         openDelete
-      }}>
+      }}
+    >
       {props.children}
     </CardContext.Provider>
   );
