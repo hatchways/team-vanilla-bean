@@ -3,7 +3,9 @@ import Column from "./Column";
 import { makeStyles } from "@material-ui/core/styles";
 import { UserContext } from "../userContext";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { setCurrentBoard, getCurrentBoard } from "../AuthService";
 import { withRouter } from "react-router";
+import { getDashboard, getDashboardTitles } from "../utils/handleUpdateTasks";
 
 import {
   updateTaskIndexInColumn,
@@ -15,29 +17,40 @@ import {
 import CreateColumnButton from "../components/CreateColumnButton";
 import CreateBoardColumn from "./TitleInputModal";
 
-//materia-ui
-
 const ColumnArea = props => {
   const classes = useStyles(props);
   const { value1, dashboardTitles } = useContext(UserContext);
   let [taskState, setTaskState] = value1;
-  let [dbTitles] = dashboardTitles;
-
+  let [dbTitles, setdbTitles] = dashboardTitles;
   const [open, setOpen] = useState(false);
-
-  let dashboardId =
-    (taskState && taskState._id) || props.match.params.dashboardId;
+  let dashboardId = (taskState && taskState._id) || props.match.params.dashboardId;
 
   useEffect(() => {
-    if (
-      Object.entries(dbTitles).length === 0 &&
-      dashboardId === "createboard"
-    ) {
+    if (Object.entries(dbTitles).length === 0 && dashboardId === "createboard") {
       setOpen(true);
       return;
     }
-  }, []);
+    if (getCurrentBoard()) {
+      getDashboard(getCurrentBoard(), res => {
+        setTaskState(res);
+        setCurrentBoard(res._id);
+      });
+      getDashboardTitles(res => {
+        setdbTitles(res);
+      });
+    } else {
+      console.log(dashboardId);
 
+      getDashboard(dashboardId, res => {
+        console.log(res);
+        setTaskState(res);
+        setCurrentBoard(res._id);
+      });
+      getDashboardTitles(res => {
+        setdbTitles(res);
+      });
+    }
+  }, []);
   const onDragEnd = result => {
     const { destination, source, draggableId, type } = result;
 
@@ -45,10 +58,7 @@ const ColumnArea = props => {
       return;
     }
     //Check if it is dropped to same column and same index
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return;
     }
 
@@ -145,28 +155,17 @@ const ColumnArea = props => {
   };
 
   if (!taskState || dashboardId === "createboard") {
-    return (
-      <CreateBoardColumn open={open} handleClose={handleClose} dashboard />
-    );
+    return <CreateBoardColumn open={open} handleClose={handleClose} dashboard />;
   } else {
     return (
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable
-          droppableId="all-columns"
-          direction='"horizontal'
-          type="column"
-        >
+        <Droppable droppableId='all-columns' direction='"horizontal' type='column'>
           {(provided, snapshot) => (
-            <div
-              className={classes.root}
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
+            <div className={classes.root} {...provided.droppableProps} ref={provided.innerRef}>
               <CreateColumnButton
-                position="left"
+                position='left'
                 noColumn={
-                  taskState.columnOrder === undefined ||
-                  taskState.columnOrder.length === 0
+                  taskState.columnOrder === undefined || taskState.columnOrder.length === 0
                     ? true
                     : false
                 }
@@ -192,12 +191,8 @@ const ColumnArea = props => {
                 );
               })}
 
-              {taskState.columnOrder === undefined ||
-              taskState.columnOrder.length === 0 ? null : (
-                <CreateColumnButton
-                  position="right"
-                  isDraggingOver={snapshot.isDraggingOver}
-                />
+              {taskState.columnOrder === undefined || taskState.columnOrder.length === 0 ? null : (
+                <CreateColumnButton position='right' isDraggingOver={snapshot.isDraggingOver} />
               )}
               {provided.placeholder}
             </div>
