@@ -25,8 +25,6 @@ const ColumnArea = props => {
   const [open, setOpen] = useState(false);
   let dashboardId = (taskState && taskState._id) || props.match.params.dashboardId;
 
-  console.log(props);
-
   useEffect(() => {
     if (Object.entries(dbTitles).length === 0 && dashboardId === "createboard") {
       setOpen(true);
@@ -47,10 +45,7 @@ const ColumnArea = props => {
         setdbTitles(res);
       });
     } else {
-      console.log(dashboardId);
-
       getDashboard(dashboardId, res => {
-        console.log(res);
         setTaskState(res);
         setCurrentBoard(res._id);
       });
