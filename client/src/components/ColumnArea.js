@@ -34,7 +34,6 @@ const ColumnArea = props => {
       getDashboard(getCurrentBoard(), res => {
         if (!res) {
           localStorage.removeItem("dashboard");
-          props.history.push(`/dashboards/createboard`);
           return;
         }
 
