@@ -10,6 +10,7 @@ import { useParams, useHistory, useLocation } from "react-router-dom";
 import { handleError } from "../../utils/handleAlerts";
 import DeleteModal from "./DeleteModal";
 import BlueButton from "../BlueButton";
+import Attachment from "./Attachment";
 
 const CardModal = () => {
   const card = useContext(CardContext);
@@ -87,6 +88,7 @@ const CardModal = () => {
             <Description dashboardId={dashboardId} />
             <DeleteModal dashboardId={dashboardId} />
             <Deadline dashboardId={dashboardId} />
+            <Attachment dashboardId={dashboardId} />
           </Grid>
           <ButtonList dashboardId={dashboardId} />
 

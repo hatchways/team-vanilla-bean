@@ -31,7 +31,8 @@ const Calendar = props => {
       deadline: moment(info.event.start).format("YYYY-MM-DD"),
       title: info.event.title,
       tag: info.event.extendedProps.tag,
-      description: info.event.extendedProps.description
+      description: info.event.extendedProps.description,
+      attachment: info.event.extendedProps.attachment
     };
 
     authFetch(`/calendar/${dashboardId}/columns/${columnId}/tasks/${task}`, {
