@@ -32,6 +32,8 @@ router.get("/", checkToken, async (req, res) => {
     res.status(200).json({ result });
   } catch (err) {
     console.log(err);
+
+    console.log(err);
     res.status(404).json({ error: "Dashboard does not exist" });
   }
 });
@@ -66,10 +68,7 @@ router.post("/", checkToken, async (req, res) => {
 
     let result = await newDashBoard.save();
 
-    await User.findOneAndUpdate(
-      { _id: userId },
-      { $push: { dashboardIds: result._id } }
-    );
+    await User.findOneAndUpdate({ _id: userId }, { $push: { dashboardIds: result._id } });
 
     res.status(200).json({ result });
   } catch (err) {
@@ -130,179 +129,163 @@ router.post("/:dashboardId/columns", checkToken, async (req, res) => {
 });
 
 //delete column @done
-router.delete(
-  "/:dashboardId/columns/:columnId",
-  checkToken,
-  async (req, res) => {
-    const { dashboardId, columnId } = req.params;
-    try {
-      //data manipulation
-      let updateCond = {};
+router.delete("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
+  const { dashboardId, columnId } = req.params;
+  try {
+    //data manipulation
+    let updateCond = {};
 
-      updateCond["$unset"] = {};
-      updateCond["$unset"]["columns." + columnId] = "";
-      updateCond["$pull"] = {};
-      updateCond["$pull"]["columnOrder"] = columnId;
+    updateCond["$unset"] = {};
+    updateCond["$unset"]["columns." + columnId] = "";
+    updateCond["$pull"] = {};
+    updateCond["$pull"]["columnOrder"] = columnId;
 
-      //delete all tasks in calendar
-      await Calendar.updateMany(
-        { dashboard: dashboardId },
-        { $pull: { deadlines: { column: columnId } } },
-        { safe: true, multi: true }
-      );
+    //delete all tasks in calendar
+    await Calendar.updateMany(
+      { dashboard: dashboardId },
+      { $pull: { deadlines: { column: columnId } } },
+      { safe: true, multi: true }
+    );
 
-      const result = await updateData(Dashboard, dashboardId, updateCond);
-      res.status(200).json({ result });
-    } catch (err) {
-      console.log(err);
-      res.status(400).json({ error: "Failed to delete column" });
-    }
+    const result = await updateData(Dashboard, dashboardId, updateCond);
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: "Failed to delete column" });
   }
-);
+});
 
 // Add a task @Done
-router.post(
-  "/:dashboardId/columns/:columnId/tasks",
-  checkToken,
-  async (req, res) => {
-    const { title, description, deadline, tag, attachment } = req.body;
-    const { dashboardId, columnId } = req.params;
+router.post("/:dashboardId/columns/:columnId/tasks", checkToken, async (req, res) => {
+  const { title, description, deadline, tag, attachment } = req.body;
+  const { dashboardId, columnId } = req.params;
 
-    try {
-      const newTask = new Task({
-        title,
-        description,
-        tag,
-        deadline,
-        attachment
-      });
+  try {
+    const newTask = new Task({
+      title,
+      description,
+      tag,
+      deadline,
+      attachment
+    });
 
-      if (!title) {
-        return res.status(401).json({ error: "Please Enter task title" });
-      }
-
-      let newTasks = {};
-      let board = await Dashboard.findOne({ _id: dashboardId });
-      let Column = await board.columns.get(columnId);
-
-      for (const key of Column.tasks.keys()) {
-        let item = Column.tasks.get(key);
-        newTasks[item.id] = item;
-      }
-
-      newTasks = {
-        ...newTasks,
-        [newTask._id]: newTask
-      };
-
-      //data manipulation
-      let updateCond = {};
-      updateCond["$set"] = {};
-      updateCond["$set"]["columns." + columnId + ".tasks"] = newTasks;
-      updateCond["$push"] = {};
-      updateCond["$push"]["columns." + columnId + ".taskOrder"] = newTask._id;
-
-      //Add calendar if deadline in card
-      if (deadline) {
-        let calendar = await Calendar.findOne({ dashboard: dashboardId });
-        //add card to existing calendar
-        if (calendar) {
-          calendar.deadlines.push({
-            start: deadline,
-            column: columnId,
-            title,
-            task: newTask._id,
-            description,
-            tag,
-            attachment
-          });
-        } else {
-          //create new calendar
-          calendar = new Calendar({
-            dashboard: dashboardId,
-            deadlines: [
-              {
-                start: deadline,
-                column: columnId,
-                task: newTask._id,
-                title,
-                description,
-                tag,
-                attachment
-              }
-            ]
-          });
-        }
-        calendar.save();
-      }
-
-      const result = await updateData(Dashboard, dashboardId, updateCond);
-      res.status(200).json({ result });
-    } catch (err) {
-      console.log(err);
-      res.status(400).json({ error: "Failed to add task" });
+    if (!title) {
+      return res.status(401).json({ error: "Please Enter task title" });
     }
+
+    let newTasks = {};
+    let board = await Dashboard.findOne({ _id: dashboardId });
+    let Column = await board.columns.get(columnId);
+
+    for (const key of Column.tasks.keys()) {
+      let item = Column.tasks.get(key);
+      newTasks[item.id] = item;
+    }
+
+    newTasks = {
+      ...newTasks,
+      [newTask._id]: newTask
+    };
+
+    //data manipulation
+    let updateCond = {};
+    updateCond["$set"] = {};
+    updateCond["$set"]["columns." + columnId + ".tasks"] = newTasks;
+    updateCond["$push"] = {};
+    updateCond["$push"]["columns." + columnId + ".taskOrder"] = newTask._id;
+
+    //Add calendar if deadline in card
+    if (deadline) {
+      let calendar = await Calendar.findOne({ dashboard: dashboardId });
+      //add card to existing calendar
+      if (calendar) {
+        calendar.deadlines.push({
+          start: deadline,
+          column: columnId,
+          title,
+          task: newTask._id,
+          description,
+          tag,
+          attachment
+        });
+      } else {
+        //create new calendar
+        calendar = new Calendar({
+          dashboard: dashboardId,
+          deadlines: [
+            {
+              start: deadline,
+              column: columnId,
+              task: newTask._id,
+              title,
+              description,
+              tag,
+              attachment
+            }
+          ]
+        });
+      }
+      calendar.save();
+    }
+
+    const result = await updateData(Dashboard, dashboardId, updateCond);
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: "Failed to add task" });
   }
-);
+});
 
 //Update card Data
-router.put(
-  "/:dashboardId/columns/:columnId/tasks/:taskId",
-  checkToken,
-  async (req, res) => {
-    try {
-      const { title, description, deadline, tag, attachment } = req.body;
-      const { dashboardId, columnId, taskId } = req.params;
-
-      if (!title) {
-        return res.status(401).json({ error: "Please Enter task title" });
-      }
-
-      let newTask = {
-        title,
-        description,
-        deadline,
-        tag,
-        attachment,
-        _id: taskId
-      };
-
-      let updateCond = {};
-      updateCond["$set"] = {};
-      updateCond["$set"]["columns." + columnId + ".tasks." + taskId] = newTask;
-
-      const result = await updateData(Dashboard, dashboardId, updateCond);
-      res.status(200).json({ result });
-    } catch (err) {
-      console.log(err);
-      res.status(400).json({ error: "Failed to update task" });
-    }
-  }
-);
-
-//delete card @done
-router.delete(
-  "/:dashboardId/columns/:columnId/tasks/:taskId",
-  checkToken,
-  async (req, res) => {
+router.put("/:dashboardId/columns/:columnId/tasks/:taskId", checkToken, async (req, res) => {
+  try {
+    const { title, description, deadline, tag, attachment } = req.body;
     const { dashboardId, columnId, taskId } = req.params;
 
-    try {
-      //data manipulation
-      let updateCond = {};
-      updateCond["$unset"] = {};
-      updateCond["$unset"]["columns." + columnId + ".tasks." + taskId] = "";
-      updateCond["$pull"] = {};
-      updateCond["$pull"]["columns." + columnId + ".taskOrder"] = taskId;
-
-      const result = await updateData(Dashboard, dashboardId, updateCond);
-      res.status(200).json({ result });
-    } catch (err) {
-      console.log(err);
-      res.status(400).json({ error: "Failed to delete task" });
+    if (!title) {
+      return res.status(401).json({ error: "Please Enter task title" });
     }
+
+    let newTask = {
+      title,
+      description,
+      deadline,
+      tag,
+      attachment,
+      _id: taskId
+    };
+
+    let updateCond = {};
+    updateCond["$set"] = {};
+    updateCond["$set"]["columns." + columnId + ".tasks." + taskId] = newTask;
+
+    const result = await updateData(Dashboard, dashboardId, updateCond);
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: "Failed to update task" });
   }
-);
+});
+
+//delete card @done
+router.delete("/:dashboardId/columns/:columnId/tasks/:taskId", checkToken, async (req, res) => {
+  const { dashboardId, columnId, taskId } = req.params;
+
+  try {
+    //data manipulation
+    let updateCond = {};
+    updateCond["$unset"] = {};
+    updateCond["$unset"]["columns." + columnId + ".tasks." + taskId] = "";
+    updateCond["$pull"] = {};
+    updateCond["$pull"]["columns." + columnId + ".taskOrder"] = taskId;
+
+    const result = await updateData(Dashboard, dashboardId, updateCond);
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: "Failed to delete task" });
+  }
+});
 
 //update ColumnTitle
 router.put("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
@@ -327,100 +310,82 @@ router.put("/:dashboardId/columns/:columnId", checkToken, async (req, res) => {
 });
 
 //Update column index @Done
-router.put(
-  "/:dashboardId/columns/:columnId/columnOrder",
-  checkToken,
-  async (req, res) => {
-    try {
-      const { dashboardId } = req.params;
-      const { columnOrder } = req.body;
-      //data manipulation
-      let updateCond = {};
-      updateCond["$set"] = {};
-      updateCond["$set"]["columnOrder"] = columnOrder;
+router.put("/:dashboardId/columns/:columnId/columnOrder", checkToken, async (req, res) => {
+  try {
+    const { dashboardId } = req.params;
+    const { columnOrder } = req.body;
+    //data manipulation
+    let updateCond = {};
+    updateCond["$set"] = {};
+    updateCond["$set"]["columnOrder"] = columnOrder;
 
-      const result = await updateData(Dashboard, dashboardId, updateCond);
+    const result = await updateData(Dashboard, dashboardId, updateCond);
 
-      res.status(200).json({ result });
-    } catch (err) {
-      console.log(err);
-      res.status(400).json({ error: "Failed to delete column" });
-    }
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: "Failed to delete column" });
   }
-);
+});
 
 //Update task index within same column @Done
-router.put(
-  "/:dashboardId/columns/:columnId/taskOrder",
-  checkToken,
-  async (req, res) => {
-    try {
-      const { taskOrder } = req.body;
-      const { dashboardId, columnId } = req.params;
-
-      //data manipulation
-      let updateCond = {};
-      updateCond["$set"] = {};
-      updateCond["$set"]["columns." + columnId + ".taskOrder"] = taskOrder;
-
-      const result = await updateData(Dashboard, dashboardId, updateCond);
-      res.status(200).json({ result });
-    } catch (err) {
-      console.log(err);
-      res.status(400).json({ error: "Failed to move task" });
-    }
-  }
-);
-
-//Update task index between Column @Done
-router.put(
-  "/:dashboardId/columns/:columnId/taskColumnOrder",
-  checkToken,
-  async (req, res) => {
-    const {
-      columnSourceTasks,
-      columnSourceTaskOrder,
-      columnToSourceId,
-      columnToTasks,
-      columnToTaskOrder
-    } = req.body;
-
+router.put("/:dashboardId/columns/:columnId/taskOrder", checkToken, async (req, res) => {
+  try {
+    const { taskOrder } = req.body;
     const { dashboardId, columnId } = req.params;
 
-    try {
-      let updateCond = {};
-      updateCond["$set"] = {};
-      updateCond["$set"]["columns." + columnId + ".tasks"] = columnSourceTasks;
-      updateCond["$set"][
-        "columns." + columnId + ".taskOrder"
-      ] = columnSourceTaskOrder;
-      updateCond["$set"][
-        "columns." + columnToSourceId + ".tasks"
-      ] = columnToTasks;
-      updateCond["$set"][
-        "columns." + columnToSourceId + ".taskOrder"
-      ] = columnToTaskOrder;
+    //data manipulation
+    let updateCond = {};
+    updateCond["$set"] = {};
+    updateCond["$set"]["columns." + columnId + ".taskOrder"] = taskOrder;
 
-      //if moving task is in calendar, update column
-      const movingTaskId = Object.keys(columnToTasks).pop();
-      await Calendar.findOneAndUpdate(
-        { dashboard: dashboardId, "deadlines.task": movingTaskId },
-        {
-          $set: {
-            "deadlines.$.column": columnToSourceId
-          }
-        },
-        { new: true }
-      );
-
-      const result = await updateData(Dashboard, dashboardId, updateCond);
-
-      res.status(200).json({ result });
-    } catch (err) {
-      console.log(err);
-      res.status(400).json({ error: "Failed to move task to the column" });
-    }
+    const result = await updateData(Dashboard, dashboardId, updateCond);
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: "Failed to move task" });
   }
-);
+});
+
+//Update task index between Column @Done
+router.put("/:dashboardId/columns/:columnId/taskColumnOrder", checkToken, async (req, res) => {
+  const {
+    columnSourceTasks,
+    columnSourceTaskOrder,
+    columnToSourceId,
+    columnToTasks,
+    columnToTaskOrder
+  } = req.body;
+
+  const { dashboardId, columnId } = req.params;
+
+  try {
+    let updateCond = {};
+    updateCond["$set"] = {};
+    updateCond["$set"]["columns." + columnId + ".tasks"] = columnSourceTasks;
+    updateCond["$set"]["columns." + columnId + ".taskOrder"] = columnSourceTaskOrder;
+    updateCond["$set"]["columns." + columnToSourceId + ".tasks"] = columnToTasks;
+    updateCond["$set"]["columns." + columnToSourceId + ".taskOrder"] = columnToTaskOrder;
+
+    //if moving task is in calendar, update column
+    const movingTaskId = Object.keys(columnToTasks).pop();
+    await Calendar.findOneAndUpdate(
+      { dashboard: dashboardId, "deadlines.task": movingTaskId },
+      {
+        $set: {
+          "deadlines.$.column": columnToSourceId
+        }
+      },
+      { new: true }
+    );
+
+    const result = await updateData(Dashboard, dashboardId, updateCond);
+
+    res.status(200).json({ result });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: "Failed to move task to the column" });
+  }
+});
 
 module.exports = router;
